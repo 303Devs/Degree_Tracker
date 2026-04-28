@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readSemesters, readCourses, createSemester } from "@/lib/data";
+import { readSemesters, readCourses, createSemester, deriveSemesterCourses } from "@/lib/data";
 import type { Semester } from "@/lib/types";
 
 export const runtime = "nodejs";
 
 export async function GET() {
   try {
-    const semesters = readSemesters();
     const courses = readCourses();
+    const rawSemesters = readSemesters();
+    // Derive semester.courses from course.semester (single source of truth)
+    const semesters = deriveSemesterCourses(rawSemesters, courses);
 
     // Enrich semesters with course details
     const enriched = semesters.map((sem) => ({

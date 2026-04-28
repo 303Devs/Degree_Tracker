@@ -18,6 +18,8 @@ export interface Course {
   gradePoints?: number;
   notes?: string;
   countedTowardDegree?: boolean; // false = excluded from degree (grade replacement, etc.)
+  countsTowardGPA?: boolean;     // false = excluded from GPA calculation (default true)
+  countsTowardEarnedHours?: boolean; // false = excluded from earned hours (default true)
   excludeReason?: string;        // why this course doesn't count (e.g. "Grade replacement (>X >N)")
   manuallyAdded?: boolean;       // true if user created this course manually
 }

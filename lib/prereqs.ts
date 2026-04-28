@@ -229,6 +229,8 @@ export function calcGPA(courses: Course[], whatIf?: Map<string, string>): number
   let totalCredits = 0;
 
   for (const c of courses) {
+    // Skip courses explicitly excluded from GPA
+    if (c.countsTowardGPA === false) continue;
     const grade = whatIf?.get(c.id) ?? c.grade;
     if (!grade || grade === "HS" || c.credits <= 0) continue;
     const pts = gradeToPoints(grade);

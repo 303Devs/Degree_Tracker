@@ -255,13 +255,18 @@ export function extractCourseworkHistory(text: string): CourseworkResult {
     const hasN = rc.flags.includes(">N");
     const hasR = rc.flags.includes(">R");
 
-    // Determine if this course attempt counts toward the degree
+    // Determine how this course attempt counts
     let countedTowardDegree = true;
+    let countsTowardGPA = true;
+    let countsTowardEarnedHours = true;
     let excludeReason: string | undefined;
 
-    // Grade replacement (>X >N) — excluded from GPA by CU
+    // Grade replacement (>X >N) — excluded from GPA and earned hours by CU
+    // but still part of the academic record (counts toward degree attempt history)
     if (hasX && hasN) {
       countedTowardDegree = false;
+      countsTowardGPA = false;
+      countsTowardEarnedHours = false;
       excludeReason = "Grade replacement (>X >N) — excluded from GPA";
     }
 
@@ -272,8 +277,21 @@ export function extractCourseworkHistory(text: string): CourseworkResult {
       );
       if (later.length > 0) {
         countedTowardDegree = false;
+        countsTowardGPA = false;
+        countsTowardEarnedHours = false;
         excludeReason = "Repeated course (>N >R) — superseded by later attempt";
       }
+    }
+
+    // F grades: count toward GPA but NOT toward earned hours
+    if (rc.grade === "F") {
+      countsTowardEarnedHours = false;
+    }
+
+    // W (withdrawn): doesn't count toward GPA or earned hours
+    if (rc.grade === "W") {
+      countsTowardGPA = false;
+      countsTowardEarnedHours = false;
     }
 
     // For excluded courses, use a unique ID that includes the term
@@ -314,6 +332,8 @@ export function extractCourseworkHistory(text: string): CourseworkResult {
       gradePoints,
       notes: noteParts.length > 0 ? noteParts.join("; ") : undefined,
       countedTowardDegree,
+      countsTowardGPA,
+      countsTowardEarnedHours,
       excludeReason,
     };
 
@@ -351,18 +371,20 @@ export async function parseAuditPDF(buffer: Buffer): Promise<ParsedAuditResult> 
   const data = await pdfParse(buffer);
   const text = data.text as string;
 
-  const settings = getFullConfig();
-  if (!settings.apiKey) {
-    return makeErrorResult(
-      "No API key configured. Add one in Settings or set ANTHROPIC_API_KEY in .env.local."
-    );
-  }
-
-  // Step 1: deterministic regex extraction — all courses and semesters
+  // Step 1: deterministic regex extraction — always runs, no LLM needed
   const courseworkResult = extractCourseworkHistory(text);
 
-  // Step 2: LLM extracts requirement groups only (requirements are too messy for regex)
-  const requirementsResult = await callRequirementsParser(settings, text);
+  // Step 2: LLM extracts requirement groups (optional — degrades gracefully)
+  const settings = getFullConfig();
+  let requirementsResult: RequirementsResult;
+  if (!settings.apiKey) {
+    requirementsResult = {
+      requirementGroups: [],
+      warnings: ["No API key configured — requirement groups were not extracted. Add one in Settings or set ANTHROPIC_API_KEY in .env.local."],
+    };
+  } else {
+    requirementsResult = await callRequirementsParser(settings, text);
+  }
 
   return mergeResults(courseworkResult, requirementsResult);
 }

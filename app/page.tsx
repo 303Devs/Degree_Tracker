@@ -8,10 +8,10 @@ export const dynamic = "force-dynamic";
 
 function calcTotalHours(courses: Course[]) {
   const earned = courses
-    .filter((c) => c.status === "completed" && c.credits > 0)
+    .filter((c) => c.status === "completed" && c.credits > 0 && c.countsTowardEarnedHours !== false)
     .reduce((acc, c) => acc + c.credits, 0);
   const inProgress = courses
-    .filter((c) => (c.status === "in_progress" || c.status === "registered") && c.credits > 0)
+    .filter((c) => (c.status === "in_progress" || c.status === "registered") && c.credits > 0 && c.countsTowardEarnedHours !== false)
     .reduce((acc, c) => acc + c.credits, 0);
   return { earned, inProgress };
 }
@@ -67,7 +67,7 @@ export default function Dashboard() {
   }
 
   const program = programs[0];
-  const calcedGPA = calcGPA(courses.filter((c) => c.status === "completed" && !!c.grade && c.grade !== "HS" && c.grade !== "W"));
+  const calcedGPA = calcGPA(courses.filter((c) => c.status === "completed" && !!c.grade && c.grade !== "HS" && c.grade !== "W" && c.countsTowardGPA !== false));
   const officialGPA = program?.gpa ?? 0;
   const gpa = officialGPA > 0 ? officialGPA : calcedGPA;
   const usingOfficialGPA = officialGPA > 0;

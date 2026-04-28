@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import type { Course, CourseStatus } from "@/lib/types";
+import type { Course, CourseStatus, Semester } from "@/lib/types";
 
 const GRADE_OPTIONS = ["", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "F", "W", "P", "NP", "I"];
 const STATUS_OPTIONS: { value: CourseStatus; label: string }[] = [
@@ -70,6 +70,7 @@ function CourseForm({
   onCancel,
   saving,
   error,
+  semesters,
 }: {
   initial: CourseFormData;
   isEdit: boolean;
@@ -77,6 +78,7 @@ function CourseForm({
   onCancel: () => void;
   saving: boolean;
   error: string | null;
+  semesters: Semester[];
 }) {
   const [form, setForm] = useState(initial);
 
@@ -150,13 +152,16 @@ function CourseForm({
         </div>
         <div>
           <label className="block text-xs text-[#6a6a8a] mb-1">Semester</label>
-          <input
+          <select
             value={form.semester}
-            onChange={(e) => update("semester", e.target.value.toUpperCase())}
-            placeholder="FA26"
-            maxLength={4}
-            className="w-full px-3 py-2 bg-[#0d0d1a] border border-[#1e1e34] rounded-lg text-sm text-[#d0d0e8] focus:outline-none focus:border-[#d4a843]/50 placeholder:text-[#3a3a5a] font-mono"
-          />
+            onChange={(e) => update("semester", e.target.value)}
+            className="w-full px-3 py-2 bg-[#0d0d1a] border border-[#1e1e34] rounded-lg text-sm text-[#d0d0e8] focus:outline-none focus:border-[#d4a843]/50 font-mono"
+          >
+            <option value="">— none —</option>
+            {semesters.map((s) => (
+              <option key={s.id} value={s.id}>{s.label} ({s.id})</option>
+            ))}
+          </select>
         </div>
         <div>
           <label className="block text-xs text-[#6a6a8a] mb-1">Status</label>
@@ -215,21 +220,31 @@ export default function ManageCoursesPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [showUncounted, setShowUncounted] = useState(false);
+  const [semesters, setSemesters] = useState<Semester[]>([]);
 
   useEffect(() => {
-    fetch("/api/courses")
-      .then((r) => r.json())
-      .then((c) => { setCourses(Array.isArray(c) ? c : []); setLoading(false); })
-      .catch((err) => { setError(String(err)); setLoading(false); });
+    Promise.all([
+      fetch("/api/courses").then((r) => r.json()),
+      fetch("/api/semesters").then((r) => r.json()),
+    ]).then(([c, s]) => {
+      setCourses(Array.isArray(c) ? c : []);
+      setSemesters(Array.isArray(s) ? s : []);
+      setLoading(false);
+    }).catch((err) => { setError(String(err)); setLoading(false); });
   }, []);
 
   const filtered = useMemo(() => {
-    if (!search) return courses.filter((c) => c.countedTowardDegree !== false);
-    const q = search.toLowerCase();
-    return courses
-      .filter((c) => c.countedTowardDegree !== false)
-      .filter((c) => c.number.toLowerCase().includes(q) || c.name.toLowerCase().includes(q) || c.id.toLowerCase().includes(q));
-  }, [courses, search]);
+    let list = courses;
+    if (!showUncounted) {
+      list = list.filter((c) => c.countedTowardDegree !== false);
+    }
+    if (search) {
+      const q = search.toLowerCase();
+      list = list.filter((c) => c.number.toLowerCase().includes(q) || c.name.toLowerCase().includes(q) || c.id.toLowerCase().includes(q));
+    }
+    return list;
+  }, [courses, search, showUncounted]);
 
   async function handleAdd(form: CourseFormData) {
     setSaving(true);
@@ -370,6 +385,7 @@ export default function ManageCoursesPage() {
           onCancel={() => { setShowForm(false); setFormError(null); }}
           saving={saving}
           error={formError}
+          semesters={semesters}
         />
       )}
 
@@ -383,6 +399,7 @@ export default function ManageCoursesPage() {
           onCancel={() => { setEditingCourse(null); setFormError(null); }}
           saving={saving}
           error={formError}
+          semesters={semesters}
         />
       )}
 
@@ -395,9 +412,17 @@ export default function ManageCoursesPage() {
         className="w-full max-w-md px-3 py-2 bg-[#111120] border border-[#1e1e34] rounded-xl text-sm text-[#d0d0e8] placeholder-[#4a4a6a] focus:outline-none focus:border-[#d4a843]/40"
       />
 
-      <p className="text-xs text-[#4a4a6a]">
-        {filtered.length} courses (excluding uncounted)
-      </p>
+      <div className="flex items-center justify-between">
+        <p className="text-xs text-[#4a4a6a]">
+          {filtered.length} courses{!showUncounted ? " (excluding uncounted)" : ""}
+        </p>
+        <button
+          onClick={() => setShowUncounted((v) => !v)}
+          className="text-xs text-[#6a6a8a] hover:text-[#d4a843] transition-colors"
+        >
+          {showUncounted ? "Hide uncounted" : `Show uncounted (${courses.filter((c) => c.countedTowardDegree === false).length})`}
+        </button>
+      </div>
 
       {/* Course Table */}
       <div className="bg-[#111120] border border-[#1e1e34] rounded-xl overflow-hidden">
@@ -416,7 +441,7 @@ export default function ManageCoursesPage() {
           </thead>
           <tbody className="divide-y divide-[#1a1a2e]">
             {filtered.map((course) => (
-              <tr key={course.id} className="hover:bg-white/[0.02] transition-colors">
+              <tr key={course.id} className={`hover:bg-white/[0.02] transition-colors ${course.countedTowardDegree === false ? "opacity-60" : ""}`}>
                 <td className="px-4 py-3 font-mono text-indigo-300 text-xs">{course.number}</td>
                 <td className="px-4 py-3 text-[#c0c0d8] max-w-[200px] truncate">{course.name || <span className="text-[#4a4a6a] italic">unnamed</span>}</td>
                 <td className="px-4 py-3 text-right text-[#6a6a8a] text-xs">{course.credits}</td>

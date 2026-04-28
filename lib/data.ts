@@ -124,14 +124,42 @@ export function writePrograms(programs: ProgramInfo[]): void {
 }
 
 // ---------------------------------------------------------------------------
+// Derived semester courses (Fix #3: course.semester is authoritative)
+// ---------------------------------------------------------------------------
+
+/**
+ * Derive semester.courses from course.semester fields.
+ * course.semester is the single source of truth for which semester a course
+ * belongs to. semester.courses is derived at read time.
+ */
+export function deriveSemesterCourses(semesters: Semester[], courses: Course[]): Semester[] {
+  // Build lookup: semId → courseIds from course.semester
+  const semCourseMap = new Map<string, string[]>();
+  for (const sem of semesters) {
+    semCourseMap.set(sem.id, []);
+  }
+  for (const course of courses) {
+    if (course.semester && semCourseMap.has(course.semester)) {
+      semCourseMap.get(course.semester)!.push(course.id);
+    }
+  }
+  return semesters.map((sem) => ({
+    ...sem,
+    courses: semCourseMap.get(sem.id) ?? [],
+  }));
+}
+
+// ---------------------------------------------------------------------------
 // Composite read/write
 // ---------------------------------------------------------------------------
 
 export function readAppData(): AppData {
+  const courses = readCourses();
+  const rawSemesters = readSemesters();
   return {
-    courses: readCourses(),
+    courses,
     requirements: readRequirements(),
-    semesters: readSemesters(),
+    semesters: deriveSemesterCourses(rawSemesters, courses),
     programs: readPrograms(),
   };
 }
@@ -170,6 +198,11 @@ export function mergeAuditData(newData: {
         status: nc.status !== "not_started" ? nc.status : existing.status,
         grade: nc.grade ?? existing.grade,
         semester: nc.semester ?? existing.semester,
+        // Preserve granular counting flags from audit
+        countedTowardDegree: nc.countedTowardDegree ?? existing.countedTowardDegree,
+        countsTowardGPA: nc.countsTowardGPA ?? existing.countsTowardGPA,
+        countsTowardEarnedHours: nc.countsTowardEarnedHours ?? existing.countsTowardEarnedHours,
+        excludeReason: nc.excludeReason ?? existing.excludeReason,
       });
     } else {
       courseMap.set(nc.id, nc);

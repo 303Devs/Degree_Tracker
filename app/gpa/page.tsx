@@ -71,7 +71,7 @@ export default function GPAPage() {
 
   // Completed courses with real grades
   const completedGraded = useMemo(
-    () => courses.filter((c) => c.status === "completed" && !!c.grade && c.grade !== "HS" && c.grade !== "W"),
+    () => courses.filter((c) => c.status === "completed" && !!c.grade && c.grade !== "HS" && c.grade !== "W" && c.countsTowardGPA !== false),
     [courses]
   );
 
