@@ -1,0 +1,180 @@
+[
+  {
+    "id": "FA03",
+    "label": "Fall 2003",
+    "type": "fall",
+    "year": 2003,
+    "status": "completed",
+    "courses": [
+      "ASTR-1110",
+      "PSYC-1001",
+      "RLST-2700",
+      "WRTG-1150"
+    ]
+  },
+  {
+    "id": "SP04",
+    "label": "Spring 2004",
+    "type": "spring",
+    "year": 2004,
+    "status": "completed",
+    "courses": [
+      "GEOG-2002",
+      "KAPH-1010",
+      "SOCY-2041"
+    ]
+  },
+  {
+    "id": "FA04",
+    "label": "Fall 2004",
+    "type": "fall",
+    "year": 2004,
+    "status": "completed",
+    "courses": [
+      "ASTR-1120",
+      "CSCI-1200",
+      "PHYS-1110",
+      "QRMS-1010"
+    ]
+  },
+  {
+    "id": "FA15",
+    "label": "Fall 2015",
+    "type": "fall",
+    "year": 2015,
+    "status": "completed",
+    "courses": [
+      "HIST-1025"
+    ]
+  },
+  {
+    "id": "SP16",
+    "label": "Spring 2016",
+    "type": "spring",
+    "year": 2016,
+    "status": "completed",
+    "courses": [
+      "HIST-1025",
+      "IPHY-2420",
+      "MUEL-2852",
+      "SOCY-1001"
+    ]
+  },
+  {
+    "id": "SU16",
+    "label": "Summer 2016",
+    "type": "summer",
+    "year": 2016,
+    "status": "completed",
+    "courses": [
+      "ANTH-2200",
+      "ECON-2010",
+      "MATH-1112",
+      "PHIL-1100"
+    ]
+  },
+  {
+    "id": "FA16",
+    "label": "Fall 2016",
+    "type": "fall",
+    "year": 2016,
+    "status": "completed",
+    "courses": [
+      "BCOR-1015",
+      "ECON-2020",
+      "ENGL-3060",
+      "MGMT-3030"
+    ]
+  },
+  {
+    "id": "SP17",
+    "label": "Spring 2017",
+    "type": "spring",
+    "year": 2017,
+    "status": "completed",
+    "courses": [
+      "ECON-3403",
+      "FNCE-2820",
+      "GEOG-1982",
+      "MATH-1011",
+      "MATH-2510",
+      "MKTG-2700"
+    ]
+  },
+  {
+    "id": "SU17",
+    "label": "Summer 2017",
+    "type": "summer",
+    "year": 2017,
+    "status": "completed",
+    "courses": [
+      "BCOR-1030",
+      "BCOR-2001",
+      "BCOR-2002",
+      "BCOR-2003",
+      "MGMT-3010"
+    ]
+  },
+  {
+    "id": "FA17",
+    "label": "Fall 2017",
+    "type": "fall",
+    "year": 2017,
+    "status": "completed",
+    "courses": [
+      "COMM-2500",
+      "GEOL-1010",
+      "SPAN-1010"
+    ]
+  },
+  {
+    "id": "SP18",
+    "label": "Spring 2018",
+    "type": "spring",
+    "year": 2018,
+    "status": "completed",
+    "courses": [
+      "ARTS-1171",
+      "EDUC-4161",
+      "ESBM-3100"
+    ]
+  },
+  {
+    "id": "SP26",
+    "label": "Spring 2026",
+    "type": "spring",
+    "year": 2026,
+    "status": "in_progress",
+    "courses": [
+      "CSCI-1300",
+      "ENGL-3016",
+      "GEOG-1001",
+      "MATH-1150"
+    ]
+  },
+  {
+    "id": "SU26",
+    "label": "Summer 2026",
+    "type": "summer",
+    "year": 2026,
+    "status": "registered",
+    "courses": [
+      "CSPB-2270",
+      "GEOG-1962",
+      "MATH-1300"
+    ]
+  },
+  {
+    "id": "FA26",
+    "label": "Fall 2026",
+    "type": "fall",
+    "year": 2026,
+    "status": "registered",
+    "courses": [
+      "APPM-1650",
+      "CSCI-2824",
+      "MATH-2300",
+      "STAT-2600"
+    ]
+  }
+]

@@ -1,0 +1,14 @@
+# dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# Environment variables — never commit secrets
+.env.local
+.env*.local
+
+# OS / editor
+.DS_Store
+*.swp
