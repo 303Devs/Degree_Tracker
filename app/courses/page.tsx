@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import type { Course, RequirementGroup, PrereqRule } from "@/lib/types";
-import { isRuleSatisfied, collectCourseIds } from "@/lib/prereqs";
+import { isRuleSatisfied, collectCourseIds, NON_DEGREE_CREDIT_GRADES } from "@/lib/prereqs";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -52,6 +52,11 @@ function PrereqNode({
 }) {
   if (rule.type === "course") {
     const c = courses.find((x) => x.id === rule.courseId);
+    // W/NR/IP completed courses don't earn degree credit — show as not_started
+    const effectiveStatus =
+      c && c.status === "completed" && c.grade && NON_DEGREE_CREDIT_GRADES.has(c.grade)
+        ? "not_started"
+        : c?.status;
     const statusDot: Record<string, string> = {
       completed: "bg-green-500",
       in_progress: "bg-[#d4a843]",
@@ -63,7 +68,7 @@ function PrereqNode({
       <div className="flex items-center gap-2 text-xs">
         <span
           className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-            c ? statusDot[c.status] : "bg-[#2a2a3a]"
+            effectiveStatus ? statusDot[effectiveStatus] : "bg-[#2a2a3a]"
           }`}
         />
         <span className="font-mono text-indigo-300">{formatId(rule.courseId)}</span>
@@ -156,8 +161,11 @@ function CourseDetail({
   allCourses: Course[];
 }) {
   // Check if prereqs satisfied
+  // Exclude W/NR/IP — only degree-credit completions satisfy prereqs
   const completedIds = new Set(
-    allCourses.filter((c) => c.status === "completed").map((c) => c.id)
+    allCourses
+      .filter((c) => c.status === "completed" && !(c.grade && NON_DEGREE_CREDIT_GRADES.has(c.grade)))
+      .map((c) => c.id)
   );
   const prereqSatisfied = !course.prereqs || isRuleSatisfied(course.prereqs, completedIds);
 
