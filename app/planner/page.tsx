@@ -15,12 +15,12 @@ import {
 } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import type { Course, Semester, RequirementGroup } from "@/lib/types";
+import type { OptimizationSignal, PlanVariant } from "@/lib/plan-types";
 import {
   sortSemesters,
   validateDrop,
   getCascadeWarnings,
   isRuleSatisfied,
-  collectCourseIds,
   NON_DEGREE_CREDIT_GRADES,
   type CascadeItem,
   type DropValidation,
@@ -29,6 +29,11 @@ import {
   validatePlan,
   type PlannerValidationSummary,
 } from "@/lib/planner-validation";
+import { analyzeSemesterLoad } from "@/lib/semester-load";
+import { analyzePrereqBottlenecks } from "@/lib/prereq-bottleneck";
+import { analyzeDelayedCritical } from "@/lib/delayed-critical";
+import { analyzeGraduationRisk } from "@/lib/graduation-risk";
+import SignalPanel from "@/components/SignalPanel";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -65,6 +70,31 @@ function semIdToLabel(semId: string, semesters: Semester[]): string {
 
 function formatCourseId(id: string): string {
   return id.replaceAll("-", " ");
+}
+
+function buildPlannerVariant(assignments: Map<string, string>, sortedSems: Semester[]): PlanVariant {
+  const semesters: Record<string, string[]> = Object.fromEntries(sortedSems.map((sem) => [sem.id, []]));
+
+  for (const [courseId, semId] of assignments) {
+    if (semId !== "unplanned" && semesters[semId]) {
+      semesters[semId].push(courseId);
+    }
+  }
+
+  return {
+    id: "current-planner",
+    name: "Current planner",
+    description: "Current planner assignments",
+    semesters,
+  };
+}
+
+function deriveRequiredCourseIds(requirements: RequirementGroup[]): string[] {
+  return [...new Set(
+    requirements
+      .filter((requirement) => requirement.type !== "minimum_hours")
+      .flatMap((requirement) => requirement.coursePool),
+  )].sort();
 }
 
 // ---------------------------------------------------------------------------
@@ -536,6 +566,7 @@ export default function PlannerPage() {
   const [newSemLoading, setNewSemLoading] = useState(false);
   const [requirements, setRequirements] = useState<RequirementGroup[]>([]);
   const [validationOpen, setValidationOpen] = useState(false);
+  const [signalsOpen, setSignalsOpen] = useState(false);
 
   // Sensors for DnD
   const sensors = useSensors(
@@ -574,6 +605,22 @@ export default function PlannerPage() {
     () => validatePlan(courses, semesters, requirements, assignments),
     [courses, semesters, requirements, assignments]
   );
+
+  // Factual optimization signals for the current planner state
+  const optimizationSignals = useMemo<OptimizationSignal[]>(() => {
+    if (courses.length === 0 || sortedSems.length === 0) return [];
+
+    const plan = buildPlannerVariant(assignments, sortedSems);
+    const requiredCourseIds = deriveRequiredCourseIds(requirements);
+    const planTerms = sortedSems.map((sem) => sem.id);
+
+    return [
+      ...analyzeSemesterLoad(plan, courses),
+      ...analyzePrereqBottlenecks(plan, courses, requiredCourseIds),
+      ...analyzeDelayedCritical(plan, courses, requiredCourseIds, { planTerms }),
+      ...analyzeGraduationRisk(plan, courses, { requirements }),
+    ];
+  }, [assignments, courses, requirements, sortedSems]);
 
   // Derive which courses are in each container
   const unplannedCourses = useMemo(
@@ -788,6 +835,13 @@ export default function PlannerPage() {
           onToggle={() => setValidationOpen((v) => !v)}
         />
 
+        {/* Plan Signals */}
+        <SignalPanel
+          signals={optimizationSignals}
+          open={signalsOpen}
+          onToggle={() => setSignalsOpen((v) => !v)}
+        />
+
         {/* Legend */}
         <div className="flex items-center gap-4 text-[10px] text-[#4a4a6a]">
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-green-500" /> completed</span>
@@ -874,7 +928,7 @@ export default function PlannerPage() {
                   <div key={id} className="flex items-center gap-2 text-sm">
                     <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
                     <span className="font-mono text-indigo-300">{formatCourseId(id)}</span>
-                    <span className="text-[#6a6a8a]">must be in an earlier semester</span>
+                    <span className="text-[#6a6a8a]">required in an earlier semester</span>
                   </div>
                 ))}
               </div>
@@ -889,7 +943,7 @@ export default function PlannerPage() {
                   <div key={id} className="flex items-center gap-2 text-sm">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
                     <span className="font-mono text-indigo-300">{formatCourseId(id)}</span>
-                    <span className="text-[#6a6a8a]">must be in the same or earlier semester</span>
+                    <span className="text-[#6a6a8a]">required in the same or earlier semester</span>
                   </div>
                 ))}
               </div>
