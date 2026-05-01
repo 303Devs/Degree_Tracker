@@ -35,6 +35,16 @@ This is the decision log and working memory for the project.
   - Semantics: required in-plan course with sorted unique required downstream dependents; earliest placement computed with canonical prereq satisfaction (`isRuleSatisfied`) including OR rules; completed prereqs before horizon count as available; missing/unplanned prereqs skip signal; warning at 2-semester delay; risk at 3+ semesters or delayed bottleneck (>=3 downstream required dependents).
   - Verification: `npm test` passed (15 files, 296 tests); `npm run build` passed (Next.js production build and type checks clean).
 
+### 2026-05-01 (continued)
+
+- P3-B Primitive 4 graduation-risk flags (303-13): Alice PASS at 9:09 AM.
+  - All semantics confirmed: degree-applicable credit logic, no hardcoded 120, canonical upper-div source required, undercoverage via calcProgress, 3 riskType subtypes.
+  - 310/310 tests passing, build clean.
+  - 303-13 moved to Done in Linear.
+- Committed all P3 work in 4 clean commits (docs, P3-A foundation, P3-B primitives, planner-validation test).
+- Created Linear 303-23: P3-B UI — Surface optimization signals in planner. Status: In Progress.
+- Next: Delegate P3-B UI implementation to Gilfoyle (303-23).
+
 ### 2026-05-01
 
 - P3-B Primitive 3 Correction 1 (303-12): Two bugs in `lib/delayed-critical.ts` fixed per Alice review.
