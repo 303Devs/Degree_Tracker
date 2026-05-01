@@ -14,16 +14,21 @@ import {
   type DragEndEvent,
 } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
-import type { Course, Semester } from "@/lib/types";
+import type { Course, Semester, RequirementGroup } from "@/lib/types";
 import {
   sortSemesters,
   validateDrop,
   getCascadeWarnings,
   isRuleSatisfied,
   collectCourseIds,
+  NON_DEGREE_CREDIT_GRADES,
   type CascadeItem,
   type DropValidation,
 } from "@/lib/prereqs";
+import {
+  validatePlan,
+  type PlannerValidationSummary,
+} from "@/lib/planner-validation";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -101,7 +106,8 @@ function PlannerCard({
     const available = new Set<string>();
     for (const c of allCourses) {
       if (c.id === course.id) continue;
-      if (c.status === "completed") { available.add(c.id); continue; }
+      // W/NR/IP don't satisfy prereqs — no degree credit earned
+      if (c.status === "completed" && !(c.grade && NON_DEGREE_CREDIT_GRADES.has(c.grade))) { available.add(c.id); continue; }
       const cSem = assignments.get(c.id) ?? "unplanned";
       if (cSem === "unplanned") continue;
       const cIdx = sortedSems.findIndex((s) => s.id === cSem);
@@ -340,6 +346,172 @@ function Modal({ onClose, children }: { onClose: () => void; children: React.Rea
 }
 
 // ---------------------------------------------------------------------------
+// Validation panel
+// ---------------------------------------------------------------------------
+
+function ValidationPanel({
+  validation,
+  open,
+  onToggle,
+}: {
+  validation: PlannerValidationSummary;
+  open: boolean;
+  onToggle: () => void;
+}) {
+  const issueCount =
+    validation.prereqViolations.length +
+    validation.coreqViolations.length +
+    validation.termLoadIssues.length +
+    validation.unplannedRequired.length;
+  const unmetCount = validation.unmetRequirements.length;
+
+  const statusColor = validation.clean
+    ? "border-green-500/20 bg-green-500/5"
+    : "border-amber-500/20 bg-amber-500/5";
+  const statusIcon = validation.clean ? "✓" : "⚠";
+
+  return (
+    <div className={`rounded-xl border ${statusColor} overflow-hidden transition-all`}>
+      <button
+        className="w-full flex items-center justify-between px-4 py-3 hover:bg-white/3 transition-colors text-left"
+        onClick={onToggle}
+      >
+        <div className="flex items-center gap-3">
+          <span className={`text-sm ${validation.clean ? "text-green-400" : "text-amber-400"}`}>
+            {statusIcon}
+          </span>
+          <div>
+            <span className="text-sm font-semibold text-[#d0d0e8]">Plan Validation</span>
+            <span className="text-xs text-[#6a6a8a] ml-2">
+              {validation.clean
+                ? "All clear"
+                : `${issueCount} issue${issueCount !== 1 ? "s" : ""}${unmetCount > 0 ? `, ${unmetCount} unmet req${unmetCount !== 1 ? "s" : ""}` : ""}`}
+            </span>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          {validation.projectedCompletionTerm && (
+            <span className="text-[10px] text-[#6a6a8a]">
+              Est. completion: <span className="text-[#d4a843]">{validation.projectedCompletionTerm.semesterLabel}</span>
+            </span>
+          )}
+          <svg
+            className={`w-4 h-4 text-[#6a6a8a] transition-transform ${open ? "rotate-180" : ""}`}
+            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </button>
+
+      {open && (
+        <div className="border-t border-[#1e1e34] p-4 space-y-4">
+          {/* Prereq violations */}
+          {validation.prereqViolations.length > 0 && (
+            <div>
+              <h4 className="text-xs text-red-400 uppercase tracking-wide mb-2 font-medium">Prerequisite Violations</h4>
+              <div className="space-y-1">
+                {validation.prereqViolations.map((v) => (
+                  <div key={v.courseId} className="flex items-center gap-2 text-sm">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
+                    <span className="font-mono text-indigo-300 text-xs">{v.courseNumber}</span>
+                    <span className="text-[#6a6a8a] text-xs">in {v.semesterLabel} — missing:</span>
+                    <span className="text-xs text-red-300 font-mono">
+                      {v.missing.map((id) => id.replace("-", " ")).join(", ")}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Coreq violations */}
+          {validation.coreqViolations.length > 0 && (
+            <div>
+              <h4 className="text-xs text-amber-400 uppercase tracking-wide mb-2 font-medium">Corequisite Violations</h4>
+              <div className="space-y-1">
+                {validation.coreqViolations.map((v) => (
+                  <div key={v.courseId} className="flex items-center gap-2 text-sm">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                    <span className="font-mono text-indigo-300 text-xs">{v.courseNumber}</span>
+                    <span className="text-[#6a6a8a] text-xs">in {v.semesterLabel} — missing:</span>
+                    <span className="text-xs text-amber-300 font-mono">
+                      {v.missing.map((id) => id.replace("-", " ")).join(", ")}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Term load issues */}
+          {validation.termLoadIssues.length > 0 && (
+            <div>
+              <h4 className="text-xs text-[#d4a843] uppercase tracking-wide mb-2 font-medium">Term Load Warnings</h4>
+              <div className="space-y-1">
+                {validation.termLoadIssues.map((t) => (
+                  <div key={t.semesterId} className="flex items-center gap-2 text-xs">
+                    <span className={`w-1.5 h-1.5 rounded-full ${t.kind === "overloaded" ? "bg-red-500" : "bg-amber-500"} shrink-0`} />
+                    <span className="text-[#d0d0e8]">{t.semesterLabel}</span>
+                    <span className="text-[#6a6a8a]">
+                      {t.credits} credits — {t.kind === "overloaded" ? "over 18 limit" : "under 12 minimum"}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Unplanned required courses */}
+          {validation.unplannedRequired.length > 0 && (
+            <div>
+              <h4 className="text-xs text-indigo-400 uppercase tracking-wide mb-2 font-medium">Unplanned Required Courses</h4>
+              <div className="space-y-1">
+                {validation.unplannedRequired.map((u) => (
+                  <div key={u.courseId} className="flex items-center gap-2 text-xs">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
+                    <span className="font-mono text-indigo-300">{u.courseNumber}</span>
+                    <span className="text-[#6a6a8a] truncate">needed for: {u.groups.join(", ")}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Unmet requirements summary */}
+          {validation.unmetRequirements.length > 0 && (
+            <div>
+              <h4 className="text-xs text-[#6a6a8a] uppercase tracking-wide mb-2 font-medium">Unmet Requirements ({validation.unmetRequirements.length})</h4>
+              <div className="space-y-1">
+                {validation.unmetRequirements.slice(0, 10).map((r) => (
+                  <div key={r.groupId} className="flex items-center gap-2 text-xs">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#2a2a3a] shrink-0" />
+                    <span className="text-[#8888a8] flex-1 truncate">{r.groupName}</span>
+                    <span className="text-[#4a4a6a] font-mono shrink-0">
+                      {r.completed}/{r.total}
+                      {r.inProgress > 0 && <span className="text-[#d4a843]"> +{r.inProgress}</span>}
+                    </span>
+                  </div>
+                ))}
+                {validation.unmetRequirements.length > 10 && (
+                  <span className="text-[10px] text-[#4a4a6a]">
+                    …and {validation.unmetRequirements.length - 10} more
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
+          {validation.clean && (
+            <p className="text-xs text-green-400/80">No prerequisite violations, corequisite issues, or unplanned required courses.</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Main page
 // ---------------------------------------------------------------------------
 
@@ -362,6 +534,8 @@ export default function PlannerPage() {
   const [newSemModal, setNewSemModal] = useState(false);
   const [newSemForm, setNewSemForm] = useState<NewSemForm>({ type: "fall", year: 2027 });
   const [newSemLoading, setNewSemLoading] = useState(false);
+  const [requirements, setRequirements] = useState<RequirementGroup[]>([]);
+  const [validationOpen, setValidationOpen] = useState(false);
 
   // Sensors for DnD
   const sensors = useSensors(
@@ -374,9 +548,11 @@ export default function PlannerPage() {
     Promise.all([
       fetch("/api/courses").then((r) => r.json()),
       fetch("/api/semesters").then((r) => r.json()),
-    ]).then(([c, s]) => {
+      fetch("/api/requirements").then((r) => r.json()),
+    ]).then(([c, s, r]) => {
       const courseList: Course[] = Array.isArray(c) ? c : [];
       const semList: Semester[] = Array.isArray(s) ? s : [];
+      setRequirements(Array.isArray(r) ? r : []);
       setCourses(courseList);
       setSemesters(semList);
 
@@ -392,6 +568,12 @@ export default function PlannerPage() {
 
   const sortedSems = useMemo(() => sortSemesters(semesters), [semesters]);
   const courseMap = useMemo(() => new Map(courses.map((c) => [c.id, c])), [courses]);
+
+  // Plan-level validation summary
+  const validation = useMemo(
+    () => validatePlan(courses, semesters, requirements, assignments),
+    [courses, semesters, requirements, assignments]
+  );
 
   // Derive which courses are in each container
   const unplannedCourses = useMemo(
@@ -598,6 +780,13 @@ export default function PlannerPage() {
             Add Semester
           </button>
         </div>
+
+        {/* Validation Panel */}
+        <ValidationPanel
+          validation={validation}
+          open={validationOpen}
+          onToggle={() => setValidationOpen((v) => !v)}
+        />
 
         {/* Legend */}
         <div className="flex items-center gap-4 text-[10px] text-[#4a4a6a]">

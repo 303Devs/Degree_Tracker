@@ -1,5 +1,8 @@
 export type CourseStatus = "not_started" | "planned" | "in_progress" | "registered" | "completed";
 
+/** Where this course data originated. Used for merge conflict resolution. */
+export type CourseSource = "audit" | "manual" | "stub" | "enriched";
+
 export type PrereqRule =
   | { type: "course"; courseId: string }
   | { type: "and"; rules: PrereqRule[] }
@@ -22,6 +25,7 @@ export interface Course {
   countsTowardEarnedHours?: boolean; // false = excluded from earned hours (default true)
   excludeReason?: string;        // why this course doesn't count (e.g. "Grade replacement (>X >N)")
   manuallyAdded?: boolean;       // true if user created this course manually
+  source?: CourseSource;          // where this course data came from
 }
 
 export type RequirementGroupType = "complete_all" | "pick_n" | "pick_one" | "minimum_hours";

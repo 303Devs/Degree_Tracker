@@ -75,6 +75,16 @@ const NAV = [
     ),
   },
   {
+    href: "/compare",
+    label: "Compare Plans",
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+          d="M8 7h12M8 12h12M8 17h12M4 7h.01M4 12h.01M4 17h.01" />
+      </svg>
+    ),
+  },
+  {
     href: "/upload",
     label: "Upload Audit",
     icon: (

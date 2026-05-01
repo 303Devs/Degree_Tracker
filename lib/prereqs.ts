@@ -122,10 +122,13 @@ export function validateDrop(
   for (const c of allCourses) {
     if (c.id === course.id) continue;
 
-    // Completed courses are always available
+    // Completed courses are available unless they have a non-degree-credit grade
+    // (W, NR, IP don't count — a withdrawn course can't satisfy a prereq)
     if (c.status === "completed") {
-      beforeTarget.add(c.id);
-      atOrBefore.add(c.id);
+      if (!c.grade || !NON_DEGREE_CREDIT_GRADES.has(c.grade)) {
+        beforeTarget.add(c.id);
+        atOrBefore.add(c.id);
+      }
       continue;
     }
 
@@ -246,21 +249,57 @@ export function calcGPA(courses: Course[], whatIf?: Map<string, string>): number
 // Progress calculation (shared by dashboard server component and client pages)
 // ---------------------------------------------------------------------------
 
+/**
+ * Check whether a course meets a requirement group's minGrade threshold.
+ * Returns true if no minGrade is set, grade is absent, or grade meets/exceeds the minimum.
+ */
+function meetsMinGrade(course: Course, group: RequirementGroup): boolean {
+  if (!group.minGrade) return true;
+  if (!course.grade) return true; // no grade yet — don't penalize in-progress
+  const coursePoints = GRADE_SCALE[course.grade];
+  const minPoints = GRADE_SCALE[group.minGrade];
+  // If minGrade is a valid letter grade but the course grade is not on the scale
+  // (e.g., W, HS, P, NR), it cannot satisfy a minimum grade requirement
+  if (coursePoints === undefined && minPoints !== undefined) return false;
+  if (coursePoints === undefined || minPoints === undefined) return true;
+  return coursePoints >= minPoints;
+}
+
+/** Grades that never earn degree credit regardless of minGrade setting. */
+export const NON_DEGREE_CREDIT_GRADES = new Set(["W", "NR", "IP"]);
+
+/**
+ * Check whether a completed course actually satisfies degree progress for a requirement.
+ * Must be counted toward degree, have a degree-creditable grade, AND meet the group's minGrade.
+ */
+function isCourseDegreeSatisfied(course: Course, group: RequirementGroup): boolean {
+  if (course.countedTowardDegree === false) return false;
+  // W, NR, IP never earn degree credit — exclude from requirement satisfaction
+  if (course.grade && NON_DEGREE_CREDIT_GRADES.has(course.grade)) return false;
+  if (!meetsMinGrade(course, group)) return false;
+  return true;
+}
+
 export function calcProgress(
   group: RequirementGroup,
-  courses: Course[]
-): { completed: number; inProgress: number; total: number; pct: number } {
+  courses: Course[],
+  options?: { includePlanned?: boolean },
+): { completed: number; inProgress: number; planned: number; total: number; pct: number } {
+  const countPlanned = options?.includePlanned ?? false;
+
   if (group.type === "minimum_hours") {
     const hrs = group.requiredHours ?? 0;
     let earned = 0;
     let inProg = 0;
+    let plan = 0;
     for (const cId of group.coursePool) {
       const c = courses.find((x) => x.id === cId);
       if (!c) continue;
-      if (c.status === "completed") earned += c.credits;
+      if (c.status === "completed" && isCourseDegreeSatisfied(c, group)) earned += c.credits;
       else if (c.status === "in_progress" || c.status === "registered") inProg += c.credits;
+      else if (countPlanned && c.status === "planned") plan += c.credits;
     }
-    return { completed: earned, inProgress: inProg, total: hrs, pct: hrs > 0 ? earned / hrs : 0 };
+    return { completed: earned, inProgress: inProg, planned: plan, total: hrs, pct: hrs > 0 ? earned / hrs : 0 };
   }
 
   const pool =
@@ -272,16 +311,18 @@ export function calcProgress(
 
   let completed = 0;
   let inProgress = 0;
+  let planned = 0;
   const total = group.type === "pick_n" ? (group.required ?? pool.length) : pool.length;
 
   for (const cId of pool) {
     const c = courses.find((x) => x.id === cId);
     if (!c) continue;
-    if (c.status === "completed") completed++;
+    if (c.status === "completed" && isCourseDegreeSatisfied(c, group)) completed++;
     else if (c.status === "in_progress" || c.status === "registered") inProgress++;
+    else if (countPlanned && c.status === "planned") planned++;
   }
 
-  return { completed, inProgress, total, pct: total > 0 ? completed / total : 0 };
+  return { completed, inProgress, planned, total, pct: total > 0 ? completed / total : 0 };
 }
 
 /**

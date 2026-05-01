@@ -335,6 +335,7 @@ export function extractCourseworkHistory(text: string): CourseworkResult {
       countsTowardGPA,
       countsTowardEarnedHours,
       excludeReason,
+      source: "audit",
     };
 
     // Keep the richer entry; for ties, later (more recent) occurrence wins
@@ -752,6 +753,7 @@ function mergeResults(
           prereqs: null,
           coreqs: null,
           status: "not_started",
+          source: "stub",
         });
       }
     }

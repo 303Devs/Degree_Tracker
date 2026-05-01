@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
       notes: body.notes,
       countedTowardDegree: body.countedTowardDegree ?? true,
       manuallyAdded: body.manuallyAdded ?? true,
+      source: body.source ?? "manual",
     };
 
     const created = createCourse(course);

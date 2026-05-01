@@ -9,6 +9,7 @@ import {
   calcGPA,
   solveTargetGrade,
 } from "@/lib/prereqs";
+import { computeProgressSemantics, type ProgressSemanticsSummary } from "@/lib/progress";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -90,6 +91,12 @@ export default function GPAPage() {
       .map((c) => ({ ...c, grade: whatIf.get(c.id) }));
     return [...completedGraded, ...active] as Course[];
   }, [completedGraded, activeCourses, whatIf, whatIfEnabled]);
+
+  // Progress semantics summary
+  const progressSemantics = useMemo(
+    () => computeProgressSemantics(courses, requirements),
+    [courses, requirements]
+  );
 
   // Official GPA from audit (authoritative)
   const officialGPA = programs[0]?.gpa ?? 0;
@@ -196,6 +203,61 @@ export default function GPAPage() {
           sub="Stats & DS major courses only"
         />
       </div>
+
+      {/* Counting Semantics Summary */}
+      <section className="bg-[#111120] border border-[#1e1e34] rounded-xl overflow-hidden">
+        <div className="px-5 py-3 border-b border-[#1e1e34]">
+          <h3 className="text-sm font-semibold text-[#d0d0e8]">How Courses Count</h3>
+          <p className="text-xs text-[#6a6a8a] mt-0.5">
+            Not every course counts the same way. Some affect your GPA but not degree progress, or vice versa.
+          </p>
+        </div>
+        <div className="grid grid-cols-3 gap-px bg-[#1a1a2e]">
+          <CountingBucketCard
+            label="Degree Progress"
+            courses={progressSemantics.degreeCountedCourses}
+            credits={progressSemantics.degreeCountedCredits}
+            color="text-green-400"
+          />
+          <CountingBucketCard
+            label="GPA Calculation"
+            courses={progressSemantics.gpaCountedCourses}
+            credits={progressSemantics.gpaCountedCredits}
+            color="text-[#d4a843]"
+          />
+          <CountingBucketCard
+            label="Earned Hours"
+            courses={progressSemantics.earnedHoursCountedCourses}
+            credits={progressSemantics.earnedHoursCountedCredits}
+            color="text-indigo-400"
+          />
+        </div>
+        {progressSemantics.exclusions.length > 0 && (
+          <div className="border-t border-[#1e1e34] px-5 py-3">
+            <p className="text-xs text-[#6a6a8a] mb-2">
+              {progressSemantics.exclusions.length} course{progressSemantics.exclusions.length !== 1 ? "s" : ""} excluded from at least one category:
+            </p>
+            <div className="space-y-1">
+              {progressSemantics.exclusions.slice(0, 8).map((ex) => (
+                <div key={ex.courseId} className="flex items-center gap-2 text-xs">
+                  <span className="font-mono text-indigo-300/60 w-20 shrink-0">{ex.courseNumber}</span>
+                  <div className="flex gap-1.5 shrink-0">
+                    <CountingDot active={ex.countsTowardDegree} label="deg" />
+                    <CountingDot active={ex.countsTowardGPA} label="gpa" />
+                    <CountingDot active={ex.countsTowardEarnedHours} label="hrs" />
+                  </div>
+                  <span className="text-[#6a6a8a] truncate">{ex.excludeReason}</span>
+                </div>
+              ))}
+              {progressSemantics.exclusions.length > 8 && (
+                <a href="/uncounted" className="text-[10px] text-[#d4a843] hover:text-[#e8c068]">
+                  See all {progressSemantics.exclusions.length} on Uncounted page →
+                </a>
+              )}
+            </div>
+          </div>
+        )}
+      </section>
 
       {/* Grade breakdown table (completed) */}
       <section className="bg-[#111120] border border-[#1e1e34] rounded-xl overflow-hidden">
@@ -469,6 +531,40 @@ function GPACard({
         </div>
       )}
     </div>
+  );
+}
+
+function CountingBucketCard({
+  label,
+  courses,
+  credits,
+  color,
+}: {
+  label: string;
+  courses: number;
+  credits: number;
+  color: string;
+}) {
+  return (
+    <div className="bg-[#111120] px-4 py-3">
+      <div className="text-[10px] text-[#6a6a8a] uppercase tracking-wider mb-1">{label}</div>
+      <div className={`text-xl font-bold ${color}`}>{credits}<span className="text-xs font-normal text-[#6a6a8a] ml-1">cr</span></div>
+      <div className="text-[10px] text-[#4a4a6a]">{courses} courses</div>
+    </div>
+  );
+}
+
+function CountingDot({ active, label }: { active: boolean; label: string }) {
+  return (
+    <span
+      className={`inline-flex items-center gap-0.5 text-[9px] px-1 py-0.5 rounded border ${
+        active
+          ? "bg-green-500/10 text-green-400 border-green-500/20"
+          : "bg-red-500/10 text-red-400/60 border-red-500/20 line-through"
+      }`}
+    >
+      {label}
+    </span>
   );
 }
 

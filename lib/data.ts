@@ -166,10 +166,23 @@ export function readAppData(): AppData {
 
 /**
  * Merge new audit data into existing data, deduplicating by ID.
- * Courses: new overrides existing (grade/status updates from audit), preserving
- * user-edited fields (notes, manually-set semester/prereqs).
+ *
+ * ## Merge rules (source-aware)
+ *
+ * Courses:
+ * - Audit source (grade, status, semester, counting flags) overwrites when
+ *   the new data is more authoritative (non-stub, non-empty).
+ * - User-set fields are preserved: prereqs, coreqs, notes (unless new data
+ *   has them AND existing didn't).
+ * - Enriched data (name, credits from scraper) is preserved when new data
+ *   is a stub.
+ * - Manually-added courses (source="manual") are NEVER removed by a
+ *   re-upload. They are left untouched.
+ * - course.source is set to the winning source.
+ *
  * RequirementGroups: replace all groups from the same category.
- * Semesters: merge by ID.
+ * Semesters: merge by ID, union courses.
+ * Programs: replace matching programCode.
  */
 export function mergeAuditData(newData: {
   courses: Course[];
@@ -183,14 +196,20 @@ export function mergeAuditData(newData: {
   for (const nc of newData.courses) {
     const existing = courseMap.get(nc.id);
     if (existing) {
-      // Detect stub names: "DEPT NUMBER" matching the course id (e.g. "STAT 4250" for "STAT-4250")
+      // Never overwrite manually-added courses with audit/stub data.
+      // Legacy courses may have manuallyAdded=true but no source field.
+      if ((existing.source === "manual" || existing.manuallyAdded) && nc.source !== "manual") {
+        continue;
+      }
+
+      // Detect stub names: "DEPT NUMBER" matching the course id
       const ncIsStubName = nc.name === nc.id.replace("-", " ") || nc.name === `${nc.id.split("-")[0]} ${nc.id.split("-")[1]}`;
       courseMap.set(nc.id, {
         ...nc,
         // Preserve enriched data from scraper if new course is a stub
         credits: existing.credits > 0 && nc.credits === 0 ? existing.credits : nc.credits,
         name: !ncIsStubName ? nc.name : existing.name || nc.name,
-        // Preserve user-set fields
+        // Preserve user-set fields (existing wins for non-null values)
         prereqs: existing.prereqs ?? nc.prereqs,
         coreqs: existing.coreqs ?? nc.coreqs,
         notes: existing.notes ?? nc.notes,
@@ -203,6 +222,10 @@ export function mergeAuditData(newData: {
         countsTowardGPA: nc.countsTowardGPA ?? existing.countsTowardGPA,
         countsTowardEarnedHours: nc.countsTowardEarnedHours ?? existing.countsTowardEarnedHours,
         excludeReason: nc.excludeReason ?? existing.excludeReason,
+        // Source: audit wins over stub/enriched, but manual is protected above
+        source: nc.source === "audit" ? "audit" : existing.source ?? nc.source,
+        // Preserve manuallyAdded flag
+        manuallyAdded: existing.manuallyAdded ?? nc.manuallyAdded,
       });
     } else {
       courseMap.set(nc.id, nc);
@@ -210,11 +233,42 @@ export function mergeAuditData(newData: {
   }
   writeCourses(Array.from(courseMap.values()));
 
-  // Requirements: replace groups by category from new audit, keep others
+  // Requirements: replace groups by category from new audit, keep others.
+  // Preserve user selectedCourses from existing groups when replacing.
   const existingReqs = readRequirements();
   const newCategories = new Set(newData.requirements.map((r) => r.category));
   const keptReqs = existingReqs.filter((r) => !newCategories.has(r.category));
-  writeRequirements([...keptReqs, ...newData.requirements]);
+
+  // Build lookup of existing selections by category+name for carry-over
+  const existingSelections = new Map<string, string[]>();
+  for (const r of existingReqs) {
+    if (r.selectedCourses && r.selectedCourses.length > 0) {
+      existingSelections.set(`${r.category}::${r.name}`, r.selectedCourses);
+    }
+  }
+  // For each new requirement group, carry over user selections that still exist in the pool
+  const mergedNewReqs = newData.requirements.map((nr) => {
+    // Try exact match by category+name first, then any group in same category
+    let prevSelections = existingSelections.get(`${nr.category}::${nr.name}`);
+    if (!prevSelections) {
+      // Fallback: find any existing group in the same category with selections
+      for (const r of existingReqs) {
+        if (r.category === nr.category && r.selectedCourses && r.selectedCourses.length > 0) {
+          prevSelections = r.selectedCourses;
+          break;
+        }
+      }
+    }
+    if (prevSelections && (!nr.selectedCourses || nr.selectedCourses.length === 0)) {
+      const poolSet = new Set(nr.coursePool);
+      return {
+        ...nr,
+        selectedCourses: prevSelections.filter((c) => poolSet.has(c)),
+      };
+    }
+    return nr;
+  });
+  writeRequirements([...keptReqs, ...mergedNewReqs]);
 
   // Semesters: merge by ID
   const existingSems = readSemesters();
@@ -370,7 +424,13 @@ export function enrichCoursesFromScraper(): { enriched: number } {
       changed = true;
     }
 
-    if (changed) enriched++;
+    if (changed) {
+      // Mark source as enriched if it was a stub, otherwise preserve original source
+      if (course.source === "stub" || !course.source) {
+        course.source = "enriched";
+      }
+      enriched++;
+    }
   }
 
   writeCourses(courses);

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { readAppData } from "@/lib/data";
-import { gradeToPoints, calcGPA, calcProgress, isRuleSatisfied } from "@/lib/prereqs";
+import { gradeToPoints, calcGPA, calcProgress, isRuleSatisfied, NON_DEGREE_CREDIT_GRADES } from "@/lib/prereqs";
 import ProgressBar from "@/components/ProgressBar";
 import type { RequirementGroup, Course, Semester } from "@/lib/types";
 
@@ -8,7 +8,14 @@ export const dynamic = "force-dynamic";
 
 function calcTotalHours(courses: Course[]) {
   const earned = courses
-    .filter((c) => c.status === "completed" && c.credits > 0 && c.countsTowardEarnedHours !== false)
+    .filter(
+      (c) =>
+        c.status === "completed" &&
+        c.credits > 0 &&
+        c.countsTowardEarnedHours !== false &&
+        !(c.grade && NON_DEGREE_CREDIT_GRADES.has(c.grade)) &&
+        c.grade !== "F"
+    )
     .reduce((acc, c) => acc + c.credits, 0);
   const inProgress = courses
     .filter((c) => (c.status === "in_progress" || c.status === "registered") && c.credits > 0 && c.countsTowardEarnedHours !== false)
@@ -90,7 +97,12 @@ export default function Dashboard() {
       .reduce<number>((max, g) => Math.max(max, g.requiredHours ?? 0), 0) || 120;
 
   // W5: compute alerts — prereq conflicts and credit load warnings
-  const completedIds = new Set(courses.filter((c) => c.status === "completed").map((c) => c.id));
+  // W/NR/IP don't satisfy prereqs — no degree credit earned
+  const completedIds = new Set(
+    courses
+      .filter((c) => c.status === "completed" && !(c.grade && NON_DEGREE_CREDIT_GRADES.has(c.grade)))
+      .map((c) => c.id)
+  );
   const alerts: string[] = [];
 
   // Prereq conflicts: planned/not_started courses whose prereqs aren't met

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import type { RequirementGroup, Course } from "@/lib/types";
 import { calcProgress, GRADE_SCALE } from "@/lib/prereqs";
+import { computeProgressSemantics, type CourseCountingSummary } from "@/lib/progress";
 
 function gradeColor(grade: string): string {
   const pts: Record<string, number> = {
@@ -315,6 +316,11 @@ export default function RequirementsPage() {
       setLoading(false);
     }).catch((err) => { setError(String(err)); setLoading(false); });
   }, []);
+
+  const semanticsMap = useMemo(() => {
+    const sem = computeProgressSemantics(courses, requirements);
+    return new Map(sem.courses.map((s) => [s.courseId, s]));
+  }, [courses, requirements]);
 
   const handleUpdateSelected = useCallback(async (groupId: string, selectedCourses: string[]) => {
     setRequirements((prev) =>

@@ -1,37 +1,6 @@
 [
   {
-    "id": "arts-sciences-general-education-distribution-requirement-written-communication-up",
-    "name": "Written Communication - 3 upper-division hours.",
-    "category": "A&S General Education Distribution Requirement",
-    "type": "complete_all",
-    "coursePool": []
-  },
-  {
-    "id": "arts-sciences-general-education-distribution-requirement-natural-sciences",
-    "name": "Natural Sciences - 12 semester hours.",
-    "category": "A&S General Education Distribution Requirement",
-    "type": "minimum_hours",
-    "requiredHours": 12,
-    "coursePool": []
-  },
-  {
-    "id": "arts-sciences-general-education-distribution-requirement-social-sciences",
-    "name": "Social Sciences - 12 semester hours.",
-    "category": "A&S General Education Distribution Requirement",
-    "type": "minimum_hours",
-    "requiredHours": 12,
-    "coursePool": []
-  },
-  {
-    "id": "current-requirement-arts-sciences-coursework",
-    "name": "Complete at least 90 credit hours in A&S coursework.",
-    "category": "Current Requirement",
-    "type": "minimum_hours",
-    "requiredHours": 90,
-    "coursePool": []
-  },
-  {
-    "id": "b-s-statistics-and-data-science-major-courses-fa2026-complete-appm3650",
+    "id": "bs-statistics-and-data-science-major-courses-fa2026-complete-appm3650",
     "name": "Complete APPM3650:",
     "category": "BS Statistics and Data Science Major Courses FA2026",
     "type": "complete_all",
@@ -40,7 +9,7 @@
     ]
   },
   {
-    "id": "b-s-statistics-and-data-science-major-courses-fa2026-complete-stat2600",
+    "id": "bs-statistics-and-data-science-major-courses-fa2026-complete-stat2600",
     "name": "Complete STAT2600:",
     "category": "BS Statistics and Data Science Major Courses FA2026",
     "type": "complete_all",
@@ -49,61 +18,8 @@
     ]
   },
   {
-    "id": "mathematical-foundations-complete-four-of-the-following-courses",
-    "name": "Complete four of the following courses:",
-    "category": "Mathematical Foundations",
-    "type": "pick_n",
-    "required": 4,
-    "coursePool": [
-      "STAT-4250",
-      "STAT-4360",
-      "STAT-4430",
-      "STAT-4540",
-      "STAT-4630",
-      "STAT-4700",
-      "APPM-4120",
-      "APPM-4320",
-      "APPM-4370",
-      "APPM-4440",
-      "APPM-4450",
-      "APPM-4490",
-      "APPM-4515",
-      "APPM-4530",
-      "APPM-4565",
-      "APPM-4600"
-    ]
-  },
-  {
-    "id": "b-s-statistics-and-data-science-ancillary-courses-fa2026-complete-one-of-the-computing-courses",
-    "name": "Complete one of the computing courses:",
-    "category": "BS Statistics and Data Science Ancillary Courses FA2026",
-    "type": "pick_one",
-    "coursePool": [
-      "CSCI-1300",
-      "APPM-1650"
-    ]
-  },
-  {
-    "id": "b-s-statistics-and-data-science-ancillary-courses-fa2026-complete-appm1360",
-    "name": "Complete APPM1360:",
-    "category": "BS Statistics and Data Science Ancillary Courses FA2026",
-    "type": "complete_all",
-    "coursePool": [
-      "MATH-2300"
-    ]
-  },
-  {
-    "id": "b-s-statistics-and-data-science-ancillary-courses-fa2026-complete-appm1350",
-    "name": "Complete APPM1350:",
-    "category": "BS Statistics and Data Science Ancillary Courses FA2026",
-    "type": "complete_all",
-    "coursePool": [
-      "MATH-1300"
-    ]
-  },
-  {
     "id": "computation-complete-appm3310",
-    "name": "Complete APPM3310",
+    "name": "Complete APPM3310:",
     "category": "Computation",
     "type": "complete_all",
     "coursePool": [
@@ -112,7 +28,7 @@
   },
   {
     "id": "computation-complete-appm2340-appm2350-or-math2400",
-    "name": "Complete APPM2340, APPM2350, or MATH2400",
+    "name": "Complete APPM2340, APPM2350, or MATH2400:",
     "category": "Computation",
     "type": "pick_one",
     "coursePool": [
@@ -123,7 +39,7 @@
   },
   {
     "id": "electives-complete-four-of-the-following-courses",
-    "name": "Complete four of the following courses",
+    "name": "Complete four of the following courses:",
     "category": "Electives",
     "type": "pick_n",
     "required": 4,
@@ -147,9 +63,9 @@
     ]
   },
   {
-    "id": "senior-capstone-project-complete-stat4640-or-stat4680",
-    "name": "Complete STAT4640 or STAT4680",
-    "category": "Senior Capstone Project",
+    "id": "electives-complete-stat4640-or-stat4680",
+    "name": "Complete STAT4640 or STAT4680:",
+    "category": "Electives",
     "type": "pick_one",
     "coursePool": [
       "STAT-4640",
@@ -158,7 +74,7 @@
   },
   {
     "id": "senior-capstone-project-complete-stat4350-or-csci4622",
-    "name": "Complete STAT4350 or CSCI4622",
+    "name": "Complete STAT4350 or CSCI4622:",
     "category": "Senior Capstone Project",
     "type": "pick_one",
     "coursePool": [
@@ -168,7 +84,7 @@
   },
   {
     "id": "senior-capstone-project-complete-stat4610",
-    "name": "Complete STAT4610",
+    "name": "Complete STAT4610:",
     "category": "Senior Capstone Project",
     "type": "complete_all",
     "coursePool": [
@@ -177,7 +93,7 @@
   },
   {
     "id": "machine-learning-artificial-intelligence-core-complete-appm4560-or-stat4100",
-    "name": "Complete APPM4560 or STAT4100",
+    "name": "Complete APPM4560 or STAT4100:",
     "category": "Machine Learning/Artificial Intelligence Core",
     "type": "pick_one",
     "coursePool": [
@@ -187,7 +103,7 @@
   },
   {
     "id": "machine-learning-artificial-intelligence-core-complete-stat4400",
-    "name": "Complete STAT4400",
+    "name": "Complete STAT4400:",
     "category": "Machine Learning/Artificial Intelligence Core",
     "type": "complete_all",
     "coursePool": [
@@ -195,9 +111,9 @@
     ]
   },
   {
-    "id": "machine-learning-artificial-intelligence-core-complete-stat3400",
-    "name": "Complete STAT3400",
-    "category": "Machine Learning/Artificial Intelligence Core",
+    "id": "modeling-core-complete-stat3400",
+    "name": "Complete STAT3400:",
+    "category": "Modeling Core",
     "type": "complete_all",
     "coursePool": [
       "STAT-3400"
@@ -205,7 +121,7 @@
   },
   {
     "id": "modeling-core-complete-stat4520",
-    "name": "Complete STAT4520",
+    "name": "Complete STAT4520:",
     "category": "Modeling Core",
     "type": "complete_all",
     "coursePool": [
@@ -213,21 +129,12 @@
     ]
   },
   {
-    "id": "modeling-core-complete-stat3100",
-    "name": "Complete STAT3100",
-    "category": "Modeling Core",
-    "type": "complete_all",
-    "coursePool": [
-      "STAT-3100"
-    ]
-  },
-  {
-    "id": "theoretical-core-complete-appm3650",
-    "name": "Complete APPM3650",
+    "id": "theoretical-core-complete-stat3100",
+    "name": "Complete STAT3100:",
     "category": "Theoretical Core",
     "type": "complete_all",
     "coursePool": [
-      "APPM-3650"
+      "STAT-3100"
     ]
   }
 ]

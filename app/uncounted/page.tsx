@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import type { Course } from "@/lib/types";
+import type { Course, RequirementGroup } from "@/lib/types";
+import { computeProgressSemantics, type CourseCountingSummary } from "@/lib/progress";
 
 const GRADE_POINTS: Record<string, number> = {
   A: 4.0, "A-": 3.7, "B+": 3.3, B: 3.0, "B-": 2.7,
@@ -17,17 +18,55 @@ function gradeColor(grade: string): string {
   return "text-[#6a6a8a]";
 }
 
+function CountingPills({ summary }: { summary: CourseCountingSummary }) {
+  return (
+    <div className="flex gap-1">
+      <span className={`text-[9px] px-1 py-0.5 rounded border ${
+        summary.countsTowardDegree
+          ? "bg-green-500/10 text-green-400 border-green-500/20"
+          : "bg-red-500/10 text-red-400/60 border-red-500/20 line-through"
+      }`}>deg</span>
+      <span className={`text-[9px] px-1 py-0.5 rounded border ${
+        summary.countsTowardGPA
+          ? "bg-green-500/10 text-green-400 border-green-500/20"
+          : "bg-red-500/10 text-red-400/60 border-red-500/20 line-through"
+      }`}>gpa</span>
+      <span className={`text-[9px] px-1 py-0.5 rounded border ${
+        summary.countsTowardEarnedHours
+          ? "bg-green-500/10 text-green-400 border-green-500/20"
+          : "bg-red-500/10 text-red-400/60 border-red-500/20 line-through"
+      }`}>hrs</span>
+    </div>
+  );
+}
+
 export default function UncountedCoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);
+  const [requirements, setRequirements] = useState<RequirementGroup[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/courses")
-      .then((r) => r.json())
-      .then((c) => { setCourses(Array.isArray(c) ? c : []); setLoading(false); })
-      .catch((err) => { setError(String(err)); setLoading(false); });
+    Promise.all([
+      fetch("/api/courses").then((r) => r.json()),
+      fetch("/api/requirements").then((r) => r.json()),
+    ]).then(([c, r]) => {
+      setCourses(Array.isArray(c) ? c : []);
+      setRequirements(Array.isArray(r) ? r : []);
+      setLoading(false);
+    }).catch((err) => { setError(String(err)); setLoading(false); });
   }, []);
+
+  const semantics = useMemo(
+    () => computeProgressSemantics(courses, requirements),
+    [courses, requirements]
+  );
+
+  // Build lookup for course summaries
+  const summaryMap = useMemo(
+    () => new Map(semantics.courses.map((s) => [s.courseId, s])),
+    [semantics]
+  );
 
   const uncounted = useMemo(
     () => courses.filter((c) => c.countedTowardDegree === false),
@@ -87,6 +126,33 @@ export default function UncountedCoursesPage() {
         </div>
       </div>
 
+      {/* Counting semantics breakdown */}
+      <section className="bg-[#111120] border border-[#1e1e34] rounded-xl overflow-hidden">
+        <div className="px-5 py-3 border-b border-[#1e1e34]">
+          <h3 className="text-sm font-semibold text-[#d0d0e8]">Counting Breakdown</h3>
+          <p className="text-xs text-[#6a6a8a] mt-0.5">
+            How each bucket counts across all completed courses. A course can count toward GPA but not degree progress (or vice versa).
+          </p>
+        </div>
+        <div className="grid grid-cols-3 gap-px bg-[#1a1a2e]">
+          <div className="bg-[#111120] px-4 py-3">
+            <div className="text-[10px] text-[#6a6a8a] uppercase tracking-wider mb-1">Degree</div>
+            <div className="text-xl font-bold text-green-400">{semantics.degreeCountedCredits}<span className="text-xs font-normal text-[#6a6a8a] ml-1">cr</span></div>
+            <div className="text-[10px] text-[#4a4a6a]">{semantics.degreeCountedCourses} courses</div>
+          </div>
+          <div className="bg-[#111120] px-4 py-3">
+            <div className="text-[10px] text-[#6a6a8a] uppercase tracking-wider mb-1">GPA</div>
+            <div className="text-xl font-bold text-[#d4a843]">{semantics.gpaCountedCredits}<span className="text-xs font-normal text-[#6a6a8a] ml-1">cr</span></div>
+            <div className="text-[10px] text-[#4a4a6a]">{semantics.gpaCountedCourses} courses</div>
+          </div>
+          <div className="bg-[#111120] px-4 py-3">
+            <div className="text-[10px] text-[#6a6a8a] uppercase tracking-wider mb-1">Earned Hours</div>
+            <div className="text-xl font-bold text-indigo-400">{semantics.earnedHoursCountedCredits}<span className="text-xs font-normal text-[#6a6a8a] ml-1">cr</span></div>
+            <div className="text-[10px] text-[#4a4a6a]">{semantics.earnedHoursCountedCourses} courses</div>
+          </div>
+        </div>
+      </section>
+
       {uncounted.length === 0 ? (
         <div className="bg-[#111120] border border-[#1e1e34] rounded-xl px-5 py-10 text-center">
           <p className="text-[#6a6a8a]">No uncounted courses found.</p>
@@ -113,27 +179,34 @@ export default function UncountedCoursesPage() {
                   <th className="px-4 py-2 text-left">Name</th>
                   <th className="px-4 py-2 text-right">Credits</th>
                   <th className="px-4 py-2 text-center">Grade</th>
+                  <th className="px-4 py-2 text-center">Counts</th>
                   <th className="px-4 py-2 text-left">Semester</th>
-                  <th className="px-4 py-2 text-left">Notes</th>
+                  <th className="px-4 py-2 text-left">Reason</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#1a1a2e]">
-                {groupCourses.map((course) => (
-                  <tr key={course.id} className="text-[#8888a8]">
-                    <td className="px-4 py-2.5 font-mono text-indigo-300/60 text-xs">{course.number}</td>
-                    <td className="px-4 py-2.5 text-[#8888a8]/80 max-w-[200px] truncate">{course.name || <span className="italic text-[#4a4a6a]">unnamed</span>}</td>
-                    <td className="px-4 py-2.5 text-right text-xs">{course.credits}</td>
-                    <td className="px-4 py-2.5 text-center">
-                      {course.grade ? (
-                        <span className={`font-mono text-xs font-bold ${gradeColor(course.grade)} opacity-60`}>{course.grade}</span>
-                      ) : (
-                        <span className="text-[#3a3a5a]">—</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-2.5 text-xs font-mono">{course.semester ?? "—"}</td>
-                    <td className="px-4 py-2.5 text-xs text-[#6a6a8a] max-w-[200px] truncate">{course.notes ?? "—"}</td>
-                  </tr>
-                ))}
+                {groupCourses.map((course) => {
+                  const cs = summaryMap.get(course.id);
+                  return (
+                    <tr key={course.id} className="text-[#8888a8]">
+                      <td className="px-4 py-2.5 font-mono text-indigo-300/60 text-xs">{course.number}</td>
+                      <td className="px-4 py-2.5 text-[#8888a8]/80 max-w-[200px] truncate">{course.name || <span className="italic text-[#4a4a6a]">unnamed</span>}</td>
+                      <td className="px-4 py-2.5 text-right text-xs">{course.credits}</td>
+                      <td className="px-4 py-2.5 text-center">
+                        {course.grade ? (
+                          <span className={`font-mono text-xs font-bold ${gradeColor(course.grade)} opacity-60`}>{course.grade}</span>
+                        ) : (
+                          <span className="text-[#3a3a5a]">—</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-2.5">
+                        {cs && <CountingPills summary={cs} />}
+                      </td>
+                      <td className="px-4 py-2.5 text-xs font-mono">{course.semester ?? "—"}</td>
+                      <td className="px-4 py-2.5 text-xs text-[#6a6a8a] max-w-[200px] truncate">{cs?.excludeReason ?? course.excludeReason ?? "—"}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </section>

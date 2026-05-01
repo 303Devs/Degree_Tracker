@@ -1,0 +1,149 @@
+{
+  "plans": {
+    "ml-efficient": {
+      "name": "ML-Efficient Path",
+      "description": "Statistical learning theory and mathematical foundations",
+      "focus": "ml",
+      "totalCredits": 87,
+      "semesters": {
+        "FA26": {
+          "courses": ["MATH-2300", "CSCI-2824", "STAT-2600", "APPM-1650"],
+          "credits": 16
+        },
+        "SP27": {
+          "courses": ["APPM-2350", "APPM-3310", "STAT-3100", "CSCI-2400", "CSCI-3155"],
+          "credits": 18
+        },
+        "SU27": {
+          "courses": ["APPM-3650", "STAT-4520", "APPM-4440"],
+          "credits": 10
+        },
+        "FA27": {
+          "courses": ["STAT-3400", "STAT-4400", "STAT-4100", "STAT-4630", "APPM-4490"],
+          "credits": 15
+        },
+        "SP28": {
+          "courses": ["STAT-4610", "CSCI-4622", "STAT-4640", "APPM-4515"],
+          "credits": 12
+        }
+      }
+    },
+    "dl-implementation": {
+      "name": "DL-Implementation Path",
+      "description": "Applied deep learning and neural network implementation",
+      "focus": "dl",
+      "totalCredits": 90,
+      "semesters": {
+        "FA26": {
+          "courses": ["MATH-2300", "CSCI-2824", "STAT-2600", "APPM-1650"],
+          "credits": 16
+        },
+        "SP27": {
+          "courses": ["APPM-2350", "APPM-3310", "STAT-3100", "CSCI-2400", "APPM-4370"],
+          "credits": 18
+        },
+        "SU27": {
+          "courses": ["APPM-3650", "STAT-4350", "CSCI-3155"],
+          "credits": 11
+        },
+        "FA27": {
+          "courses": ["STAT-3400", "STAT-4520", "STAT-4360", "CSCI-4622", "APPM-4515"],
+          "credits": 15
+        },
+        "SP28": {
+          "courses": ["STAT-4400", "STAT-4610", "STAT-4630", "STAT-4640"],
+          "credits": 12
+        }
+      }
+    }
+  },
+  "courseMetadata": {
+    "APPM-4370": {
+      "tags": ["neural_networks", "tensorflow", "pytorch", "computational_neuroscience"],
+      "mlRelevance": 9,
+      "dlRelevance": 10,
+      "difficulty": 8,
+      "description": "TensorFlow, PyTorch, neural networks, machine learning"
+    },
+    "STAT-4630": {
+      "tags": ["bayesian", "mcmc", "machine_learning", "classification", "svm"],
+      "mlRelevance": 10,
+      "dlRelevance": 7,
+      "difficulty": 7,
+      "description": "MCMC + ML (regression, classification, SVMs, unsupervised learning)"
+    },
+    "APPM-4515": {
+      "tags": ["high_dimensional", "data_science", "algorithms", "probability"],
+      "mlRelevance": 10,
+      "dlRelevance": 9,
+      "difficulty": 8,
+      "description": "High-dimensional datasets analysis, randomized algorithms"
+    },
+    "STAT-4350": {
+      "tags": ["deep_learning", "cnn", "image_classification", "computer_vision"],
+      "mlRelevance": 8,
+      "dlRelevance": 10,
+      "difficulty": 8,
+      "description": "Neural networks, CNNs, image classification"
+    },
+    "STAT-4360": {
+      "tags": ["deep_learning", "nlp", "gans", "reinforcement_learning", "advanced"],
+      "mlRelevance": 8,
+      "dlRelevance": 10,
+      "difficulty": 9,
+      "description": "Advanced DL: NLP, GANs, reinforcement learning"
+    },
+    "APPM-4490": {
+      "tags": ["theory", "pac_learning", "vc_dimension", "mathematical"],
+      "mlRelevance": 10,
+      "dlRelevance": 6,
+      "difficulty": 9,
+      "description": "Theory of machine learning - PAC framework, VC-dimension"
+    },
+    "CSCI-4622": {
+      "tags": ["machine_learning", "algorithms", "supervised", "practical"],
+      "mlRelevance": 10,
+      "dlRelevance": 8,
+      "difficulty": 7,
+      "description": "Decision trees, SVMs, ensemble methods, neural networks"
+    },
+    "APPM-4440": {
+      "tags": ["mathematical_analysis", "proofs", "rigor", "foundations"],
+      "mlRelevance": 8,
+      "dlRelevance": 5,
+      "difficulty": 9,
+      "description": "Mathematical analysis and proof techniques"
+    },
+    "STAT-4100": {
+      "tags": ["markov_processes", "stochastic", "sequential", "modeling"],
+      "mlRelevance": 8,
+      "dlRelevance": 7,
+      "difficulty": 7,
+      "description": "Markov processes for sequential modeling"
+    }
+  },
+  "pathComparison": {
+    "mlEfficient": {
+      "strengths": [
+        "Mathematical rigor and theory",
+        "Research preparation", 
+        "Statistical depth",
+        "Broad applicability"
+      ],
+      "careerFit": ["PhD programs", "Research scientist", "Quantitative roles", "Data science leadership"],
+      "timeToGraduation": "Spring 2028",
+      "workloadBalance": "Well-balanced, sustainable"
+    },
+    "dlImplementation": {
+      "strengths": [
+        "Industry tools (TensorFlow/PyTorch)",
+        "Complete DL pipeline",
+        "Computational neuroscience bridge",
+        "Immediate practical value"
+      ],
+      "careerFit": ["ML Engineer", "Computer vision engineer", "DL product development", "AI startups"],
+      "timeToGraduation": "Spring 2028", 
+      "workloadBalance": "Heavier semesters but manageable"
+    }
+  }
+}

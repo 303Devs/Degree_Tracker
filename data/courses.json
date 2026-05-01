@@ -9,7 +9,11 @@
     "status": "completed",
     "grade": "A",
     "semester": "SP16",
-    "gradePoints": 4
+    "gradePoints": 4,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "IPHY-2420",
@@ -21,7 +25,11 @@
     "status": "completed",
     "grade": "A",
     "semester": "SP16",
-    "gradePoints": 4
+    "gradePoints": 4,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "MUEL-2852",
@@ -33,7 +41,11 @@
     "status": "completed",
     "grade": "A",
     "semester": "SP16",
-    "gradePoints": 4
+    "gradePoints": 4,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "SOCY-1001",
@@ -45,7 +57,11 @@
     "status": "completed",
     "grade": "A-",
     "semester": "SP16",
-    "gradePoints": 3.7
+    "gradePoints": 3.7,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "ASTR-1120",
@@ -58,7 +74,11 @@
     "grade": "F",
     "semester": "FA04",
     "gradePoints": 0,
-    "notes": "Processed as: ASTR1200; Original credits unknown"
+    "notes": "Processed as: ASTR1200; Attempted credits estimated",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": false,
+    "source": "audit"
   },
   {
     "id": "CSCI-1200",
@@ -71,7 +91,11 @@
     "grade": "F",
     "semester": "FA04",
     "gradePoints": 0,
-    "notes": "Original credits unknown"
+    "notes": "Attempted credits estimated",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": false,
+    "source": "audit"
   },
   {
     "id": "PHYS-1110",
@@ -83,7 +107,11 @@
     "status": "completed",
     "grade": "W",
     "semester": "FA04",
-    "notes": "Original credits unknown"
+    "notes": "Original credits unknown",
+    "countedTowardDegree": true,
+    "countsTowardGPA": false,
+    "countsTowardEarnedHours": false,
+    "source": "audit"
   },
   {
     "id": "QRMS-1010",
@@ -95,7 +123,29 @@
     "status": "completed",
     "grade": "B+",
     "semester": "FA04",
-    "gradePoints": 3.3
+    "gradePoints": 3.3,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
+  },
+  {
+    "id": "CSCI-1200__SP04",
+    "number": "CSCI 1200",
+    "name": "Intro to Computing",
+    "credits": 3,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "completed",
+    "grade": "F",
+    "semester": "SP04",
+    "gradePoints": 0,
+    "notes": "Attempted credits estimated",
+    "countedTowardDegree": false,
+    "countsTowardGPA": false,
+    "countsTowardEarnedHours": false,
+    "excludeReason": "Grade replacement (>X >N) — excluded from GPA",
+    "source": "audit"
   },
   {
     "id": "GEOG-2002",
@@ -108,7 +158,11 @@
     "grade": "F",
     "semester": "SP04",
     "gradePoints": 0,
-    "notes": "Processed as: GEOG1962; Original credits unknown"
+    "notes": "Processed as: GEOG1962",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": false,
+    "source": "audit"
   },
   {
     "id": "KAPH-1010",
@@ -121,7 +175,11 @@
     "grade": "D+",
     "semester": "SP04",
     "gradePoints": 1.3,
-    "notes": "Processed as: IPHY1010"
+    "notes": "Processed as: IPHY1010",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "SOCY-2041",
@@ -134,7 +192,11 @@
     "grade": "F",
     "semester": "SP04",
     "gradePoints": 0,
-    "notes": "Original credits unknown"
+    "notes": "Attempted credits estimated",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": false,
+    "source": "audit"
   },
   {
     "id": "ASTR-1110",
@@ -147,7 +209,11 @@
     "grade": "C",
     "semester": "FA03",
     "gradePoints": 2,
-    "notes": "Processed as: ASTR1000"
+    "notes": "Processed as: ASTR1000",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "PSYC-1001",
@@ -159,7 +225,11 @@
     "status": "completed",
     "grade": "C",
     "semester": "FA03",
-    "gradePoints": 2
+    "gradePoints": 2,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "RLST-2700",
@@ -171,7 +241,11 @@
     "status": "completed",
     "grade": "D+",
     "semester": "FA03",
-    "gradePoints": 1.3
+    "gradePoints": 1.3,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "WRTG-1150",
@@ -183,7 +257,11 @@
     "status": "completed",
     "grade": "B+",
     "semester": "FA03",
-    "gradePoints": 3.3
+    "gradePoints": 3.3,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "ARTS-1171",
@@ -195,7 +273,11 @@
     "status": "completed",
     "grade": "A-",
     "semester": "SP18",
-    "gradePoints": 3.7
+    "gradePoints": 3.7,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "EDUC-4161",
@@ -207,7 +289,11 @@
     "status": "completed",
     "grade": "D",
     "semester": "SP18",
-    "gradePoints": 1
+    "gradePoints": 1,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "ESBM-3100",
@@ -219,7 +305,11 @@
     "status": "completed",
     "grade": "A",
     "semester": "SP18",
-    "gradePoints": 4
+    "gradePoints": 4,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "COMM-2500",
@@ -231,7 +321,11 @@
     "status": "completed",
     "grade": "B",
     "semester": "FA17",
-    "gradePoints": 3
+    "gradePoints": 3,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "GEOL-1010",
@@ -244,7 +338,11 @@
     "grade": "F",
     "semester": "FA17",
     "gradePoints": 0,
-    "notes": "Processed as: ERTH1010; Original credits unknown"
+    "notes": "Processed as: ERTH1010; Attempted credits estimated",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": false,
+    "source": "audit"
   },
   {
     "id": "SPAN-1010",
@@ -256,7 +354,11 @@
     "status": "completed",
     "grade": "A-",
     "semester": "FA17",
-    "gradePoints": 3.7
+    "gradePoints": 3.7,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "BCOR-1030",
@@ -268,7 +370,11 @@
     "status": "completed",
     "grade": "B+",
     "semester": "SU17",
-    "gradePoints": 3.3
+    "gradePoints": 3.3,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "BCOR-2001",
@@ -280,7 +386,11 @@
     "status": "completed",
     "grade": "C+",
     "semester": "SU17",
-    "gradePoints": 2.3
+    "gradePoints": 2.3,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "BCOR-2002",
@@ -292,7 +402,11 @@
     "status": "completed",
     "grade": "C",
     "semester": "SU17",
-    "gradePoints": 2
+    "gradePoints": 2,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "BCOR-2003",
@@ -304,7 +418,11 @@
     "status": "completed",
     "grade": "C",
     "semester": "SU17",
-    "gradePoints": 2
+    "gradePoints": 2,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "MGMT-3010",
@@ -317,7 +435,11 @@
     "grade": "A-",
     "semester": "SU17",
     "gradePoints": 3.7,
-    "notes": "Processed as: ORGN3010"
+    "notes": "Processed as: ORGN3010",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "ECON-3403",
@@ -329,7 +451,11 @@
     "status": "completed",
     "grade": "A",
     "semester": "SP17",
-    "gradePoints": 4
+    "gradePoints": 4,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "FNCE-2820",
@@ -341,7 +467,11 @@
     "status": "completed",
     "grade": "A-",
     "semester": "SP17",
-    "gradePoints": 3.7
+    "gradePoints": 3.7,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "GEOG-1982",
@@ -353,7 +483,11 @@
     "status": "completed",
     "grade": "A-",
     "semester": "SP17",
-    "gradePoints": 3.7
+    "gradePoints": 3.7,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "MATH-1011",
@@ -365,7 +499,11 @@
     "status": "completed",
     "grade": "D",
     "semester": "SP17",
-    "gradePoints": 1
+    "gradePoints": 1,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "MATH-2510",
@@ -377,7 +515,11 @@
     "status": "completed",
     "grade": "B+",
     "semester": "SP17",
-    "gradePoints": 3.3
+    "gradePoints": 3.3,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "MKTG-2700",
@@ -389,7 +531,11 @@
     "status": "completed",
     "grade": "A-",
     "semester": "SP17",
-    "gradePoints": 3.7
+    "gradePoints": 3.7,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "BCOR-1015",
@@ -401,7 +547,11 @@
     "status": "completed",
     "grade": "A",
     "semester": "FA16",
-    "gradePoints": 4
+    "gradePoints": 4,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "ECON-2020",
@@ -413,7 +563,11 @@
     "status": "completed",
     "grade": "A",
     "semester": "FA16",
-    "gradePoints": 4
+    "gradePoints": 4,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "ENGL-3060",
@@ -425,7 +579,11 @@
     "status": "completed",
     "grade": "A-",
     "semester": "FA16",
-    "gradePoints": 3.7
+    "gradePoints": 3.7,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "MGMT-3030",
@@ -438,7 +596,11 @@
     "grade": "A-",
     "semester": "FA16",
     "gradePoints": 3.7,
-    "notes": "Processed as: ORGN3030"
+    "notes": "Processed as: ORGN3030",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "ANTH-2200",
@@ -450,7 +612,11 @@
     "status": "completed",
     "grade": "A",
     "semester": "SU16",
-    "gradePoints": 4
+    "gradePoints": 4,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "ECON-2010",
@@ -462,7 +628,11 @@
     "status": "completed",
     "grade": "B",
     "semester": "SU16",
-    "gradePoints": 3
+    "gradePoints": 3,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "MATH-1112",
@@ -474,7 +644,11 @@
     "status": "completed",
     "grade": "A",
     "semester": "SU16",
-    "gradePoints": 4
+    "gradePoints": 4,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "PHIL-1100",
@@ -486,49 +660,11 @@
     "status": "completed",
     "grade": "A",
     "semester": "SU16",
-    "gradePoints": 4
-  },
-  {
-    "id": "CSCI-1300",
-    "number": "CSCI 1300",
-    "name": "CS 1: Starting Computing",
-    "credits": 4,
-    "prereqs": null,
-    "coreqs": {
-      "type": "or",
-      "rules": [
-        {
-          "type": "course",
-          "courseId": "APPM-1235"
-        },
-        {
-          "type": "course",
-          "courseId": "APPM-1340"
-        },
-        {
-          "type": "course",
-          "courseId": "APPM-1345"
-        },
-        {
-          "type": "course",
-          "courseId": "APPM-1350"
-        },
-        {
-          "type": "course",
-          "courseId": "MATH-1150"
-        },
-        {
-          "type": "course",
-          "courseId": "MATH-1300"
-        },
-        {
-          "type": "course",
-          "courseId": "MATH-1310"
-        }
-      ]
-    },
-    "status": "in_progress",
-    "semester": "SP26"
+    "gradePoints": 4,
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "APPM-1650",
@@ -558,500 +694,11 @@
       ]
     },
     "status": "registered",
-    "semester": "FA26"
-  },
-  {
-    "id": "APPM-2340",
-    "number": "APPM 2340",
-    "name": "Calculus 3 for Statistics and Data Science",
-    "credits": 4,
-    "prereqs": {
-      "type": "or",
-      "rules": [
-        {
-          "type": "course",
-          "courseId": "APPM-1360"
-        },
-        {
-          "type": "course",
-          "courseId": "MATH-2300"
-        }
-      ]
-    },
-    "coreqs": null,
-    "status": "not_started"
-  },
-  {
-    "id": "APPM-2350",
-    "number": "APPM 2350",
-    "name": "Calculus 3 for Engineers",
-    "credits": 4,
-    "prereqs": {
-      "type": "or",
-      "rules": [
-        {
-          "type": "course",
-          "courseId": "APPM-1360"
-        },
-        {
-          "type": "course",
-          "courseId": "MATH-2300"
-        }
-      ]
-    },
-    "coreqs": null,
-    "status": "not_started"
-  },
-  {
-    "id": "MATH-2400",
-    "number": "MATH 2400",
-    "name": "Calculus 3",
-    "credits": 5,
-    "prereqs": {
-      "type": "or",
-      "rules": [
-        {
-          "type": "course",
-          "courseId": "MATH-2300"
-        },
-        {
-          "type": "course",
-          "courseId": "APPM-1360"
-        }
-      ]
-    },
-    "coreqs": null,
-    "status": "not_started"
-  },
-  {
-    "id": "STAT-4250",
-    "number": "STAT 4250",
-    "name": "Data Assimilation in High Dimensional Dynamical Systems",
-    "credits": 3,
-    "prereqs": {
-      "type": "and",
-      "rules": [
-        {
-          "type": "course",
-          "courseId": "APPM-3310"
-        },
-        {
-          "type": "or",
-          "rules": [
-            {
-              "type": "course",
-              "courseId": "STAT-4520"
-            },
-            {
-              "type": "course",
-              "courseId": "MATH-4520"
-            }
-          ]
-        }
-      ]
-    },
-    "coreqs": null,
-    "status": "not_started"
-  },
-  {
-    "id": "STAT-4360",
-    "number": "STAT 4360",
-    "name": "STAT 4360",
-    "credits": 0,
-    "prereqs": null,
-    "coreqs": null,
-    "status": "not_started"
-  },
-  {
-    "id": "STAT-4430",
-    "number": "STAT 4430",
-    "name": "STAT 4430",
-    "credits": 0,
-    "prereqs": null,
-    "coreqs": null,
-    "status": "not_started"
-  },
-  {
-    "id": "STAT-4540",
-    "number": "STAT 4540",
-    "name": "Introduction to Time Series",
-    "credits": 3,
-    "prereqs": {
-      "type": "or",
-      "rules": [
-        {
-          "type": "course",
-          "courseId": "APPM-4520"
-        },
-        {
-          "type": "course",
-          "courseId": "STAT-4520"
-        },
-        {
-          "type": "course",
-          "courseId": "MATH-4520"
-        }
-      ]
-    },
-    "coreqs": null,
-    "status": "not_started"
-  },
-  {
-    "id": "STAT-4630",
-    "number": "STAT 4630",
-    "name": "Computational Bayesian Statistics",
-    "credits": 3,
-    "prereqs": {
-      "type": "and",
-      "rules": [
-        {
-          "type": "or",
-          "rules": [
-            {
-              "type": "course",
-              "courseId": "APPM-4560"
-            },
-            {
-              "type": "course",
-              "courseId": "STAT-4100"
-            }
-          ]
-        },
-        {
-          "type": "course",
-          "courseId": "STAT-3400"
-        },
-        {
-          "type": "or",
-          "rules": [
-            {
-              "type": "course",
-              "courseId": "STAT-4520"
-            },
-            {
-              "type": "course",
-              "courseId": "MATH-4520"
-            }
-          ]
-        }
-      ]
-    },
-    "coreqs": null,
-    "status": "not_started"
-  },
-  {
-    "id": "STAT-4700",
-    "number": "STAT 4700",
-    "name": "Philosophical and Ethical Issues in Statistics",
-    "credits": 3,
-    "prereqs": {
-      "type": "or",
-      "rules": [
-        {
-          "type": "course",
-          "courseId": "STAT-4520"
-        },
-        {
-          "type": "course",
-          "courseId": "STAT-3400"
-        },
-        {
-          "type": "course",
-          "courseId": "STAT-4000"
-        }
-      ]
-    },
-    "coreqs": null,
-    "status": "not_started"
-  },
-  {
-    "id": "APPM-4120",
-    "number": "APPM 4120",
-    "name": "Introduction to Operations Research",
-    "credits": 3,
-    "prereqs": {
-      "type": "or",
-      "rules": [
-        {
-          "type": "course",
-          "courseId": "APPM-3310"
-        },
-        {
-          "type": "course",
-          "courseId": "MATH-2130"
-        },
-        {
-          "type": "course",
-          "courseId": "MATH-2135"
-        }
-      ]
-    },
-    "coreqs": null,
-    "status": "not_started"
-  },
-  {
-    "id": "APPM-4320",
-    "number": "APPM 4320",
-    "name": "APPM 4320",
-    "credits": 0,
-    "prereqs": null,
-    "coreqs": null,
-    "status": "not_started"
-  },
-  {
-    "id": "APPM-4370",
-    "number": "APPM 4370",
-    "name": "Computational Neuroscience",
-    "credits": 3,
-    "prereqs": {
-      "type": "and",
-      "rules": [
-        {
-          "type": "course",
-          "courseId": "APPM-2360"
-        },
-        {
-          "type": "course",
-          "courseId": "APPM-3310"
-        }
-      ]
-    },
-    "coreqs": null,
-    "status": "not_started"
-  },
-  {
-    "id": "APPM-4440",
-    "number": "APPM 4440",
-    "name": "Undergraduate Applied Analysis 1",
-    "credits": 3,
-    "prereqs": {
-      "type": "or",
-      "rules": [
-        {
-          "type": "course",
-          "courseId": "APPM-2350"
-        },
-        {
-          "type": "and",
-          "rules": [
-            {
-              "type": "course",
-              "courseId": "MATH-2400"
-            },
-            {
-              "type": "course",
-              "courseId": "APPM-2360"
-            }
-          ]
-        }
-      ]
-    },
-    "coreqs": {
-      "type": "course",
-      "courseId": "APPM-3310"
-    },
-    "status": "not_started"
-  },
-  {
-    "id": "APPM-4450",
-    "number": "APPM 4450",
-    "name": "Undergraduate Applied Analysis 2",
-    "credits": 3,
-    "prereqs": {
-      "type": "or",
-      "rules": [
-        {
-          "type": "course",
-          "courseId": "APPM-4440"
-        },
-        {
-          "type": "course",
-          "courseId": "MATH-3001"
-        }
-      ]
-    },
-    "coreqs": null,
-    "status": "not_started"
-  },
-  {
-    "id": "APPM-4490",
-    "number": "APPM 4490",
-    "name": "Theory of Machine Learning",
-    "credits": 3,
-    "prereqs": {
-      "type": "course",
-      "courseId": "APPM-4440"
-    },
-    "coreqs": null,
-    "status": "not_started"
-  },
-  {
-    "id": "APPM-4515",
-    "number": "APPM 4515",
-    "name": "APPM 4515",
-    "credits": 0,
-    "prereqs": null,
-    "coreqs": null,
-    "status": "not_started"
-  },
-  {
-    "id": "APPM-4530",
-    "number": "APPM 4530",
-    "name": "Stochastic Analysis for Finance",
-    "credits": 3,
-    "prereqs": {
-      "type": "or",
-      "rules": [
-        {
-          "type": "and",
-          "rules": [
-            {
-              "type": "course",
-              "courseId": "APPM-3310"
-            },
-            {
-              "type": "course",
-              "courseId": "APPM-3570"
-            }
-          ]
-        },
-        {
-          "type": "course",
-          "courseId": "STAT-3100"
-        },
-        {
-          "type": "course",
-          "courseId": "MATH-4510"
-        }
-      ]
-    },
-    "coreqs": null,
-    "status": "not_started"
-  },
-  {
-    "id": "APPM-4565",
-    "number": "APPM 4565",
-    "name": "Random Graphs",
-    "credits": 3,
-    "prereqs": {
-      "type": "or",
-      "rules": [
-        {
-          "type": "course",
-          "courseId": "APPM-3570"
-        },
-        {
-          "type": "course",
-          "courseId": "MATH-4510"
-        }
-      ]
-    },
-    "coreqs": null,
-    "status": "not_started"
-  },
-  {
-    "id": "APPM-4600",
-    "number": "APPM 4600",
-    "name": "Numerical Methods and Scientific Computing",
-    "credits": 4,
-    "prereqs": {
-      "type": "course",
-      "courseId": "APPM-3310"
-    },
-    "coreqs": null,
-    "status": "not_started"
-  },
-  {
-    "id": "STAT-4350",
-    "number": "STAT 4350",
-    "name": "Applied Deep Learning 1",
-    "credits": 3,
-    "prereqs": {
-      "type": "or",
-      "rules": [
-        {
-          "type": "course",
-          "courseId": "APPM-3570"
-        },
-        {
-          "type": "and",
-          "rules": [
-            {
-              "type": "course",
-              "courseId": "STAT-3100"
-            },
-            {
-              "type": "course",
-              "courseId": "STAT-3400"
-            }
-          ]
-        },
-        {
-          "type": "and",
-          "rules": [
-            {
-              "type": "course",
-              "courseId": "STAT-4520"
-            },
-            {
-              "type": "course",
-              "courseId": "APPM-4650"
-            }
-          ]
-        },
-        {
-          "type": "course",
-          "courseId": "APPM-4600"
-        }
-      ]
-    },
-    "coreqs": null,
-    "status": "not_started"
-  },
-  {
-    "id": "CSCI-4622",
-    "number": "CSCI 4622",
-    "name": "Machine Learning",
-    "credits": 3,
-    "prereqs": {
-      "type": "course",
-      "courseId": "CSCI-3022"
-    },
-    "coreqs": null,
-    "status": "not_started"
-  },
-  {
-    "id": "APPM-1350",
-    "number": "APPM 1350",
-    "name": "Calculus 1 for Engineers",
-    "credits": 4,
-    "prereqs": {
-      "type": "or",
-      "rules": [
-        {
-          "type": "course",
-          "courseId": "APPM-1235"
-        },
-        {
-          "type": "course",
-          "courseId": "MATH-1021"
-        },
-        {
-          "type": "course",
-          "courseId": "MATH-1150"
-        },
-        {
-          "type": "course",
-          "courseId": "MATH-1160"
-        },
-        {
-          "type": "course",
-          "courseId": "MATH-1300"
-        }
-      ]
-    },
-    "coreqs": null,
-    "status": "not_started"
+    "semester": "FA26",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "CSCI-2824",
@@ -1119,7 +766,37 @@
     },
     "coreqs": null,
     "status": "registered",
-    "semester": "FA26"
+    "semester": "FA26",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
+  },
+  {
+    "id": "CSCI-2400",
+    "number": "CSCI 2400",
+    "name": "Computer Systems",
+    "credits": 4,
+    "prereqs": {
+      "type": "course",
+      "courseId": "CSCI-2270"
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "source": "enriched"
+  },
+  {
+    "id": "CSCI-3155",
+    "number": "CSCI 3155",
+    "name": "Principles of Programming Languages",
+    "credits": 3,
+    "prereqs": {
+      "type": "course",
+      "courseId": "CSCI-2824"
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "source": "enriched"
   },
   {
     "id": "MATH-2300",
@@ -1149,7 +826,11 @@
     },
     "coreqs": null,
     "status": "registered",
-    "semester": "FA26"
+    "semester": "FA26",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "STAT-2600",
@@ -1183,7 +864,11 @@
     },
     "coreqs": null,
     "status": "registered",
-    "semester": "FA26"
+    "semester": "FA26",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "CSPB-2270",
@@ -1193,7 +878,11 @@
     "prereqs": null,
     "coreqs": null,
     "status": "registered",
-    "semester": "SU26"
+    "semester": "SU26",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "GEOG-1962",
@@ -1203,7 +892,11 @@
     "prereqs": null,
     "coreqs": null,
     "status": "registered",
-    "semester": "SU26"
+    "semester": "SU26",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "MATH-1300",
@@ -1242,7 +935,57 @@
     },
     "coreqs": null,
     "status": "registered",
-    "semester": "SU26"
+    "semester": "SU26",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
+  },
+  {
+    "id": "CSCI-1300",
+    "number": "CSCI 1300",
+    "name": "CS 1: Starting Computing",
+    "credits": 4,
+    "prereqs": null,
+    "coreqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "APPM-1235"
+        },
+        {
+          "type": "course",
+          "courseId": "APPM-1340"
+        },
+        {
+          "type": "course",
+          "courseId": "APPM-1345"
+        },
+        {
+          "type": "course",
+          "courseId": "APPM-1350"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-1150"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-1300"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-1310"
+        }
+      ]
+    },
+    "status": "in_progress",
+    "semester": "SP26",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit"
   },
   {
     "id": "ENGL-3016",
@@ -1251,8 +994,14 @@
     "credits": 3,
     "prereqs": null,
     "coreqs": null,
-    "status": "in_progress",
-    "semester": "SP26"
+    "status": "completed",
+    "semester": "SP26",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit",
+    "grade": "A",
+    "gradePoints": 4
   },
   {
     "id": "GEOG-1001",
@@ -1261,8 +1010,14 @@
     "credits": 4,
     "prereqs": null,
     "coreqs": null,
-    "status": "in_progress",
-    "semester": "SP26"
+    "status": "completed",
+    "semester": "SP26",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit",
+    "grade": "A",
+    "gradePoints": 4
   },
   {
     "id": "MATH-1150",
@@ -1283,8 +1038,14 @@
       ]
     },
     "coreqs": null,
-    "status": "in_progress",
-    "semester": "SP26"
+    "status": "completed",
+    "semester": "SP26",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "audit",
+    "grade": "A",
+    "gradePoints": 4
   },
   {
     "id": "APPM-3650",
@@ -1314,7 +1075,8 @@
       ]
     },
     "coreqs": null,
-    "status": "not_started"
+    "status": "not_started",
+    "source": "enriched"
   },
   {
     "id": "APPM-3310",
@@ -1343,7 +1105,428 @@
       ]
     },
     "coreqs": null,
-    "status": "not_started"
+    "status": "not_started",
+    "source": "enriched"
+  },
+  {
+    "id": "APPM-2340",
+    "number": "APPM 2340",
+    "name": "Calculus 3 for Statistics and Data Science",
+    "credits": 4,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "APPM-1360"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-2300"
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "source": "enriched"
+  },
+  {
+    "id": "APPM-2350",
+    "number": "APPM 2350",
+    "name": "Calculus 3 for Engineers",
+    "credits": 4,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "APPM-1360"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-2300"
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "source": "enriched"
+  },
+  {
+    "id": "MATH-2400",
+    "number": "MATH 2400",
+    "name": "Calculus 3",
+    "credits": 5,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "MATH-2300"
+        },
+        {
+          "type": "course",
+          "courseId": "APPM-1360"
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "source": "enriched"
+  },
+  {
+    "id": "STAT-4250",
+    "number": "STAT 4250",
+    "name": "Data Assimilation in High Dimensional Dynamical Systems",
+    "credits": 3,
+    "prereqs": {
+      "type": "and",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "APPM-3310"
+        },
+        {
+          "type": "or",
+          "rules": [
+            {
+              "type": "course",
+              "courseId": "STAT-4520"
+            },
+            {
+              "type": "course",
+              "courseId": "MATH-4520"
+            }
+          ]
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "source": "enriched"
+  },
+  {
+    "id": "STAT-4360",
+    "number": "STAT 4360",
+    "name": "STAT 4360",
+    "credits": 0,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "not_started",
+    "source": "stub"
+  },
+  {
+    "id": "STAT-4430",
+    "number": "STAT 4430",
+    "name": "STAT 4430",
+    "credits": 0,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "not_started",
+    "source": "stub"
+  },
+  {
+    "id": "STAT-4540",
+    "number": "STAT 4540",
+    "name": "Introduction to Time Series",
+    "credits": 3,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "APPM-4520"
+        },
+        {
+          "type": "course",
+          "courseId": "STAT-4520"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-4520"
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "source": "enriched"
+  },
+  {
+    "id": "STAT-4630",
+    "number": "STAT 4630",
+    "name": "Computational Bayesian Statistics",
+    "credits": 3,
+    "prereqs": {
+      "type": "and",
+      "rules": [
+        {
+          "type": "or",
+          "rules": [
+            {
+              "type": "course",
+              "courseId": "APPM-4560"
+            },
+            {
+              "type": "course",
+              "courseId": "STAT-4100"
+            }
+          ]
+        },
+        {
+          "type": "course",
+          "courseId": "STAT-3400"
+        },
+        {
+          "type": "or",
+          "rules": [
+            {
+              "type": "course",
+              "courseId": "STAT-4520"
+            },
+            {
+              "type": "course",
+              "courseId": "MATH-4520"
+            }
+          ]
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "source": "enriched"
+  },
+  {
+    "id": "STAT-4700",
+    "number": "STAT 4700",
+    "name": "Philosophical and Ethical Issues in Statistics",
+    "credits": 3,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "STAT-4520"
+        },
+        {
+          "type": "course",
+          "courseId": "STAT-3400"
+        },
+        {
+          "type": "course",
+          "courseId": "STAT-4000"
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "source": "enriched"
+  },
+  {
+    "id": "APPM-4120",
+    "number": "APPM 4120",
+    "name": "Introduction to Operations Research",
+    "credits": 3,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "APPM-3310"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-2130"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-2135"
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "source": "enriched"
+  },
+  {
+    "id": "APPM-4320",
+    "number": "APPM 4320",
+    "name": "APPM 4320",
+    "credits": 0,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "not_started",
+    "source": "stub"
+  },
+  {
+    "id": "APPM-4370",
+    "number": "APPM 4370",
+    "name": "Computational Neuroscience",
+    "credits": 3,
+    "prereqs": {
+      "type": "and",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "APPM-2360"
+        },
+        {
+          "type": "course",
+          "courseId": "APPM-3310"
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "source": "enriched"
+  },
+  {
+    "id": "APPM-4440",
+    "number": "APPM 4440",
+    "name": "Undergraduate Applied Analysis 1",
+    "credits": 3,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "APPM-2350"
+        },
+        {
+          "type": "and",
+          "rules": [
+            {
+              "type": "course",
+              "courseId": "MATH-2400"
+            },
+            {
+              "type": "course",
+              "courseId": "APPM-2360"
+            }
+          ]
+        }
+      ]
+    },
+    "coreqs": {
+      "type": "course",
+      "courseId": "APPM-3310"
+    },
+    "status": "not_started",
+    "source": "enriched"
+  },
+  {
+    "id": "APPM-4450",
+    "number": "APPM 4450",
+    "name": "Undergraduate Applied Analysis 2",
+    "credits": 3,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "APPM-4440"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-3001"
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "source": "enriched"
+  },
+  {
+    "id": "APPM-4490",
+    "number": "APPM 4490",
+    "name": "Theory of Machine Learning",
+    "credits": 3,
+    "prereqs": {
+      "type": "course",
+      "courseId": "APPM-4440"
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "source": "enriched"
+  },
+  {
+    "id": "APPM-4515",
+    "number": "APPM 4515",
+    "name": "APPM 4515",
+    "credits": 0,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "not_started",
+    "source": "stub"
+  },
+  {
+    "id": "APPM-4530",
+    "number": "APPM 4530",
+    "name": "Stochastic Analysis for Finance",
+    "credits": 3,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "and",
+          "rules": [
+            {
+              "type": "course",
+              "courseId": "APPM-3310"
+            },
+            {
+              "type": "course",
+              "courseId": "APPM-3570"
+            }
+          ]
+        },
+        {
+          "type": "course",
+          "courseId": "STAT-3100"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-4510"
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "source": "enriched"
+  },
+  {
+    "id": "APPM-4565",
+    "number": "APPM 4565",
+    "name": "Random Graphs",
+    "credits": 3,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "APPM-3570"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-4510"
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "source": "enriched"
+  },
+  {
+    "id": "APPM-4600",
+    "number": "APPM 4600",
+    "name": "Numerical Methods and Scientific Computing",
+    "credits": 4,
+    "prereqs": {
+      "type": "course",
+      "courseId": "APPM-3310"
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "source": "enriched"
   },
   {
     "id": "STAT-4640",
@@ -1364,7 +1547,8 @@
       ]
     },
     "coreqs": null,
-    "status": "not_started"
+    "status": "not_started",
+    "source": "enriched"
   },
   {
     "id": "STAT-4680",
@@ -1385,7 +1569,69 @@
       ]
     },
     "coreqs": null,
-    "status": "not_started"
+    "status": "not_started",
+    "source": "enriched"
+  },
+  {
+    "id": "STAT-4350",
+    "number": "STAT 4350",
+    "name": "Applied Deep Learning 1",
+    "credits": 3,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "APPM-3570"
+        },
+        {
+          "type": "and",
+          "rules": [
+            {
+              "type": "course",
+              "courseId": "STAT-3100"
+            },
+            {
+              "type": "course",
+              "courseId": "STAT-3400"
+            }
+          ]
+        },
+        {
+          "type": "and",
+          "rules": [
+            {
+              "type": "course",
+              "courseId": "STAT-4520"
+            },
+            {
+              "type": "course",
+              "courseId": "APPM-4650"
+            }
+          ]
+        },
+        {
+          "type": "course",
+          "courseId": "APPM-4600"
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "source": "enriched"
+  },
+  {
+    "id": "CSCI-4622",
+    "number": "CSCI 4622",
+    "name": "Machine Learning",
+    "credits": 3,
+    "prereqs": {
+      "type": "course",
+      "courseId": "CSCI-3022"
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "source": "enriched"
   },
   {
     "id": "STAT-4610",
@@ -1397,7 +1643,8 @@
       "courseId": "STAT-3400"
     },
     "coreqs": null,
-    "status": "not_started"
+    "status": "not_started",
+    "source": "enriched"
   },
   {
     "id": "APPM-4560",
@@ -1422,7 +1669,8 @@
       ]
     },
     "coreqs": null,
-    "status": "not_started"
+    "status": "not_started",
+    "source": "enriched"
   },
   {
     "id": "STAT-4100",
@@ -1447,7 +1695,8 @@
       ]
     },
     "coreqs": null,
-    "status": "not_started"
+    "status": "not_started",
+    "source": "enriched"
   },
   {
     "id": "STAT-4400",
@@ -1456,7 +1705,8 @@
     "credits": 0,
     "prereqs": null,
     "coreqs": null,
-    "status": "not_started"
+    "status": "not_started",
+    "source": "stub"
   },
   {
     "id": "STAT-3400",
@@ -1490,7 +1740,8 @@
       ]
     },
     "coreqs": null,
-    "status": "not_started"
+    "status": "not_started",
+    "source": "enriched"
   },
   {
     "id": "STAT-4520",
@@ -1515,7 +1766,8 @@
       ]
     },
     "coreqs": null,
-    "status": "not_started"
+    "status": "not_started",
+    "source": "enriched"
   },
   {
     "id": "STAT-3100",
@@ -1540,6 +1792,7 @@
         }
       ]
     },
-    "status": "not_started"
+    "status": "not_started",
+    "source": "enriched"
   }
 ]
