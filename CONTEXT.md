@@ -44,6 +44,17 @@ This is the decision log and working memory for the project.
   - Repo clean on main branch. No next phase started.
   - Anthony must provide explicit scope before P3-C (Recommendation Layer) or any next phase begins.
 
+### 2026-05-01 — P3-C spec started
+
+- P3-C Recommendation Layer spec drafted (spec-first, no implementation). Linear: 303-24, state: Alice Review.
+- Spec: `P3C_SPEC.md` — 6 recommendation types, all strictly downstream of P3-A/P3-B signals.
+  - `resolve_overload`, `resolve_underload`, `address_prereq_bottleneck`, `advance_delayed_critical`, `graduation_risk_action`, `plan_comparison_insight`
+  - Every recommendation requires `sourceSignalIds` from accepted P3-B signals or P3-A PlanComparison. No signal = no recommendation.
+  - No hidden CU policy, no hardcoded degree rules, no confidence scores, no ML, no advisor language.
+- PHASE_3_PLAN.md updated with P3-C spec status.
+- Alice handoff sent to #agent-degree-tracker (303-24).
+- Holding on Gilfoyle delegation until Alice PASS or conditional WARN.
+
 ### 2026-04-30
 
 - Added `PROJECT.md`, `CONTEXT.md`, and `WORKFLOW.md` to make repo authority explicit and align with the project workflow standard.
