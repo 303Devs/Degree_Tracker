@@ -55,7 +55,10 @@ Agents must not treat the duplicate as current source of truth. Files in the dup
 
 - [ ] Preserve this repo authority in every future task packet.
 - [ ] Keep P3-C implementation blocked until Alice reviews `P3C_SPEC.md` and returns PASS or conditional WARN.
+- [ ] Maintain one Linear issue per implementation/spec/QA task before work is treated as active.
+- [ ] Require tests for non-trivial changes; local `npm test` and `npm run build` must pass before code is complete.
 - [ ] Route non-trivial code/config changes through Turing before Bob calls them done.
+- [ ] Require GitHub Actions CI to pass when GitHub is involved before normal GitHub development continues.
 - [ ] Ask Alice/Ada to review architecture or school-sensitive planning decisions when needed.
 
 ## Blockers

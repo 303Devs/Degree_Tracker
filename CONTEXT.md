@@ -27,6 +27,12 @@ This is the decision log and working memory for the project.
 
 ## Work Log
 
+### 2026-05-01 — Standing engineering policy applied
+
+- Applied Degree Tracker standing engineering policy in `WORKFLOW.md` and `PROJECT.md`. Linear: 303-25, Done.
+- Policy gates: TDD-oriented work, tests for non-trivial changes, Linear issue per task, Turing review for implementation, local tests/build before done, and GitHub Actions CI pass when GitHub is involved.
+- This was a docs/policy update only; no implementation or tests required.
+
 ### 2026-05-01 (P3-B complete)
 
 - P3-B UI (303-23): Alice PASS.
