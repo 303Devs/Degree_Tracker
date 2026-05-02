@@ -1,6 +1,7 @@
 # Phase 3 Plan - Planning Primitives First
 
 **Status:** Approved scope from Sue's stabilization plan  
+**Current phase state:** P3-A complete; P3-B complete after Alice PASS on 303-23; P3-C not started pending explicit scope.  
 **Start Date:** 2026-04-29  
 **Approach:** Build planning intelligence before recommendation magic
 
@@ -38,6 +39,8 @@
 **Success criteria:** Answer "Given two candidate plans, where do they differ?"
 
 ### P3-B: Optimization Helpers (SECOND) 
+**Status:** Complete — backend primitives and planner UI surfaced; Alice PASS on 303-23.
+
 **Why second:** Explainable, testable, genuinely useful
 
 **Build:**
@@ -48,6 +51,8 @@
 - Maybe "safer vs faster" framing
 
 ### P3-C: Recommendation Layer (THIRD)
+**Status:** Not started. Scope must be made explicit before work begins.
+
 **Only after P3-A and P3-B are stable**
 
 **Build:**

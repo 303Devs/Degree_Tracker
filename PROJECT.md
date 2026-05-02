@@ -3,8 +3,9 @@
 ## Status
 
 - State: Active legacy exception; source currently lives in the OpenClaw project workspace.
+- Phase status: P3-B Optimization Helpers complete; next phase not started.
 - Owner: Bob for execution; Alice for review/judgment when strategic, architectural, or school-sensitive.
-- Last updated: 2026-04-30
+- Last updated: 2026-05-01
 
 ## Goal
 
@@ -53,10 +54,10 @@ Agents must not treat the duplicate as current source of truth. Files in the dup
 ## Next Actions
 
 - [ ] Preserve this repo authority in every future task packet.
-- [ ] Continue Phase 3 only after Bob confirms current repo state and open changes.
+- [ ] Define explicit next phase scope before starting P3-C or any follow-on work.
 - [ ] Route non-trivial code/config changes through Turing before Bob calls them done.
 - [ ] Ask Alice/Ada to review architecture or school-sensitive planning decisions when needed.
 
 ## Blockers
 
-- The repo has substantial existing modified/untracked files. Agents must inspect git status before assigning implementation and must not overwrite unrelated user/agent work.
+- No active blocker recorded after P3-B completion. Agents must still inspect git status before assigning implementation and must not overwrite unrelated user/agent work.

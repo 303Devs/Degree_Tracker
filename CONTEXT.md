@@ -27,6 +27,15 @@ This is the decision log and working memory for the project.
 
 ## Work Log
 
+### 2026-05-01 (P3-B complete)
+
+- P3-B UI (303-23): Alice PASS.
+  - Linear 303-23 moved to Done.
+  - UI layer surfaces accepted P3-B optimization signals in planner.
+  - Turing evidence before Alice review: commit `d93d4ed`, 314/314 tests passing, build clean, all 4 signal kinds wired, signal language policy guard clean.
+  - P3-B is complete.
+- Next boundary: do not start P3-C or any next phase until the next phase scope is explicit.
+
 ### 2026-04-30
 
 - Added `PROJECT.md`, `CONTEXT.md`, and `WORKFLOW.md` to make repo authority explicit and align with the project workflow standard.
