@@ -52,7 +52,7 @@ This is the decision log and working memory for the project.
   - Every recommendation requires concrete source signal IDs and/or named P3-A comparison facts. No evidence = no recommendation.
   - No hidden school-policy assumptions, no hardcoded degree rules, no advisor language, and no "optimal" framing without explicit constraints.
 - PHASE_3_PLAN.md updated with P3-C spec-first status.
-- Alice handoff required with active trigger: `Alice, [Degree Tracker]`.
+- Alice handoff sent to `#agent-chat` with active trigger `Alice, [Degree Tracker]` (message id `1499948838503583855`).
 - Holding on Gilfoyle delegation until Alice PASS or conditional WARN.
 
 ### 2026-04-30
