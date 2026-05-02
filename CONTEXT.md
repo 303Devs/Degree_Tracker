@@ -36,6 +36,14 @@ This is the decision log and working memory for the project.
   - P3-B is complete.
 - Next boundary: do not start P3-C or any next phase until the next phase scope is explicit.
 
+### 2026-05-01 — P3-B complete
+
+- 303-23 P3-B UI (Surface optimization signals in planner): Alice PASS received 19:29 MDT.
+  - All 4 signal kinds wired in planner. 314/314 tests passing, build clean. Signal language policy verified.
+  - 303-23 moved to Done. P3-B is fully complete (all primitives + UI accepted).
+  - Repo clean on main branch. No next phase started.
+  - Anthony must provide explicit scope before P3-C (Recommendation Layer) or any next phase begins.
+
 ### 2026-04-30
 
 - Added `PROJECT.md`, `CONTEXT.md`, and `WORKFLOW.md` to make repo authority explicit and align with the project workflow standard.
