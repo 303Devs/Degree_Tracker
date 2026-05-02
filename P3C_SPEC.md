@@ -2,10 +2,12 @@
 
 **Project:** Degree Tracker  
 **Canonical repo:** `/Users/anthony/Agents/.openclaw/workspace/projects/degree-tracker`  
-**Status:** Draft for Alice review — spec-first only  
+**Status:** Revised draft — Alice WARN fixes applied 2026-05-01 19:55 MDT  
 **Created:** 2026-05-01 19:35 MDT  
 **Linear:** 303-24  
 **Implementation status:** Not approved. Do not launch Gilfoyle or implement until Alice returns PASS or conditional WARN.
+
+**Scope (explicit):** 8 recommendation types. See Section 4. The initial Bob report cited 6; the final approved scope is the 8 types defined here.
 
 ---
 
@@ -129,7 +131,9 @@ Accepted signal kinds:
 
 ## 4. Recommendation Types
 
-P3-C should start with a small closed set. Do not make a generic recommendation engine.
+**Approved scope: 8 types.** This is the explicit approved list. Do not add types without Alice review. Do not collapse to 6 — the 8-type split was chosen because graduation_risk produces 3 structurally distinct candidate actions (4.5, 4.6, 4.7) and compare_plan_tradeoff is factually distinct from the load/prereq/delay/gap types (4.8).
+
+P3-C is a small closed set. Do not make a generic recommendation engine.
 
 ### 4.1 `reduce_semester_load`
 
@@ -315,26 +319,33 @@ P3-C should start with a small closed set. Do not make a generic recommendation 
 
 ### 4.8 `compare_plan_tradeoff`
 
-**Meaning:** Factual tradeoff note between two named plans, not a directive.
+**Meaning:** Factual tradeoff note between two named plans — a comparison output, not a directive.
+
+This type describes what is factually different between two plans. It does not pick a winner. It does not say one plan is better, optimal, safer, or faster unless a named explicit constraint set is present in evidence and the comparison is scoped to that constraint set only.
+
+**Hard rule:** `compare_plan_tradeoff` must not emit ranked or candidate-action language (e.g. "Plan A is better," "consider switching to Plan B," "Plan B is the safer choice") unless `evidence.constraintSet` is non-empty and explicitly names the constraint and comparison basis.
+
+**This type is the ONLY allowed exception to the `sourceSignalIds` requirement.** Because it is driven by P3-A `PlanComparison` facts rather than P3-B signals, `sourceSignalIds` may be empty. But `sourceComparisonFacts` must be non-empty — at least one named `PlanComparison` field or delta.
 
 **Allowed source evidence:**
 
 - P3-A `PlanComparison` facts.
-- P3-B signal deltas calculated for both plans using accepted signal functions.
+- P3-B signal deltas calculated for both plans using accepted signal functions (optional; strengthens evidence).
 
 **Required evidence fields:**
 
-- `sourceComparisonId` or deterministic comparison key.
-- `planAId`, `planBId`.
+- `sourceComparisonId` or deterministic comparison key (required).
+- `planAId`, `planBId` (required).
+- `sourceComparisonFacts`: at least one named `PlanComparison` field (required — non-empty).
 - Specific changed facts: e.g. credit delta, moved courses, requirement coverage delta, prereq risk added/removed, signal count changes.
-- Constraint label if using any summary phrase, e.g. `constraintSet: 'minimize accepted risk signals among compared plans only'`.
+- `constraintSet` only when emitting any summary/ranking phrase; must name the constraint and comparison basis explicitly.
 
 **Invalidated when:**
 
 - Either plan changes.
 - Comparison validation fails.
 - Signal counts/facts change.
-- Constraint set is missing but recommendation tries to rank plans.
+- Any ranking/candidate phrase is present but `constraintSet` is empty or absent.
 
 ---
 
@@ -354,7 +365,12 @@ export type RecommendationType =
   | 'compare_plan_tradeoff';
 
 export type RecommendationPriority = 'low' | 'medium' | 'high' | 'blocking';
-export type RecommendationConfidence = 'low' | 'medium' | 'high';
+/**
+   * Evidence-completeness marker. NOT a probability score, graduation likelihood,
+   * advisor approval rating, or policy correctness estimate.
+   * See Section 6 for exact semantics.
+   */
+  export type RecommendationConfidence = 'low' | 'medium' | 'high';
 
 export interface PlanningRecommendation {
   id: string;
@@ -395,7 +411,7 @@ export interface PlanningRecommendation {
 
 Schema rules:
 
-- `sourceSignalIds` may be empty only for pure P3-A `compare_plan_tradeoff` recommendations, but `sourceComparisonFacts` must then be non-empty.
+- `sourceSignalIds` must be non-empty for all recommendation types EXCEPT `compare_plan_tradeoff`. For `compare_plan_tradeoff`, `sourceSignalIds` may be empty, but `sourceComparisonFacts` MUST be non-empty. This is the only allowed exception. A recommendation of any other type with an empty `sourceSignalIds` is invalid and must not be returned.
 - `message` must be factual and candidate-oriented.
 - `action` is optional. If the system cannot prove a safe concrete action, emit a recommendation with `action.kind: 'review_requirement'` or `no_action_generated`, not a fake move/add suggestion.
 - `id` must be deterministic from type + source signal/comparison key + target scope.
@@ -405,13 +421,20 @@ Schema rules:
 
 ## 6. Confidence Semantics
 
-Confidence answers: **How directly does accepted evidence support this candidate action?**
+**Confidence is an evidence-completeness marker. It is not a probability score, graduation likelihood, advisor approval rating, or policy correctness estimate.** Do not describe confidence values to the user in probabilistic terms.
 
-- `high`: Single accepted signal/fact directly supports the recommendation, all required source fields are present, and no known accepted signal contradicts it.
-- `medium`: Evidence supports the issue, but the candidate action depends on one derived placement/candidate check that must be shown in evidence.
-- `low`: The system can identify the planning issue, but cannot identify a safe concrete action. Low-confidence recommendations must use `review_requirement` or `no_action_generated`, not a course move/add directive.
+Confidence answers: **How directly and completely does accepted evidence support this candidate action?**
 
-Confidence must never mean probability of graduation, advisor approval, course availability, schedule availability, or policy correctness.
+- `high`: A single accepted signal or P3-A comparison fact directly supports the recommendation. All required source fields are present. No known accepted signal contradicts the candidate action.
+- `medium`: Accepted evidence identifies the planning issue. The concrete candidate action (e.g. which course to move, to which term) depends on one derived step — placement feasibility check, prereq satisfaction check, or OR-branch validation — that must be shown explicitly in `evidence.facts`. The derived step must use only accepted primitives.
+- `low`: Accepted evidence identifies the planning issue, but the system cannot determine a safe concrete candidate action with the current data. A `low` confidence recommendation must use `action.kind: 'review_requirement'` or `no_action_generated`. It must not propose a specific course move, add, or remove. The issue is surfaced so a human (or future computation) can investigate.
+
+Confidence MUST NOT depend on:
+- Probability of graduation or degree completion
+- Advisor approval or CU policy correctness
+- Course availability, sections, seats, or term offerings not present in canonical data
+- Schedule feasibility beyond accepted prereq/requirement primitives
+- Any factor not present in accepted P3-A/P3-B evidence passed into the recommendation engine
 
 ---
 
