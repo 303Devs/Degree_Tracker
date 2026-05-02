@@ -55,6 +55,13 @@ This is the decision log and working memory for the project.
 - Alice handoff sent to `#agent-chat` with active trigger `Alice, [Degree Tracker]` (message id `1499948838503583855`).
 - Holding on Gilfoyle delegation until Alice PASS or conditional WARN.
 
+### 2026-05-01 — Standing engineering policy applied
+
+- WORKFLOW.md updated with explicit engineering policy: TDD, Linear issue per task, Turing review required, GitHub Actions CI pre-staged.
+- `.github/workflows/ci.yml` created (runs `npm test` + `npm run build` on push/PR). No GitHub remote yet — CI activates when remote is connected.
+- Definition of Done updated: `npm test` + `npm run build` must pass locally; CI must pass when GitHub is involved.
+- Commit: 76b0bd3. 314/314 tests passing, build clean.
+
 ### 2026-04-30
 
 - Added `PROJECT.md`, `CONTEXT.md`, and `WORKFLOW.md` to make repo authority explicit and align with the project workflow standard.
