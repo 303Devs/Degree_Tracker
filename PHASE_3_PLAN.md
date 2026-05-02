@@ -51,22 +51,25 @@
 - Maybe "safer vs faster" framing
 
 ### P3-C: Recommendation Layer (THIRD)
-**Status:** Spec drafted 2026-05-01. Pending Alice PASS before implementation.
-**Spec:** `P3C_SPEC.md`
+**Status:** Spec-first planning in Alice review. No implementation until Alice returns PASS or conditional WARN.  
+**Spec:** `P3C_SPEC.md`  
 **Linear:** 303-24
 
 **Only after P3-A and P3-B are stable (both complete)**
 
-**Build (6 recommendation types, all strictly downstream of P3-A/P3-B signals):**
-- `resolve_overload` — overloaded semester with movable-course evidence
-- `resolve_underload` — underloaded semester with eligible uncovered courses
-- `address_prereq_bottleneck` — missing/late bottleneck course with downstream count
-- `advance_delayed_critical` — delayed critical course with earliest-possible-term
-- `graduation_risk_action` — factual gap restatement from graduation_risk signal
-- `plan_comparison_insight` — factual delta from PlanComparison result
+**Build direction:**
+- Evidence-backed candidate planning actions only
+- Recommendation schema and semantics strictly downstream of accepted P3-A/P3-B facts/signals
+- Confidence/priority semantics based on evidence strength and accepted signal severity
+- Invalidation rules for every recommendation type
+- Language guardrails that prevent advisor-like, hidden-policy, or "optimal" claims
 
-**Hard constraint:** Every recommendation must cite `sourceSignalIds` from accepted P3-B signals
-or P3-A comparison fields. No signal = no recommendation. No ML, no confidence scores.
+**Explicitly not building yet:**
+- Gilfoyle implementation
+- Generic recommendation engine
+- Hidden academic-advisor logic
+- Hardcoded degree/program rules
+- Any P3-C code before Alice review
 
 **Rule:** Every recommendation must be explainable by concrete system outputs
 

@@ -46,13 +46,13 @@ This is the decision log and working memory for the project.
 
 ### 2026-05-01 — P3-C spec started
 
-- P3-C Recommendation Layer spec drafted (spec-first, no implementation). Linear: 303-24, state: Alice Review.
-- Spec: `P3C_SPEC.md` — 6 recommendation types, all strictly downstream of P3-A/P3-B signals.
-  - `resolve_overload`, `resolve_underload`, `address_prereq_bottleneck`, `advance_delayed_critical`, `graduation_risk_action`, `plan_comparison_insight`
-  - Every recommendation requires `sourceSignalIds` from accepted P3-B signals or P3-A PlanComparison. No signal = no recommendation.
-  - No hidden CU policy, no hardcoded degree rules, no confidence scores, no ML, no advisor language.
-- PHASE_3_PLAN.md updated with P3-C spec status.
-- Alice handoff sent to #agent-degree-tracker (303-24).
+- P3-C Recommendation Layer spec drafted (spec-first, no implementation). Linear: 303-24, target state: Alice Review.
+- Spec: `P3C_SPEC.md` — recommendation scope/semantics strictly downstream of accepted P3-A/P3-B facts and signals.
+  - Covers recommendation types, schema, per-type evidence requirements, P3-A/P3-B source facts, confidence/priority semantics, invalidation, forbidden language, non-goals, acceptance criteria, test requirements, Turing gate, Alice gate, and Anthony escalation boundary.
+  - Every recommendation requires concrete source signal IDs and/or named P3-A comparison facts. No evidence = no recommendation.
+  - No hidden school-policy assumptions, no hardcoded degree rules, no advisor language, and no "optimal" framing without explicit constraints.
+- PHASE_3_PLAN.md updated with P3-C spec-first status.
+- Alice handoff required with active trigger: `Alice, [Degree Tracker]`.
 - Holding on Gilfoyle delegation until Alice PASS or conditional WARN.
 
 ### 2026-04-30

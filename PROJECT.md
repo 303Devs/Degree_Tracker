@@ -3,7 +3,7 @@
 ## Status
 
 - State: Active legacy exception; source currently lives in the OpenClaw project workspace.
-- Phase status: P3-B Optimization Helpers complete; next phase not started.
+- Phase status: P3-C Recommendation Layer spec-first planning; implementation not started pending Alice review.
 - Owner: Bob for execution; Alice for review/judgment when strategic, architectural, or school-sensitive.
 - Last updated: 2026-05-01
 
@@ -54,7 +54,7 @@ Agents must not treat the duplicate as current source of truth. Files in the dup
 ## Next Actions
 
 - [ ] Preserve this repo authority in every future task packet.
-- [ ] Define explicit next phase scope before starting P3-C or any follow-on work.
+- [ ] Keep P3-C implementation blocked until Alice reviews `P3C_SPEC.md` and returns PASS or conditional WARN.
 - [ ] Route non-trivial code/config changes through Turing before Bob calls them done.
 - [ ] Ask Alice/Ada to review architecture or school-sensitive planning decisions when needed.
 

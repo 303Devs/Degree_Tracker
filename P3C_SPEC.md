@@ -1,375 +1,596 @@
-# P3-C Recommendation Layer — Spec (DRAFT, pending Alice review)
+# P3-C Recommendation Layer Scope and Semantics
 
-**Status:** Draft — awaiting Alice PASS before implementation  
-**Created:** 2026-05-01  
-**Phase:** Phase 3-C of the Degree Tracker planning system  
-**Canonical repo:** `/Users/anthony/Agents/.openclaw/workspace/projects/degree-tracker`
-
----
-
-## Hard Constraint
-
-P3-C is strictly downstream of accepted P3-A/P3-B evidence.
-
-A recommendation is only valid if it can be traced to one or more concrete
-`OptimizationSignal` records, `PlanComparison` deltas, or `calcProgress`
-results from accepted primitives. No signal = no recommendation.
+**Project:** Degree Tracker  
+**Canonical repo:** `/Users/anthony/Agents/.openclaw/workspace/projects/degree-tracker`  
+**Status:** Draft for Alice review — spec-first only  
+**Created:** 2026-05-01 19:35 MDT  
+**Linear:** 303-24  
+**Implementation status:** Not approved. Do not launch Gilfoyle or implement until Alice returns PASS or conditional WARN.
 
 ---
 
-## Core Philosophy
+## 1. Purpose
 
-P3-C surfaces actionable interpretation of existing P3-A/P3-B facts.
-It does not introduce new academic rules, policy, or planning intelligence
-that is not already grounded in:
+P3-C adds a narrow recommendation layer on top of accepted P3-A/P3-B evidence.
 
-- audit-derived `RequirementGroup` data
-- `OptimizationSignal[]` from P3-B primitives
-- `PlanComparison` / `PlanComparisonResult` from P3-A
-- `calcProgress()` outputs from `lib/progress.ts`
+The layer may translate concrete comparison diffs and optimization signals into candidate actions, but it must not invent school policy, hidden degree rules, or academic-advising judgment. Every recommendation must be traceable to structured evidence already produced by accepted planning primitives.
 
-P3-C is a signal-aggregation and surfacing layer, not an advisor.
+Good P3-C output sounds like:
 
----
+> `Candidate action: move CSCI 3308 earlier to reduce a delayed-critical signal. Evidence: delayed_critical_course signal delayed_critical_course:CSCI-3308 reports 2 semesters delayed and 3 downstream required dependents.`
 
-## Recommendation Types
+Bad P3-C output sounds like:
 
-### 1. `resolve_overload`
-**Trigger:** One or more `semester_load` signals with `severity: 'risk'` or
-`severity: 'warning'` (credits > 18).  
-**What it says:** "Semester FA26 is overloaded (21 credits). You may have room
-to move [COURSE-ID] to SP27 without breaking prereqs."  
-**Evidence required:** `semester_load` signal + downstream prereq check
-confirming the course can move without creating a prereq violation.  
-**Does not say:** "You should lighten your load." (no imperative; see
-Forbidden Language section)
+> `You should take CSCI 3308 next because it is the optimal path to graduate on time.`
+
+That second sentence is vibes wearing a lab coat. We are not doing that.
 
 ---
 
-### 2. `resolve_underload`
-**Trigger:** One or more `semester_load` signals with `severity: 'warning'`
-(credits < 12).  
-**What it says:** "Semester SP27 has 9 credits (underloaded). Requirement group
-[X] has uncovered courses that could be placed here without a prereq conflict."  
-**Evidence required:** `semester_load` signal + `calcProgress` showing
-uncovered courses eligible for placement in that term.  
-**Does not say:** "Fill up your semester." No imperative framing.
+## 2. Hard Guardrails
+
+1. **Strictly downstream:** Recommendations may only use accepted P3-A/P3-B facts/signals and canonical audit/course/requirement data already consumed by those primitives.
+2. **No hidden school-policy assumptions:** Do not infer CU policy, residency rules, upper-division rules, repeat policy, transfer policy, financial-aid full-time status, or advisor approval requirements unless those rules exist in parsed/canonical input.
+3. **No hardcoded degree rules:** No hardcoded 120 credits, 45 upper-division credits, required course lists, elective pools, grade thresholds, or program-specific constraints unless they are present in canonical audit/program/config data passed into the engine.
+4. **No `optimal` language unless constraints are explicit:** A recommendation may say a candidate reduces a named signal under a named constraint set. It may not call a path optimal/best/guaranteed without exhaustive constraints and comparison basis in evidence.
+5. **No recommendation without concrete supporting evidence:** Every recommendation must carry source signal IDs and/or comparison fact paths.
+6. **No hidden academic advisor:** The system can surface candidate planning actions. It cannot tell Anthony what he must take, promise graduation, or replace advisor review.
+7. **No implementation before Alice review:** This spec must pass Alice review before code work starts. Conditional WARN may allow implementation only inside Alice's exact fix scope.
 
 ---
 
-### 3. `address_prereq_bottleneck`
-**Trigger:** `prereq_bottleneck` signal (`severity: 'warning'` or `'risk'`).  
-**What it says:** "Course [X] is a prerequisite for [N] required downstream
-courses and is not currently in the plan. [X] could be placed as early as
-[TERM] given current prereqs."  
-**Evidence required:** `prereq_bottleneck` signal from `lib/prereq-bottleneck.ts`
-with `downstreamRequiredCount` and earliest available term computed via existing
-prereq logic.  
-**Does not say:** "You must add [X] now." No urgency framing not backed by
-graduation-risk evidence.
+## 3. Source Facts and Signals
 
----
+### 3.1 Accepted P3-A Facts
 
-### 4. `advance_delayed_critical`
-**Trigger:** `delayed_critical_course` signal.  
-**What it says:** "Course [X] is placed in [ACTUAL-TERM] but could be placed as
-early as [EARLIEST-TERM]. It has [N] required downstream dependents in the plan.
-Moving it earlier would unblock [Y, Z]."  
-**Evidence required:** `delayed_critical_course` signal with `earliestPossibleTerm`,
-`actualTerm`, `semestersDelayed`, `downstreamRequiredDependents`.  
-**Does not say:** "Move this course." No imperative. The evidence speaks.
+From `lib/plan-types.ts` / `lib/plan-comparison.ts`:
 
----
+- `PlanComparisonResult.success`
+- `PlanComparisonResult.issues[]`
+- `PlanComparison.courseDiffs`
+  - `onlyInA[]`
+  - `onlyInB[]`
+  - `moved[]`
+  - `unchanged[]`
+- `PlanComparison.semesterDiffs[]`
+  - `semesterId`
+  - `creditsA`
+  - `creditsB`
+  - `creditDelta`
+  - `coursesOnlyInA[]`
+  - `coursesOnlyInB[]`
+- `PlanComparison.requirementDiffs[]`
+  - `groupId`
+  - `groupName`
+  - `completedA/B`
+  - `coveredA/B`
+  - `coverageDelta`
+  - `total`
+- `PlanComparison.prereqRiskDiffs[]`
+  - `courseId`
+  - `semesterA/B`
+  - `riskInA/B`
+  - `changed`
+  - `reason`
+- `PlanComparison.summary`
+  - moved course counts
+  - requirement coverage improvement/regression counts
+  - prereq risks added/removed counts
+  - total/max credits by plan
 
-### 5. `graduation_risk_action`
-**Trigger:** `graduation_risk` signal (`credit_shortfall`,
-`requirement_undercovered`, or `upper_division_shortfall`).  
-**What it says:** factual restatement of the specific risk with the gap value.
-For `requirement_undercovered`: lists the specific uncovered required courses
-that exist in the catalog and have no prereq conflict in a future term.  
-**Evidence required:** `graduation_risk` signal from `lib/graduation-risk.ts`
-with full evidence object (requiredCredits, coveredCount, etc.).  
-**Does not say:** "You need to act now" or "You are in danger of not graduating."
-Factual gap only.
+P3-A facts compare candidate plans. They do not prove one plan is globally better.
 
----
+### 3.2 Accepted P3-B Signals
 
-### 6. `plan_comparison_insight`
-**Trigger:** `PlanComparisonResult` showing meaningful deltas between two named
-plan variants (credit delta, prereq risk change, requirement coverage delta).  
-**What it says:** "Plan A covers [N] more required courses in the upper-division
-group than Plan B. Plan B has [M] fewer overloaded semesters."  
-**Evidence required:** `PlanComparison` output with non-zero deltas in one or
-more of: `creditDeltas`, `requirementDeltas`, `prereqRiskChanges`, semester
-signal count diffs.  
-**Does not say:** "Plan A is better." No ranking without explicit constraint set.
+From `OptimizationSignal` in `lib/plan-types.ts`:
 
----
-
-## Recommendation Schema
-
-```typescript
-export interface Recommendation {
-  /** Unique ID — deterministic from source signals */
+```ts
+type OptimizationSignal = {
   id: string;
-
-  /** Type of recommendation */
-  type:
-    | 'resolve_overload'
-    | 'resolve_underload'
-    | 'address_prereq_bottleneck'
-    | 'advance_delayed_critical'
-    | 'graduation_risk_action'
-    | 'plan_comparison_insight';
-
-  /** Severity of the underlying evidence */
+  kind:
+    | 'semester_load'
+    | 'prereq_bottleneck'
+    | 'delayed_critical_course'
+    | 'graduation_risk';
   severity: 'info' | 'warning' | 'risk';
-
-  /**
-   * Priority within severity tier.
-   * Derived from evidence magnitude (e.g. credits short, semesters delayed,
-   * downstream dependent count). Never synthetic.
-   * 1 = highest within tier.
-   */
-  priority: number;
-
-  /** Factual, non-imperative human-readable text */
+  scope:
+    | { type: 'semester'; term: string }
+    | { type: 'course'; courseId: string }
+    | { type: 'plan' };
   message: string;
-
-  /**
-   * IDs of P3-B OptimizationSignal records or P3-A PlanComparison fields
-   * that produced this recommendation.
-   * Must be non-empty. A recommendation with no sourceSignalIds is invalid.
-   */
-  sourceSignalIds: string[];
-
-  /** Structured evidence — must match source primitive evidence shape */
   evidence: Record<string, unknown>;
+};
+```
 
-  /**
-   * Conditions under which this recommendation is no longer valid.
-   * Used by invalidation logic.
-   */
-  invalidatedBy: InvalidationCondition[];
+Accepted signal kinds:
+
+1. `semester_load`
+   - Underload: credits `< 12`
+   - Overload: credits `> 18`
+   - Extreme overload: credits `>= 21`
+   - Evidence: `credits`, `courseCount`, `threshold`
+
+2. `prereq_bottleneck`
+   - Missing bottleneck course
+   - Late-placement bottleneck course
+   - Evidence includes threshold, downstream counts, direct/transitive dependents, placement details where applicable.
+
+3. `delayed_critical_course`
+   - Required in-plan course delayed at least 2 semesters beyond earliest possible placement.
+   - Evidence includes `earliestPossibleTerm`, `actualTerm`, `semestersDelayed`, `downstreamRequiredDependents`, `requiredOnly: true`.
+
+4. `graduation_risk`
+   - `riskType: credit_shortfall`
+   - `riskType: requirement_undercovered`
+   - `riskType: upper_division_shortfall`
+   - Evidence includes canonical threshold/source fields. No signal is emitted when canonical source is absent.
+
+---
+
+## 4. Recommendation Types
+
+P3-C should start with a small closed set. Do not make a generic recommendation engine.
+
+### 4.1 `reduce_semester_load`
+
+**Meaning:** Candidate action that may reduce a named overload/extreme-overload semester signal.
+
+**Allowed source evidence:**
+
+- `semester_load` signal with `overload` or `extreme_overload` semantics.
+- Optional P3-A comparison showing a candidate plan has lower credits for the same semester without adding prereq risks or requirement regressions.
+
+**Required evidence fields:**
+
+- `sourceSignalIds`: at least one `semester_load:*:overload` or `semester_load:*:extreme_overload` signal.
+- `affectedTerm`.
+- `currentCredits`.
+- `threshold`.
+- If naming a course move: `candidateCourseId`, `fromTerm`, `toTerm`, and comparison evidence showing the move does not add known prereq risks.
+
+**Invalidated when:**
+
+- The overload/extreme-overload signal disappears.
+- Course credits change.
+- The candidate course is no longer in the source term.
+- Moving the candidate creates or worsens a P3-A prereq risk.
+- Moving the candidate creates requirement coverage regression or graduation-risk evidence.
+
+### 4.2 `fill_underloaded_term`
+
+**Meaning:** Candidate action that may use an underloaded term as capacity.
+
+**Allowed source evidence:**
+
+- `semester_load` underload signal.
+- Optional P3-A comparison showing a moved/added course in that term.
+- Canonical prereq validation facts showing the candidate course can be placed there.
+
+**Required evidence fields:**
+
+- `sourceSignalIds`: at least one `semester_load:*:underload` signal.
+- `targetTerm`.
+- `currentCredits`.
+- `threshold`.
+- If naming a candidate course: proof it is available for that term and does not create known prereq/requirement regressions.
+
+**Invalidated when:**
+
+- The term is no longer underloaded.
+- Candidate placement violates prereqs/coreqs.
+- Candidate placement causes another term to become overloaded or worsens a risk signal.
+- Candidate course is not degree-applicable when the recommendation depends on degree-applicable credit.
+
+### 4.3 `sequence_prereq_bottleneck`
+
+**Meaning:** Candidate action that may place or move a bottleneck prerequisite earlier than affected downstream required courses.
+
+**Allowed source evidence:**
+
+- `prereq_bottleneck` signal.
+- Optional `delayed_critical_course` signal for the same course.
+- P3-A prereq risk diffs showing risks added/removed by an alternative plan.
+
+**Required evidence fields:**
+
+- `sourceSignalIds`: at least one `prereq_bottleneck:*` signal.
+- `courseId`.
+- `downstreamRequiredDependents` or direct/transitive dependent lists.
+- Current placement/missing status.
+- Candidate term if proposing placement.
+
+**Invalidated when:**
+
+- Bottleneck threshold is no longer met.
+- The course is no longer required or no longer supports required downstream courses.
+- Candidate term is not before affected dependents.
+- OR-prereq branch evidence changes and this course is no longer necessary.
+- The course is already completed or already placed early enough.
+
+### 4.4 `accelerate_delayed_critical`
+
+**Meaning:** Candidate action that may move a delayed critical required course closer to its earliest possible term.
+
+**Allowed source evidence:**
+
+- `delayed_critical_course` signal.
+- Optional `prereq_bottleneck` signal if severity/rationale depends on bottleneck status.
+
+**Required evidence fields:**
+
+- `sourceSignalIds`: at least one `delayed_critical_course:*` signal.
+- `courseId`.
+- `earliestPossibleTerm`.
+- `actualTerm`.
+- `semestersDelayed`.
+- `downstreamRequiredDependents`.
+- Candidate term if proposed.
+
+**Invalidated when:**
+
+- Earliest possible term changes.
+- Actual placement changes enough that delay is below signal threshold.
+- Required downstream dependent set changes.
+- Missing/unplanned prereqs make the candidate earlier term unsupported.
+- The candidate move creates another accepted risk signal.
+
+### 4.5 `cover_requirement_gap`
+
+**Meaning:** Candidate action that may address a canonical requirement undercoverage signal.
+
+**Allowed source evidence:**
+
+- `graduation_risk` with `riskType: requirement_undercovered`.
+- Canonical `RequirementGroup` course pool and `calcProgress(..., { includePlanned: true })` semantics.
+- Optional P3-A requirement coverage diffs.
+
+**Required evidence fields:**
+
+- `sourceSignalIds`: at least one `graduation_risk:requirement_undercovered:*` signal.
+- `requirementId`.
+- `requiredCount`.
+- `coveredCount`.
+- `missingCount`.
+- Candidate course IDs only if they come from the canonical requirement pool.
+
+**Invalidated when:**
+
+- Requirement group no longer exists in canonical audit/config data.
+- Requirement coverage reaches required count.
+- Candidate course is not in the canonical requirement pool.
+- Candidate course has non-degree-credit status/grade when degree applicability matters.
+- Requirement type semantics change.
+
+### 4.6 `address_credit_shortfall`
+
+**Meaning:** Candidate action that may address a canonical graduation credit shortfall.
+
+**Allowed source evidence:**
+
+- `graduation_risk` with `riskType: credit_shortfall`.
+- Canonical `requiredCredits.source` from program/audit/config.
+- Degree-applicable credit semantics accepted in P3-B.
+
+**Required evidence fields:**
+
+- `sourceSignalIds`: `graduation_risk:credit_shortfall`.
+- `requiredCredits`.
+- `plannedDegreeApplicableCredits`.
+- `creditsShort`.
+- `source`.
+- Candidate courses only if their degree applicability is concrete and source is known.
+
+**Invalidated when:**
+
+- Required-credit source disappears or changes.
+- Planned degree-applicable credits meet/exceed required credits.
+- Candidate course is not degree-applicable.
+- Completed course grade/status changes to a non-credit state.
+
+### 4.7 `address_upper_division_shortfall`
+
+**Meaning:** Candidate action that may address a canonical upper-division minimum-hours shortfall.
+
+**Allowed source evidence:**
+
+- `graduation_risk` with `riskType: upper_division_shortfall`.
+- Canonical upper-division `minimum_hours` requirement group.
+
+**Required evidence fields:**
+
+- `sourceSignalIds`: `graduation_risk:upper_division_shortfall:*`.
+- `requirementId`.
+- `requiredHours`.
+- `plannedHours`.
+- `hoursShort`.
+- `source`.
+- Candidate courses only if canonical data marks them as satisfying the requirement; do not parse course numbers as a new policy source.
+
+**Invalidated when:**
+
+- Canonical upper-division requirement group is absent.
+- Planned hours meet/exceed required hours.
+- Candidate course is not canonical evidence for upper-division satisfaction.
+- Requirement hours/source changes.
+
+### 4.8 `compare_plan_tradeoff`
+
+**Meaning:** Factual tradeoff note between two named plans, not a directive.
+
+**Allowed source evidence:**
+
+- P3-A `PlanComparison` facts.
+- P3-B signal deltas calculated for both plans using accepted signal functions.
+
+**Required evidence fields:**
+
+- `sourceComparisonId` or deterministic comparison key.
+- `planAId`, `planBId`.
+- Specific changed facts: e.g. credit delta, moved courses, requirement coverage delta, prereq risk added/removed, signal count changes.
+- Constraint label if using any summary phrase, e.g. `constraintSet: 'minimize accepted risk signals among compared plans only'`.
+
+**Invalidated when:**
+
+- Either plan changes.
+- Comparison validation fails.
+- Signal counts/facts change.
+- Constraint set is missing but recommendation tries to rank plans.
+
+---
+
+## 5. Recommendation Schema
+
+Proposed TypeScript shape:
+
+```ts
+export type RecommendationType =
+  | 'reduce_semester_load'
+  | 'fill_underloaded_term'
+  | 'sequence_prereq_bottleneck'
+  | 'accelerate_delayed_critical'
+  | 'cover_requirement_gap'
+  | 'address_credit_shortfall'
+  | 'address_upper_division_shortfall'
+  | 'compare_plan_tradeoff';
+
+export type RecommendationPriority = 'low' | 'medium' | 'high' | 'blocking';
+export type RecommendationConfidence = 'low' | 'medium' | 'high';
+
+export interface PlanningRecommendation {
+  id: string;
+  type: RecommendationType;
+  priority: RecommendationPriority;
+  confidence: RecommendationConfidence;
+  scope:
+    | { type: 'plan'; planId?: string }
+    | { type: 'semester'; planId?: string; term: string }
+    | { type: 'course'; planId?: string; courseId: string }
+    | { type: 'requirement'; planId?: string; requirementId: string }
+    | { type: 'comparison'; planAId: string; planBId: string };
+  title: string;
+  message: string;
+  action?: {
+    kind:
+      | 'move_course'
+      | 'add_course'
+      | 'remove_course'
+      | 'review_requirement'
+      | 'compare_plans'
+      | 'no_action_generated';
+    courseId?: string;
+    fromTerm?: string;
+    toTerm?: string;
+    requirementId?: string;
+  };
+  evidence: {
+    sourceSignalIds: string[];
+    sourceComparisonFacts: string[];
+    sourceDataKinds: Array<'audit' | 'program' | 'config' | 'course' | 'plan' | 'comparison' | 'optimization_signal'>;
+    facts: Record<string, unknown>;
+    constraintSet?: string;
+  };
+  invalidatedBy: string[];
 }
-
-export type InvalidationCondition =
-  | { kind: 'signal_resolved'; signalId: string }
-  | { kind: 'course_added'; courseId: string }
-  | { kind: 'course_moved'; courseId: string; targetTerm: string }
-  | { kind: 'plan_changed' };
 ```
 
----
+Schema rules:
 
-## Evidence Requirements (per type)
-
-| Type | Required source signals | Required evidence fields |
-|---|---|---|
-| `resolve_overload` | `semester_load` (warning/risk) | `semesterId`, `credits`, `threshold`, `movableCourseId`, `targetTerm` (optional) |
-| `resolve_underload` | `semester_load` (warning, underload) | `semesterId`, `credits`, `threshold`, `availableCourseIds` (calcProgress uncovered) |
-| `address_prereq_bottleneck` | `prereq_bottleneck` | `courseId`, `downstreamRequiredCount`, `earliestAvailableTerm` |
-| `advance_delayed_critical` | `delayed_critical_course` | `courseId`, `earliestPossibleTerm`, `actualTerm`, `semestersDelayed`, `downstreamRequiredDependents` |
-| `graduation_risk_action` | `graduation_risk` | full evidence from graduation-risk signal |
-| `plan_comparison_insight` | `PlanComparison` delta fields | delta type, plan names, delta magnitude |
-
-A `Recommendation` object with an empty or missing `sourceSignalIds` array
-is invalid and must not be returned.
+- `sourceSignalIds` may be empty only for pure P3-A `compare_plan_tradeoff` recommendations, but `sourceComparisonFacts` must then be non-empty.
+- `message` must be factual and candidate-oriented.
+- `action` is optional. If the system cannot prove a safe concrete action, emit a recommendation with `action.kind: 'review_requirement'` or `no_action_generated`, not a fake move/add suggestion.
+- `id` must be deterministic from type + source signal/comparison key + target scope.
+- `facts` must duplicate the minimum evidence needed to render/explain the recommendation without re-running hidden logic.
 
 ---
 
-## Priority Semantics
+## 6. Confidence Semantics
 
-Priority is derived from the magnitude of the underlying evidence.
-It is not assigned by intuition or heuristics.
+Confidence answers: **How directly does accepted evidence support this candidate action?**
 
-**Rules:**
-- Within a severity tier, `priority: 1` = most urgent.
-- `graduation_risk` signals always sort before load/scheduling signals
-  within the same severity tier.
-- Priority is computed at analysis time, not stored.
-- Two recommendations with equivalent evidence magnitude get the same priority.
+- `high`: Single accepted signal/fact directly supports the recommendation, all required source fields are present, and no known accepted signal contradicts it.
+- `medium`: Evidence supports the issue, but the candidate action depends on one derived placement/candidate check that must be shown in evidence.
+- `low`: The system can identify the planning issue, but cannot identify a safe concrete action. Low-confidence recommendations must use `review_requirement` or `no_action_generated`, not a course move/add directive.
 
-**Priority is not:**
-- A judgment about which course is "more important"
-- A CU policy opinion
-- A GPA projection
+Confidence must never mean probability of graduation, advisor approval, course availability, schedule availability, or policy correctness.
 
 ---
 
-## Confidence Semantics
+## 7. Priority Semantics
 
-P3-C does not emit confidence scores.
+Priority answers: **How important is it to inspect this candidate action relative to other surfaced candidates?**
 
-Rationale: confidence scores imply probabilistic modeling that does not exist
-in this system. If the underlying signal is present, the recommendation is
-surfaced. If it is not, it is not. There is no middle ground to model.
+- `blocking`: Backed by a `risk` signal that prevents a plan from satisfying known canonical requirements, e.g. requirement undercoverage or large credit/upper-division shortfall. This still does not mean graduation is impossible; it means accepted evidence currently blocks the plan from satisfying known parsed constraints.
+- `high`: Backed by a `risk` signal or multiple warning signals affecting the same course/term/requirement.
+- `medium`: Backed by one warning signal with a concrete supported action.
+- `low`: Informational tradeoff or warning without a concrete supported action.
 
----
-
-## What Invalidates Each Recommendation
-
-| Type | Invalidated when |
-|---|---|
-| `resolve_overload` | Overloaded semester credits drop to ≤18; or the identified movable course is moved or removed |
-| `resolve_underload` | Underloaded semester credits rise to ≥12; or all uncovered candidate courses are placed |
-| `address_prereq_bottleneck` | The bottleneck course is added to the plan |
-| `advance_delayed_critical` | The delayed course is moved earlier than threshold; or downstream deps are removed |
-| `graduation_risk_action` | The underlying graduation_risk signal resolves (gap closes) |
-| `plan_comparison_insight` | The compared plans no longer differ on the identified dimension |
-
-Invalidation is checked by re-running source primitives, not stored state.
+Priority must not encode personal preference, workload tolerance, professor quality, course availability, financial aid status, or advisor judgment unless explicit canonical data exists.
 
 ---
 
-## Forbidden Language
+## 8. Forbidden Language
 
-The following must never appear in a `Recommendation.message`:
+Do not generate recommendation titles/messages containing these words or claims unless explicitly quoted from source data and not used as system advice:
 
-- `should` / `must` / `need to` / `have to`
-- `optimal` / `best` / `better` / `worse` / `recommended`
-- `strongly` / `highly` / `urgently`
-- `risk of not graduating` (graduation risk signal uses factual gap language only)
-- `advisor` / `advise` / `advice`
-- Any course quality or difficulty judgment
+- `optimal`, `best`, `perfect`, `ideal`
+- `guaranteed`, `ensures`, `will graduate`, `on track to graduate` without named constraint/source
+- `should`, `must`, `need to`, `have to`, `required to take` unless referring to a parsed requirement group fact
+- `advisor-approved`, `CU-approved`, `official`, `compliant` unless backed by an official parsed source and scoped to that source
+- `smart`, `recommended by AI`, `better path`, `worse path`
+- `safe` / `safer` unless the exact risk metric and comparison set are named
+- `faster` unless the exact completion-term delta and compared plans are named
 
-Allowed: factual gap descriptions, term names, course IDs, credit counts,
-downstream dependent counts, delta values from P3-A/P3-B.
+Preferred phrasing:
 
----
-
-## Non-Goals
-
-❌ GPA projections  
-❌ Course difficulty rankings  
-❌ "Best next course" ML scoring  
-❌ Advisor-facing academic risk narratives  
-❌ Any CU-specific policy not already in the audit/requirements data  
-❌ Dynamic catalog lookups (future semesters, new courses)  
-❌ Hardcoded degree credit totals without a canonical source  
-❌ Confidence scores or probabilistic modeling  
-❌ Recommendations without a source signal  
+- `Candidate action:`
+- `This may reduce...`
+- `Evidence shows...`
+- `Compared with [plan A], [plan B] has...`
+- `This is based on [signal/fact], not advisor approval.`
 
 ---
 
-## Source P3-A/P3-B Facts Used
+## 9. Non-Goals
 
-| Source | What it provides |
-|---|---|
-| `lib/semester-load.ts` | `semester_load` signals with credit counts, thresholds |
-| `lib/prereq-bottleneck.ts` | `prereq_bottleneck` signals with downstream required counts |
-| `lib/delayed-critical.ts` | `delayed_critical_course` signals with delay magnitude and deps |
-| `lib/graduation-risk.ts` | `graduation_risk` signals with gap values and canonical sources |
-| `lib/plan-comparison.ts` | `PlanComparison` with credit, requirement, prereq, and move deltas |
-| `lib/progress.ts` `calcProgress()` | uncovered required courses per group |
-| `lib/prereqs.ts` `isRuleSatisfied()` | prereq satisfaction checks for placement feasibility |
+P3-C does not include:
 
----
-
-## Acceptance Criteria
-
-1. `generateRecommendations(plan, courses, options)` returns `Recommendation[]`.
-2. Every returned `Recommendation` has `sourceSignalIds.length >= 1`.
-3. Every `sourceSignalId` references a real signal id from a P3-B primitive
-   or a named `PlanComparison` field.
-4. No recommendation is emitted when its source signal is absent.
-5. No forbidden language in any `message` field.
-6. Invalidation conditions for each type are documented and tested.
-7. Priority ordering within severity tier is deterministic given the same inputs.
-8. All 6 recommendation types have at least 3 unit tests:
-   - one that confirms the recommendation is emitted when signal is present
-   - one that confirms it is NOT emitted when signal is absent
-   - one that confirms the message contains no forbidden language
-9. Build clean; all existing tests (314+) still pass.
-10. No hardcoded degree rules not present in passed-in options/data.
+- Full academic advising automation.
+- Course availability, section scheduling, seats, professors, registration windows, or term offerings unless canonical data is later added and reviewed.
+- Financial aid/full-time status policy logic.
+- Hidden CU policy assumptions.
+- ML/DL career-path ranking.
+- GPA projection or grade-outcome recommendations.
+- Export/advisor packet work.
+- Drag-and-drop UI implementation.
+- Automatic plan mutation.
+- Any implementation work before Alice review.
 
 ---
 
-## Test Requirements
+## 10. Acceptance Criteria
 
-### Unit tests (per recommendation type, minimum)
-- signal-present → recommendation emitted with correct fields
-- signal-absent → no recommendation emitted
-- forbidden-language guard (enumerate banned phrases, assert none present)
-- invalidation condition — recommendation not emitted after source signal resolves
+The P3-C spec is acceptable when:
 
-### Integration tests
-- `generateRecommendations` with a plan that triggers all 6 types → correct count
-- `generateRecommendations` with a clean plan → empty array
-- priority ordering is stable across runs with identical input
-
-### Regression tests
-- All existing P3-A/P3-B tests still pass (no regression on primitives)
+1. Every recommendation type maps to accepted P3-A facts and/or P3-B signal kinds.
+2. Every recommendation requires concrete evidence.
+3. Every recommendation defines invalidation conditions.
+4. Confidence and priority are evidence semantics, not personal/academic advice semantics.
+5. Forbidden language blocks advisor-like or hidden-policy claims.
+6. Non-goals keep P3-C from becoming a vibes engine.
+7. Test requirements are explicit enough for Gilfoyle to implement without guessing.
+8. Turing and Alice gates are explicit.
+9. Anthony escalation boundary is explicit.
+10. The spec does not authorize implementation until Alice returns PASS or conditional WARN.
 
 ---
 
-## Implementation Shape (proposal — subject to Alice review)
+## 11. Test Requirements for Future Implementation
 
-```typescript
-// lib/recommendations.ts
+When implementation is later approved, tests must be written before or alongside code.
 
-export function generateRecommendations(
-  plan: PlanVariant,
-  courses: Course[],
-  options: RecommendationOptions,
-): Recommendation[]
+Minimum required test groups:
+
+1. **Schema validation tests**
+   - Reject recommendation without `sourceSignalIds` and without `sourceComparisonFacts`.
+   - Reject recommendation with unsupported `type`.
+   - Require deterministic ID shape.
+
+2. **Evidence mapping tests**
+   - Each recommendation type can be produced from its allowed accepted signal/fact.
+   - Each recommendation type is not produced when required evidence fields are missing.
+
+3. **Invalidation tests**
+   - Signal removed -> recommendation removed.
+   - Requirement/credit/source fields changed -> affected recommendation removed or recalculated.
+   - Candidate move that adds prereq risk -> move recommendation suppressed.
+
+4. **Language policy tests**
+   - No forbidden terms in generated `title` or `message`.
+   - No `should`/`must`/`optimal`/`best`/advisor-like language.
+
+5. **Priority/confidence tests**
+   - `risk` signals map no lower than `high` unless no action is generated.
+   - missing candidate action lowers confidence.
+   - confidence never depends on unsupported external data.
+
+6. **Golden fixture tests**
+   - Use existing ML/DL plan fixture to produce stable comparison tradeoff notes.
+   - Fixture recommendations must cite source facts/signals by ID/path.
+
+7. **No hidden policy regression tests**
+   - No hardcoded 120 credits.
+   - No inferred upper-division rule without canonical `minimum_hours` group.
+   - No course-number parsing as policy source.
+
+Verification commands expected after implementation:
+
+```bash
+npm test
+npm run build
 ```
 
-```typescript
-export interface RecommendationOptions {
-  /** Pre-computed P3-B signals, or omit to compute inline */
-  signals?: OptimizationSignal[];
-  /** Pre-computed P3-A comparison result, or omit if no comparison */
-  planComparison?: PlanComparisonResult;
-  /** Passed through to graduation-risk analysis */
-  requiredCredits?: RequiredCreditsInput;
-  requirements?: RequirementGroup[];
-}
-```
-
-Single file `lib/recommendations.ts` with tests in
-`__tests__/recommendations.test.ts`. No new data sources introduced.
+Implementation cannot be called done until Turing verifies tests/build and Alice reviews semantics if the output language or recommendation semantics changed.
 
 ---
 
-## Review Gates
+## 12. Turing Gate
 
-### Turing gate
-Required after Gilfoyle implementation before Alice review:
-- All acceptance criteria above
-- Forbidden-language grep clean
-- All tests passing (existing + new)
-- Build clean
-- No new hardcoded rules
+Turing must review any P3-C implementation before Alice final review.
 
-### Alice review gate
-Required before any UI wiring or deployment:
-- Recommendation semantics review: are they strictly downstream?
-- Forbidden-language audit
-- Priority logic review
-- Non-goals confirmed (no scope creep into advisor territory)
-- Invalidation logic review
+Turing should verify:
 
-### Anthony escalation boundary
-Escalate to Anthony before implementation if:
-- A new canonical data source is required (e.g. a required-credits config that
-  does not exist in the repo/audit data)
-- A recommendation type is proposed that implies CU policy not in audit data
-- A confidence/probability model is proposed
-- Any external API, ML model, or new dependency is proposed
-- The scope of "recommendation" has grown beyond the 6 types above
+- Spec conformance by recommendation type.
+- Test coverage for schema, evidence mapping, invalidation, language policy, priority/confidence, fixtures, and hidden-policy regressions.
+- `npm test` passes.
+- `npm run build` passes.
+- No secret exposure.
+- No implementation expands beyond Alice-approved P3-C scope.
+
+A Turing PASS only clears QA. It does not authorize completion if Alice semantic review is required.
 
 ---
 
-## Open Questions (for Alice review)
+## 13. Alice Review Gate
 
-1. Should `plan_comparison_insight` be in P3-C or treated as a P3-A UI
-   enhancement? It does not require new primitives.
-2. Priority tie-breaking: when two `resolve_overload` signals have equal
-   credit magnitude, is alphabetical semesterId acceptable?
-3. Should recommendations be persisted or always computed on demand?
-   Preference: on-demand; no persistence layer in P3-C.
+Alice must review this spec before implementation begins.
+
+Alice should return:
+
+- `PASS`: Bob may create implementation packets for Gilfoyle inside this spec.
+- `WARN`: Bob may proceed only if Alice gives exact fix scope or explicit conditional implementation scope.
+- `FAIL`: Bob must revise the spec and resubmit; no implementation.
+
+Alice review should focus on:
+
+- Whether recommendation semantics are too advisor-like.
+- Whether evidence requirements are strong enough.
+- Whether confidence/priority semantics are safe.
+- Whether forbidden language is sufficient.
+- Whether acceptance/test criteria are implementation-ready.
+- Whether Anthony needs to decide any product/school-risk tradeoff before implementation.
 
 ---
 
-*P3-C spec draft. No implementation until Alice returns PASS or conditional WARN.*
+## 14. Anthony Escalation Boundary
+
+Anthony decision is required if:
+
+- P3-C scope expands beyond evidence-backed candidate planning actions.
+- The team wants to add or accept any school-policy assumption not present in canonical data.
+- The team wants to hardcode degree rules or program requirements.
+- The team wants to use `optimal`, `best`, `safe/safer`, or `faster` framing without explicit constraints.
+- Alice and Bob disagree on semantic direction.
+- Alice returns FAIL or a WARN requiring product/school-risk judgment.
+- Any external action is proposed: deploy, upload, publish, school/advisor communication, account changes, or remote push.
+
+Anthony decision is not needed for this spec-first draft and Alice review handoff.
+
+---
+
+## 15. Staff Roles
+
+- **Bob:** operational owner, Linear/docs/status/handoff.
+- **Knope:** spec/documentation drafting role for this planning artifact.
+- **Turing:** future QA gate for implementation; not launched for implementation now.
+- **Alice:** semantic/spec review gate before implementation.
+- **Gilfoyle:** explicitly not launched. No implementation until Alice PASS or conditional WARN.
