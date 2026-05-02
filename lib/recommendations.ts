@@ -126,6 +126,15 @@ export function generateRecommendations(
     .sort((a, b) => a.id.localeCompare(b.id));
 }
 
+/**
+ * Compute signals that can be derived safely from the provided options alone.
+ *
+ * NOTE: prereq_bottleneck and delayed_critical_course signals are NOT computed
+ * here. Those primitives require full schedule context (required course IDs,
+ * horizon term, completed prereq set) that is not available in RecommendationOptions.
+ * Callers must inject those signals via options.signals if they want
+ * sequence_prereq_bottleneck and accelerate_delayed_critical recommendations.
+ */
 function computeAvailableSignals(
   plan: PlanVariant,
   courses: Course[],
@@ -163,10 +172,14 @@ function recommendFromSemesterLoad(
       sourceSignalIds: [signal.id],
       scope: { type: 'semester', planId: plan.id, term: targetTerm },
       priority: signal.severity === 'risk' ? 'high' : 'medium',
-      confidence: 'medium',
+      // Confidence is 'low' because no prereq/coreq check for the candidate
+      // course in targetTerm has been performed. A concrete add_course action
+      // would require verifying the candidate can be placed here without
+      // creating a prereq risk. That check is not available inline.
+      confidence: 'low',
       title: `Candidate action: use capacity in ${targetTerm}`,
-      message: `Candidate action: evaluate adding ${candidateCourseId} to ${targetTerm}. Evidence shows semester_load signal ${signal.id} has ${currentCredits} credits below threshold ${threshold}.`,
-      action: { kind: 'add_course', courseId: candidateCourseId, toTerm: targetTerm },
+      message: `Candidate action: evaluate adding courses to ${targetTerm}. Evidence shows semester_load signal ${signal.id} has ${currentCredits} credits below threshold ${threshold}. Uncovered requirement courses exist but placement feasibility requires prereq verification.`,
+      action: { kind: 'no_action_generated' },
       facts: { targetTerm, currentCredits, threshold, candidateCourseIds: uncovered },
       sourceDataKinds: ['optimization_signal', 'course', 'plan', 'audit'],
       invalidatedBy: [

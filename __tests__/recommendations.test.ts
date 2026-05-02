@@ -312,4 +312,13 @@ describe('recommendation hidden policy regression guards', () => {
     const numberedOnly: RequirementGroup[] = [{ ...requirements[0], coursePool: ['UD-4100'] }];
     expect(byType('address_upper_division_shortfall', recs([allSignals[6]], { requirements: numberedOnly }))).toBeUndefined();
   });
+
+  it('does not emit prereq_bottleneck or delayed_critical without options.signals', () => {
+    // These types require caller-injected signals; inline computation is not
+    // safe without full schedule context. Confirm they are absent when
+    // options.signals is not provided.
+    const inline = generateRecommendations(plan, courses, { requirements, requiredCredits });
+    expect(byType('sequence_prereq_bottleneck', inline)).toBeUndefined();
+    expect(byType('accelerate_delayed_critical', inline)).toBeUndefined();
+  });
 });
