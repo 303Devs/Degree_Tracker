@@ -2,6 +2,6 @@
 
 import CourseLibraryWorkspace from "@/components/CourseLibraryWorkspace";
 
-export default function CoursesPage() {
+export default function CourseLibraryPage() {
   return <CourseLibraryWorkspace />;
 }
