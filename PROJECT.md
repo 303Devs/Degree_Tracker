@@ -2,65 +2,55 @@
 
 ## Status
 
-- State: Active legacy exception; source currently lives in the OpenClaw project workspace.
-- Phase status: P3-C Recommendation Layer spec-first planning; implementation not started pending Alice review.
-- Owner: Bob for execution; Alice for review/judgment when strategic, architectural, or school-sensitive.
-- Last updated: 2026-05-01
+- State: Product reset in progress; source currently lives in the OpenClaw project workspace.
+- Product focus: upload a degree audit, parse requirements/courses, enrich course catalog data, track GPA, and plan semesters with prerequisite/corequisite warnings.
+- Owner: Anthony; implementation work should stay scoped to the product described here.
+- Last updated: 2026-05-03
 
 ## Goal
 
-Degree Tracker is a Next.js app for CU Boulder degree audit upload/parsing, requirements tracking, semester planning, GPA/progress views, prerequisite validation, and plan comparison.
+Degree Tracker is a local Next.js app for turning a degree audit into a usable course-planning workspace.
 
-The current product direction is audit-first: CU degree audit PDFs are the source of truth, and planning features should remain explainable from parsed audit/course/requirement data.
+The app should help a student answer:
+
+- What requirements are complete, partial, or missing?
+- Which electives can satisfy each category?
+- What happens to GPA under what-if grades?
+- Which future semesters contain which courses?
+- Which planned courses have missing prerequisites or corequisites?
+- Which course catalog records still need enrichment?
+
+The parser should stay school-agnostic where possible. CU Boulder catalog enrichment is a local optional integration because Anthony's current audit is CU Boulder.
 
 ## Current Scope
 
-- In scope: local app implementation, parser/data model improvements, progress semantics, planner validation, plan comparison, tests, and project documentation.
-- Out of scope: deploys, public releases, external uploads, school submission, account changes, or migration to another repo path without Anthony approval.
+- In scope: audit upload/parsing, normalized requirements/courses, elective selection, GPA and what-if views, semester planner, prereq/coreq validation, CU catalog enrichment, and simple local JSON storage.
+- Out of scope: ML/DL path optimization, plan comparison demos, recommendation engines, advisor-style claims, deploys, public releases, school submission, account changes, or migration to another repo path without Anthony approval.
 
 ## Repos / Paths
 
-- Project control folder: `/Users/anthony/Agents/.openclaw/workspace/projects/degree-tracker`
-- Source repo: `/Users/anthony/Agents/.openclaw/workspace/projects/degree-tracker`
+- Canonical working repo: `/Users/anthony/Agents/.openclaw/workspace/projects/degree-tracker`
+- CU catalog scraper: `/Users/anthony/Projects/cu-prereq-scraper`
 - Duplicate non-canonical repo: `/Users/anthony/Projects/degree-tracker`
 - Related authority doc: `REPO_AUTHORITY.md`
-- Related spec: `SPEC.md`
-- Current phase plan: `PHASE_3_PLAN.md`
-- Related tools: Next.js, TypeScript, Vitest, local JSON data
-- Legacy exception: yes. The active working repo currently lives in the OpenClaw project workspace. Do not switch to `/Users/anthony/Projects/degree-tracker` unless Anthony explicitly approves migration.
+- Product spec: `SPEC.md`
+- Related tools: Next.js, TypeScript, Vitest, local JSON data, optional Playwright scraper
 
-## Execution Mode
+## Local Workflows
 
-- Direct live repo / git worktree / tool sandbox: direct live repo in the legacy OpenClaw workspace path.
-- Branch or worktree: current branch unless Bob/Anthony approve branch/worktree use for a larger task.
-- Sandbox required: no by default. Use sandbox only for risky/untrusted dependency or command experiments.
-
-## Repo Authority
-
-Canonical working repo:
-
-```txt
-/Users/anthony/Agents/.openclaw/workspace/projects/degree-tracker
-```
-
-Non-canonical duplicate:
-
-```txt
-/Users/anthony/Projects/degree-tracker
-```
-
-Agents must not treat the duplicate as current source of truth. Files in the duplicate are salvage candidates only.
+- `npm test` - run unit tests.
+- `npm run build` - production build/type check.
+- `npm run scrape:cu` - write current course list to the CU scraper, run it, and merge names/credits/descriptions/prereqs/coreqs back into `data/courses.json`.
+- `npm run enrich` - merge an existing `/Users/anthony/Projects/cu-prereq-scraper/prereqs.json` file without running the scraper.
 
 ## Next Actions
 
-- [ ] Preserve this repo authority in every future task packet.
-- [ ] Keep P3-C implementation blocked until Alice reviews `P3C_SPEC.md` and returns PASS or conditional WARN.
-- [ ] Maintain one Linear issue per implementation/spec/QA task before work is treated as active.
-- [ ] Require tests for non-trivial changes; local `npm test` and `npm run build` must pass before code is complete.
-- [ ] Route non-trivial code/config changes through Turing before Bob calls them done.
-- [ ] Require GitHub Actions CI to pass when GitHub is involved before normal GitHub development continues.
-- [ ] Ask Alice/Ada to review architecture or school-sensitive planning decisions when needed.
+- [ ] Keep the app centered on audit upload, requirement progress, elective choices, GPA what-if, and semester planning.
+- [ ] Strengthen generic audit parsing with fixtures from more than one school/program.
+- [ ] Keep CU-specific catalog scraping as optional enrichment, not a hard product dependency.
+- [ ] Require tests for non-trivial parser, data model, GPA, requirement, and planner validation changes.
+- [ ] Remove any feature/docs that reintroduce ML/DL path optimization or recommendation-engine framing.
 
 ## Blockers
 
-- No active blocker recorded after P3-B completion. Agents must still inspect git status before assigning implementation and must not overwrite unrelated user/agent work.
+- No active blocker recorded. Agents must still inspect git status before editing and must not overwrite unrelated user/agent work.

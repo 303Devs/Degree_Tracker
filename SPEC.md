@@ -364,7 +364,7 @@ STAT 4350 → STAT 4360 (Applied Deep Learning 2)
 APPM 4440 → APPM 4490 (Theory of Machine Learning)
 ```
 
-The full graph with OR alternatives is in the data model. Gilfoyle should encode this as structured `PrereqRule` objects.
+The full graph with OR alternatives belongs in structured `PrereqRule` objects.
 
 ---
 

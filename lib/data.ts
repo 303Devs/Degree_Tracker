@@ -78,6 +78,63 @@ export function deleteCourse(id: string): boolean {
   return true;
 }
 
+function collectRuleCourseIds(rule: PrereqRule | null, ids: Set<string>): void {
+  if (!rule) return;
+  if (rule.type === "course") {
+    ids.add(spaceToDash(rule.courseId));
+    return;
+  }
+  for (const child of rule.rules) collectRuleCourseIds(child, ids);
+}
+
+function courseIdToNumber(id: string): string {
+  return id.replace("-", " ");
+}
+
+/**
+ * Adds placeholder courses for IDs referenced by requirements or prereq/coreq
+ * rules but missing from courses.json. Scraper enrichment can later fill in
+ * titles, credits, descriptions, and richer rules.
+ */
+export function ensureReferencedCourseStubs(): { added: number } {
+  const courses = readCourses();
+  const requirements = readRequirements();
+  const existing = new Set(courses.map((c) => c.id));
+  const referenced = new Set<string>();
+
+  for (const course of courses) {
+    collectRuleCourseIds(course.prereqs, referenced);
+    collectRuleCourseIds(course.coreqs, referenced);
+  }
+  for (const requirement of requirements) {
+    for (const id of requirement.coursePool) referenced.add(spaceToDash(id));
+    for (const id of requirement.selectedCourses ?? []) referenced.add(spaceToDash(id));
+  }
+
+  const additions: Course[] = [];
+  for (const id of Array.from(referenced).sort()) {
+    if (existing.has(id) || id.endsWith("-0000")) continue;
+    additions.push({
+      id,
+      number: courseIdToNumber(id),
+      name: courseIdToNumber(id),
+      credits: 0,
+      prereqs: null,
+      coreqs: null,
+      status: "not_started",
+      countedTowardDegree: true,
+      countsTowardGPA: true,
+      countsTowardEarnedHours: true,
+      source: "stub",
+    });
+  }
+
+  if (additions.length > 0) {
+    writeCourses([...courses, ...additions]);
+  }
+  return { added: additions.length };
+}
+
 // ---------------------------------------------------------------------------
 // Requirements
 // ---------------------------------------------------------------------------
@@ -353,6 +410,7 @@ interface ScraperEntry {
   number: string;
   name: string;
   credits: number;
+  description?: string;
   prereqs: PrereqRule | null;
   coreqs: PrereqRule | null;
 }
@@ -412,6 +470,16 @@ export function enrichCoursesFromScraper(): { enriched: number } {
       changed = true;
     }
 
+    if (entry.description && !course.description) {
+      course.description = entry.description;
+      changed = true;
+    }
+
+    if (entry.description && !course.notes) {
+      course.notes = entry.description;
+      changed = true;
+    }
+
     const convertedPrereqs = convertRuleCourseIds(entry.prereqs);
     if (convertedPrereqs !== null && course.prereqs === null) {
       course.prereqs = convertedPrereqs;
@@ -436,4 +504,3 @@ export function enrichCoursesFromScraper(): { enriched: number } {
   writeCourses(courses);
   return { enriched };
 }
-

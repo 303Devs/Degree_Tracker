@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "enrich": "npx tsx scripts/enrich-courses.ts",
+    "scrape:cu": "node scripts/scrape-cu-catalog.js",
     "test": "vitest run",
     "test:watch": "vitest"
   },

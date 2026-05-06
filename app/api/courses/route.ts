@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readCourses, createCourse } from "@/lib/data";
+import { ensureReferencedCourseStubs, readCourses, createCourse } from "@/lib/data";
 import type { Course } from "@/lib/types";
 
 export const runtime = "nodejs";
 
 export async function GET() {
   try {
+    ensureReferencedCourseStubs();
     const courses = readCourses();
     return NextResponse.json(courses);
   } catch (err) {
@@ -37,6 +38,8 @@ export async function POST(request: NextRequest) {
       gradePoints: body.gradePoints,
       notes: body.notes,
       countedTowardDegree: body.countedTowardDegree ?? true,
+      countsTowardGPA: body.countsTowardGPA ?? true,
+      countsTowardEarnedHours: body.countsTowardEarnedHours ?? true,
       manuallyAdded: body.manuallyAdded ?? true,
       source: body.source ?? "manual",
     };

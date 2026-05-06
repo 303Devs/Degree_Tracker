@@ -1,7 +1,7 @@
 export type CourseStatus = "not_started" | "planned" | "in_progress" | "registered" | "completed";
 
 /** Where this course data originated. Used for merge conflict resolution. */
-export type CourseSource = "audit" | "manual" | "stub" | "enriched";
+export type CourseSource = "audit" | "manual" | "catalog" | "stub" | "enriched";
 
 export type PrereqRule =
   | { type: "course"; courseId: string }
@@ -12,6 +12,7 @@ export interface Course {
   id: string;           // e.g. "STAT-3100"
   number: string;       // e.g. "STAT 3100"
   name: string;
+  description?: string;
   credits: number;
   prereqs: PrereqRule | null;
   coreqs: PrereqRule | null;

@@ -18,6 +18,7 @@ interface PrereqEntry {
   courseId: string;
   name?: string;
   credits?: number;
+  description?: string;
   prereqs: PrereqRule | null;
   coreqs?: PrereqRule | null;
 }
@@ -89,6 +90,8 @@ export async function POST(request: NextRequest) {
         coreqs: convertRuleCourseIds(entry.coreqs ?? null),
         ...(entry.name && isStubName(current.name, current.number) ? { name: entry.name } : {}),
         ...(entry.credits && current.credits === 0 ? { credits: entry.credits } : {}),
+        ...(entry.description && !current.description ? { description: entry.description } : {}),
+        ...(entry.description && !current.notes ? { notes: entry.description } : {}),
       };
       updated++;
     }
@@ -134,8 +137,8 @@ function normalizePrereqData(raw: unknown): PrereqEntry[] {
   // Object map: { "STAT 3100": { number, name, credits, prereqs, coreqs }, ... }
   if (typeof raw === "object" && raw !== null) {
     return Object.entries(raw as Record<string, unknown>).map(([courseId, val]) => {
-      const v = val as { name?: string; credits?: number; prereqs?: PrereqRule | null; coreqs?: PrereqRule | null };
-      return { courseId, name: v.name, credits: v.credits, prereqs: v.prereqs ?? null, coreqs: v.coreqs ?? null };
+      const v = val as { name?: string; credits?: number; description?: string; prereqs?: PrereqRule | null; coreqs?: PrereqRule | null };
+      return { courseId, name: v.name, credits: v.credits, description: v.description, prereqs: v.prereqs ?? null, coreqs: v.coreqs ?? null };
     });
   }
 

@@ -22,7 +22,8 @@
       "CSCI-1200__SP04",
       "GEOG-2002",
       "KAPH-1010",
-      "SOCY-2041"
+      "SOCY-2041",
+      "CSCI-1200"
     ]
   },
   {
@@ -145,7 +146,7 @@
     "label": "Spring 2026",
     "type": "spring",
     "year": 2026,
-    "status": "in_progress",
+    "status": "completed",
     "courses": [
       "CSCI-1300",
       "ENGL-3016",
@@ -158,7 +159,7 @@
     "label": "Summer 2026",
     "type": "summer",
     "year": 2026,
-    "status": "registered",
+    "status": "in_progress",
     "courses": [
       "CSPB-2270",
       "GEOG-1962",
@@ -177,5 +178,45 @@
       "MATH-2300",
       "STAT-2600"
     ]
+  },
+  {
+    "id": "SP27",
+    "label": "Spring 2027",
+    "type": "spring",
+    "year": 2027,
+    "status": "planned",
+    "courses": []
+  },
+  {
+    "id": "SU27",
+    "label": "Summer 2027",
+    "type": "summer",
+    "year": 2027,
+    "status": "planned",
+    "courses": []
+  },
+  {
+    "id": "FA27",
+    "label": "Fall 2027",
+    "type": "fall",
+    "year": 2027,
+    "status": "planned",
+    "courses": []
+  },
+  {
+    "id": "SP28",
+    "label": "Spring 2028",
+    "type": "spring",
+    "year": 2028,
+    "status": "planned",
+    "courses": []
+  },
+  {
+    "id": "SU28",
+    "label": "Summer 2028",
+    "type": "summer",
+    "year": 2028,
+    "status": "planned",
+    "courses": []
   }
 ]

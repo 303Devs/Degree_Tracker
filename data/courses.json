@@ -13,7 +13,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Explores political, social and cultural changes in American life since Reconstruction. Focuses on shifting social and political relations as the U.S. changed from a nation of farmers and small-town dwellers to an urban, industrial society; the changing meaning of American identity in a society divided by ethnicity, race and class; and the emergence of the U.S. as a world power.",
+    "notes": "Explores political, social and cultural changes in American life since Reconstruction. Focuses on shifting social and political relations as the U.S. changed from a nation of farmers and small-town dwellers to an urban, industrial society; the changing meaning of American identity in a society divided by ethnicity, race and class; and the emergence of the U.S. as a world power."
   },
   {
     "id": "IPHY-2420",
@@ -29,7 +31,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Focuses on the basic anatomy, physiology, and chemistry of nutrition. Topics include weight management, the role of diet and lifestyle in disease prevention, specific nutrient deficiencies and toxicities, nutrition standards and guidelines, sports nutrition recommendations, agricultural practices, and food policy issues. Degree credit not granted for this course and <a href=\"/search/?p=IPHY%203400\" data-action=\"result-detail\" data-group=\"code:IPHY 3400\"  class=\"notoffered\">IPHY 3400</a>.",
+    "notes": "Focuses on the basic anatomy, physiology, and chemistry of nutrition. Topics include weight management, the role of diet and lifestyle in disease prevention, specific nutrient deficiencies and toxicities, nutrition standards and guidelines, sports nutrition recommendations, agricultural practices, and food policy issues. Degree credit not granted for this course and <a href=\"/search/?p=IPHY%203400\" data-action=\"result-detail\" data-group=\"code:IPHY 3400\"  class=\"notoffered\">IPHY 3400</a>."
   },
   {
     "id": "MUEL-2852",
@@ -45,7 +49,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Examines Rock music and its subgenres, primarily as a fusion of African-American and European-American musical styles. Considers precursors to Rock style (e.g. Blues, Folk) and their contributions. Traces the development of Rock as an art form as well as its cultural significance and saturation from the 1960s to the end of the 20th century. Offered fall and spring semesters.",
+    "notes": "Examines Rock music and its subgenres, primarily as a fusion of African-American and European-American musical styles. Considers precursors to Rock style (e.g. Blues, Folk) and their contributions. Traces the development of Rock as an art form as well as its cultural significance and saturation from the 1960s to the end of the 20th century. Offered fall and spring semesters."
   },
   {
     "id": "SOCY-1001",
@@ -61,7 +67,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Examines basic sociological ideas including social relations, social interaction, social structure, and social change. Examples are drawn from societies around the world.",
+    "notes": "Examines basic sociological ideas including social relations, social interaction, social structure, and social change. Examples are drawn from societies around the world."
   },
   {
     "id": "ASTR-1120",
@@ -84,25 +92,50 @@
     "id": "CSCI-1200",
     "number": "CSCI 1200",
     "name": "Intro to Computing",
-    "credits": 3,
+    "credits": 4,
     "prereqs": null,
     "coreqs": null,
     "status": "completed",
     "grade": "F",
     "semester": "FA04",
     "gradePoints": 0,
-    "notes": "Attempted credits estimated",
+    "notes": "4 Credits Verified via 2004-2005 CU Boulder Course Catalogue. ",
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": false,
-    "source": "audit"
+    "source": "audit",
+    "description": "Teaches computational thinking and techniques for writing computer programs using the Python programming language. Intended for students who realize that computational skills are beneficial to all fields of study, but who have little or no experience in programming or are not Computer Science majors. Students will be expected to create computer programs to solve problems in a range of disciplines. Does not count as Computer Science credit for the Computer Science BA, BS, or minor. Degree credit not granted for this course and <a href=\"/search/?p=LING%201200\" data-action=\"result-detail\" data-group=\"code:LING 1200\" >LING 1200</a> or <a href=\"/search/?p=INFO%201701\" data-action=\"result-detail\" data-group=\"code:INFO 1701\" >INFO 1701</a>."
   },
   {
     "id": "PHYS-1110",
     "number": "PHYS 1110",
     "name": "General Physics 1",
-    "credits": 0,
-    "prereqs": null,
+    "credits": 4,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "GEEN-3830"
+        },
+        {
+          "type": "course",
+          "courseId": "APPM-1345"
+        },
+        {
+          "type": "course",
+          "courseId": "APPM-1350"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-1300"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-1310"
+        }
+      ]
+    },
     "coreqs": null,
     "status": "completed",
     "grade": "W",
@@ -111,7 +144,8 @@
     "countedTowardDegree": true,
     "countsTowardGPA": false,
     "countsTowardEarnedHours": false,
-    "source": "audit"
+    "source": "audit",
+    "description": "First semester of three-semester sequence for science and engineering students. Covers kinematics, dynamics, momentum of particles and rigid bodies, work and energy, gravitation, and simple harmonic motion. Degree credit not granted for this course and <a href=\"/search/?p=PHYS%201115\" data-action=\"result-detail\" data-group=\"code:PHYS 1115\" >PHYS 1115</a>."
   },
   {
     "id": "QRMS-1010",
@@ -229,7 +263,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Provides a foundation for engaging with scientific research on human behavior, and surveys the basic principles and theories of psychology. Topics include biological and hereditary influences on behavior; human perception, attention, learning, and memory; social influences; personality; psychiatric disorders and treatments.",
+    "notes": "Provides a foundation for engaging with scientific research on human behavior, and surveys the basic principles and theories of psychology. Topics include biological and hereditary influences on behavior; human perception, attention, learning, and memory; social influences; personality; psychiatric disorders and treatments."
   },
   {
     "id": "RLST-2700",
@@ -245,7 +281,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Studies the religious lifeways of diverse Indigenous peoples in North America. The course considers how these religious lifeways facilitate healing, movements of social protest, and efforts for self-determination in response to ongoing forms of colonialism. Students will critically explore the impact of colonial structures on Native American religious traditions, such as missionization, and evaluate the meaning of decolonization as both a pathway and goal supporting Native liberation. Same as <a href=\"/search/?p=ETHN%202703\" data-action=\"result-detail\" data-group=\"code:ETHN 2703\" >ETHN 2703</a>.",
+    "notes": "Studies the religious lifeways of diverse Indigenous peoples in North America. The course considers how these religious lifeways facilitate healing, movements of social protest, and efforts for self-determination in response to ongoing forms of colonialism. Students will critically explore the impact of colonial structures on Native American religious traditions, such as missionization, and evaluate the meaning of decolonization as both a pathway and goal supporting Native liberation. Same as <a href=\"/search/?p=ETHN%202703\" data-action=\"result-detail\" data-group=\"code:ETHN 2703\" >ETHN 2703</a>."
   },
   {
     "id": "WRTG-1150",
@@ -261,7 +299,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Rhetorically informed introduction to college writing. Focuses on rhetorical analysis, argument, inquiry and information literacy. Taught as a writing workshop, the course emphasizes practicing writing strategies for all phases of the writing process. For placement criteria, see the arts and sciences advising office. May be repeated up to 6 total credit hours.",
+    "notes": "Rhetorically informed introduction to college writing. Focuses on rhetorical analysis, argument, inquiry and information literacy. Taught as a writing workshop, the course emphasizes practicing writing strategies for all phases of the writing process. For placement criteria, see the arts and sciences advising office. May be repeated up to 6 total credit hours."
   },
   {
     "id": "ARTS-1171",
@@ -277,7 +317,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "An introduction to contemporary photographic practice. The course introduces photographic technique, history, and image evaluation while emphasizing visual literacy, conceptual development and personal expression. Degree credit not granted for this course and <a href=\"/search/?p=ARTS%202171\" data-action=\"result-detail\" data-group=\"code:ARTS 2171\" >ARTS 2171</a>.",
+    "notes": "An introduction to contemporary photographic practice. The course introduces photographic technique, history, and image evaluation while emphasizing visual literacy, conceptual development and personal expression. Degree credit not granted for this course and <a href=\"/search/?p=ARTS%202171\" data-action=\"result-detail\" data-group=\"code:ARTS 2171\" >ARTS 2171</a>."
   },
   {
     "id": "EDUC-4161",
@@ -309,7 +351,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Introduces non-business students to the multiple facets of entrepreneurship and the entrepreneurial process. Entrepreneurship is a process of fundamental transformation: from innovative idea to enterprise and from enterprise to valuethus, entrepreneurship is more than a business practice. Innovation is central to this process and students will be challenged to develop creative solutions to a problem or need. Degree credit not granted for Business majors.",
+    "notes": "Introduces non-business students to the multiple facets of entrepreneurship and the entrepreneurial process. Entrepreneurship is a process of fundamental transformation: from innovative idea to enterprise and from enterprise to valuethus, entrepreneurship is more than a business practice. Innovation is central to this process and students will be challenged to develop creative solutions to a problem or need. Degree credit not granted for Business majors."
   },
   {
     "id": "COMM-2500",
@@ -325,7 +369,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Examines how communication processes such as language and nonverbal behavior shape perceptions of self, influence identity, and impact interpersonal roles and relationships. Students learn theories of human interaction and consider how this can be used to improve relational communication. Recommended prerequisites: <a href=\"/search/?p=COMM%201210\" data-action=\"result-detail\" data-group=\"code:COMM 1210\" >COMM 1210</a> and <a href=\"/search/?p=COMM%201600\" data-action=\"result-detail\" data-group=\"code:COMM 1600\"  class=\"notoffered\">COMM 1600</a>.",
+    "notes": "Examines how communication processes such as language and nonverbal behavior shape perceptions of self, influence identity, and impact interpersonal roles and relationships. Students learn theories of human interaction and consider how this can be used to improve relational communication. Recommended prerequisites: <a href=\"/search/?p=COMM%201210\" data-action=\"result-detail\" data-group=\"code:COMM 1210\" >COMM 1210</a> and <a href=\"/search/?p=COMM%201600\" data-action=\"result-detail\" data-group=\"code:COMM 1600\"  class=\"notoffered\">COMM 1600</a>."
   },
   {
     "id": "GEOL-1010",
@@ -342,7 +388,8 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": false,
-    "source": "audit"
+    "source": "audit",
+    "description": "Introductory geology for majors and non-majors. Studies Earth, its materials, its characteristics, its dynamic processes, and how it relates to people. Separate lab (<a href=\"/search/?p=GEOL%201030\" data-action=\"result-detail\" data-group=\"code:GEOL 1030\"  class=\"notoffered\">GEOL 1030</a>) is recommended. Degree credit not granted for both GEOL 1010 and <a href=\"/search/?p=GEOL%201012\" data-action=\"result-detail\" data-group=\"code:GEOL 1012\"  class=\"notoffered\">GEOL 1012</a>."
   },
   {
     "id": "SPAN-1010",
@@ -358,7 +405,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "A beginning course that assumes no prior knowledge or experience with Spanish. A variety of language-teaching approaches are used to help students develop all four basic language skills: listening, speaking, reading and writing. Degree credit not granted for this course and <a href=\"/search/?p=SPAN%201150\" data-action=\"result-detail\" data-group=\"code:SPAN 1150\"  class=\"notoffered\">SPAN 1150</a>.",
+    "notes": "A beginning course that assumes no prior knowledge or experience with Spanish. A variety of language-teaching approaches are used to help students develop all four basic language skills: listening, speaking, reading and writing. Degree credit not granted for this course and <a href=\"/search/?p=SPAN%201150\" data-action=\"result-detail\" data-group=\"code:SPAN 1150\"  class=\"notoffered\">SPAN 1150</a>."
   },
   {
     "id": "BCOR-1030",
@@ -374,7 +423,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Helps develop basic communication skills to prepare you for success in the business world. This communication and social science theory-based, skill-building course is framed in Fiske and Cuddy's person perception theory that all people are perceived on two dimensions, competence and warmth. You will learn how to use communication skills to strategically demonstrate those dimensions.",
+    "notes": "Helps develop basic communication skills to prepare you for success in the business world. This communication and social science theory-based, skill-building course is framed in Fiske and Cuddy's person perception theory that all people are perceived on two dimensions, competence and warmth. You will learn how to use communication skills to strategically demonstrate those dimensions."
   },
   {
     "id": "BCOR-2001",
@@ -446,7 +497,19 @@
     "number": "ECON 3403",
     "name": "Interntl Economics and Policy",
     "credits": 3,
-    "prereqs": null,
+    "prereqs": {
+      "type": "and",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "ECON-2010"
+        },
+        {
+          "type": "course",
+          "courseId": "ECON-2020"
+        }
+      ]
+    },
     "coreqs": null,
     "status": "completed",
     "grade": "A",
@@ -455,7 +518,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Examines national and supranational policies that affect the international economy, with attention to trade barriers, economic nationalism and regionalism, international political economy, exchange market intervention, and international transmission of economic perturbations. Economics (ECON) majors may be approved to enroll with advisor &amp; instructor approval and count towards the major GPA. Majors must consult with assigned ECON advisor to determine eligibility to be enrolled. May not be taken after either <a href=\"/search/?p=ECON%204413\" data-action=\"result-detail\" data-group=\"code:ECON 4413\" >ECON 4413</a> or <a href=\"/search/?p=ECON%204423\" data-action=\"result-detail\" data-group=\"code:ECON 4423\" >ECON 4423</a>.",
+    "notes": "Examines national and supranational policies that affect the international economy, with attention to trade barriers, economic nationalism and regionalism, international political economy, exchange market intervention, and international transmission of economic perturbations. Economics (ECON) majors may be approved to enroll with advisor &amp; instructor approval and count towards the major GPA. Majors must consult with assigned ECON advisor to determine eligibility to be enrolled. May not be taken after either <a href=\"/search/?p=ECON%204413\" data-action=\"result-detail\" data-group=\"code:ECON 4413\" >ECON 4413</a> or <a href=\"/search/?p=ECON%204423\" data-action=\"result-detail\" data-group=\"code:ECON 4423\" >ECON 4423</a>."
   },
   {
     "id": "FNCE-2820",
@@ -471,7 +536,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Introduces the concepts, tools, and applications of personal financial planning. Provides the students with tools and techniques for managing their personal finances. With these skills, students gain the ability to effectively deal with their ever-changing financial environment.",
+    "notes": "Introduces the concepts, tools, and applications of personal financial planning. Provides the students with tools and techniques for managing their personal finances. With these skills, students gain the ability to effectively deal with their ever-changing financial environment."
   },
   {
     "id": "GEOG-1982",
@@ -503,7 +570,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Covers simplifying algebraic expressions, factoring, linear and quadratic equations, inequalities, exponentials, logarithms, functions, graphs and systems of equations. Department enforced prerequisite: one year high school algebra. Degree credit not granted for this course and <a href=\"/search/?p=MATH%201005\" data-action=\"result-detail\" data-group=\"code:MATH 1005\"  class=\"notoffered\">MATH 1005</a>.",
+    "notes": "Covers simplifying algebraic expressions, factoring, linear and quadratic equations, inequalities, exponentials, logarithms, functions, graphs and systems of equations. Department enforced prerequisite: one year high school algebra. Degree credit not granted for this course and <a href=\"/search/?p=MATH%201005\" data-action=\"result-detail\" data-group=\"code:MATH 1005\"  class=\"notoffered\">MATH 1005</a>."
   },
   {
     "id": "MATH-2510",
@@ -519,7 +588,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Elementary statistical measures. Introduces statistical distributions, statistical inference, hypothesis testing and linear regression. Department enforced prerequisite: two years of high school algebra.",
+    "notes": "Elementary statistical measures. Introduces statistical distributions, statistical inference, hypothesis testing and linear regression. Department enforced prerequisite: two years of high school algebra."
   },
   {
     "id": "MKTG-2700",
@@ -535,7 +606,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Digital marketing is an exciting area of marketing practice. Designed to give the knowledge, skills and experiences for digital marketing. Topics covered include search engine optimization, social media data analysis, search ads, the advertising technology business landscape and email marketing. An important course theme is that digital efforts should be designed with performance measurement in mind. Degree credit not granted for this course and <a href=\"/search/?p=MKTG%203700\" data-action=\"result-detail\" data-group=\"code:MKTG 3700\" >MKTG 3700</a>.",
+    "notes": "Digital marketing is an exciting area of marketing practice. Designed to give the knowledge, skills and experiences for digital marketing. Topics covered include search engine optimization, social media data analysis, search ads, the advertising technology business landscape and email marketing. An important course theme is that digital efforts should be designed with performance measurement in mind. Degree credit not granted for this course and <a href=\"/search/?p=MKTG%203700\" data-action=\"result-detail\" data-group=\"code:MKTG 3700\" >MKTG 3700</a>."
   },
   {
     "id": "BCOR-1015",
@@ -551,7 +624,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Provides an overview of the nature business in a global economy. In addition to exploring the economic, governmental, social and environmental context in which businesses operate, students will discover how business creates value and takes advantage of opportunities and challenges. Using examples, cases and projects, students will learn about the business functions in an integrated format. Weekly discussion of current events will focus on entrepreneurship, ethics, international business, business and society, and other topics.",
+    "notes": "Provides an overview of the nature business in a global economy. In addition to exploring the economic, governmental, social and environmental context in which businesses operate, students will discover how business creates value and takes advantage of opportunities and challenges. Using examples, cases and projects, students will learn about the business functions in an integrated format. Weekly discussion of current events will focus on entrepreneurship, ethics, international business, business and society, and other topics."
   },
   {
     "id": "ECON-2020",
@@ -567,7 +642,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Provides an overview of the economy, examining the flows of resources and outputs and the factors determining the levels of income and prices. Explores policy problems of inflation, unemployment and economic growth.",
+    "notes": "Provides an overview of the economy, examining the flows of resources and outputs and the factors determining the levels of income and prices. Explores policy problems of inflation, unemployment and economic growth."
   },
   {
     "id": "ENGL-3060",
@@ -616,7 +693,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Where do we come from? This course provides a brief introduction to the practice of archaeology and then emphasizes the evidence for major events/transitions in human history over the last 2.5 million years. Required for ANTH majors.",
+    "notes": "Where do we come from? This course provides a brief introduction to the practice of archaeology and then emphasizes the evidence for major events/transitions in human history over the last 2.5 million years. Required for ANTH majors."
   },
   {
     "id": "ECON-2010",
@@ -632,7 +711,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Examines basic concepts of microeconomics or the behavior and the interactions of individuals, firms and government. Topics include determining economic problems, how consumers and businesses make decisions, how markets work, and how they fail and how government actions affect markets.",
+    "notes": "Examines basic concepts of microeconomics or the behavior and the interactions of individuals, firms and government. Topics include determining economic problems, how consumers and businesses make decisions, how markets work, and how they fail and how government actions affect markets."
   },
   {
     "id": "MATH-1112",
@@ -648,7 +729,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Gives students experience with mathematical problem solving in real business contexts. Students will work with data and spreadsheets to build and analyze mathematical models. Themes of the course include applying logical operators to model business rules, interpreting data and using tables and graphs, finding break-even and optimal points, and addressing uncertainty and forecasting  Degree credit not granted for this course and <a href=\"/search/?p=MATH%201012\" data-action=\"result-detail\" data-group=\"code:MATH 1012\" >MATH 1012</a>.",
+    "notes": "Gives students experience with mathematical problem solving in real business contexts. Students will work with data and spreadsheets to build and analyze mathematical models. Themes of the course include applying logical operators to model business rules, interpreting data and using tables and graphs, finding break-even and optimal points, and addressing uncertainty and forecasting  Degree credit not granted for this course and <a href=\"/search/?p=MATH%201012\" data-action=\"result-detail\" data-group=\"code:MATH 1012\" >MATH 1012</a>."
   },
   {
     "id": "PHIL-1100",
@@ -664,7 +747,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Introduces students to moral philosophy by having them study and evaluate prominent moral theories and their application to a selection of real-world moral problems. Theories studied may include utilitarianism, rights theory, virtue ethics, social contract theory, divine command theory, cultural relativism, and natural law theory. Social problems covered may include abortion, world poverty, animal rights, reparations for slavery, gun rights, or similar such controversies.",
+    "notes": "Introduces students to moral philosophy by having them study and evaluate prominent moral theories and their application to a selection of real-world moral problems. Theories studied may include utilitarianism, rights theory, virtue ethics, social contract theory, divine command theory, cultural relativism, and natural law theory. Social problems covered may include abortion, world poverty, animal rights, reparations for slavery, gun rights, or similar such controversies."
   },
   {
     "id": "APPM-1650",
@@ -698,7 +783,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Uses Python to teach the fundamentals of computer programming with an emphasis on mathematical and statistical applications. Topics will include data types, data structures, iteration, visualization, and simulations. Techniques covered will be applicable to many scientific and technical fields. No prior programming experience is required. Formerly offered as a special topics course.",
+    "notes": "Uses Python to teach the fundamentals of computer programming with an emphasis on mathematical and statistical applications. Topics will include data types, data structures, iteration, visualization, and simulations. Techniques covered will be applicable to many scientific and technical fields. No prior programming experience is required. Formerly offered as a special topics course."
   },
   {
     "id": "CSCI-2824",
@@ -770,33 +857,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
-  },
-  {
-    "id": "CSCI-2400",
-    "number": "CSCI 2400",
-    "name": "Computer Systems",
-    "credits": 4,
-    "prereqs": {
-      "type": "course",
-      "courseId": "CSCI-2270"
-    },
-    "coreqs": null,
-    "status": "not_started",
-    "source": "enriched"
-  },
-  {
-    "id": "CSCI-3155",
-    "number": "CSCI 3155",
-    "name": "Principles of Programming Languages",
-    "credits": 3,
-    "prereqs": {
-      "type": "course",
-      "courseId": "CSCI-2824"
-    },
-    "coreqs": null,
-    "status": "not_started",
-    "source": "enriched"
+    "source": "audit",
+    "description": "Covers foundational materials for computer science that is often assumed in advanced courses. Topics include set theory, Boolean algebra, functions and relations, graphs, propositional and predicate calculus, proofs, mathematical induction, recurrence relations, combinatorics, discrete probability. Focuses on examples based on diverse applications of computer science. Recommended prerequisite: Calc 2 (<a href=\"/search/?p=APPM%201360\" data-action=\"result-detail\" data-group=\"code:APPM 1360\" >APPM 1360</a> or <a href=\"/search/?p=MATH%202300\" data-action=\"result-detail\" data-group=\"code:MATH 2300\" >MATH 2300</a>) is strongly recommended. Same as <a href=\"/search/?p=CSPB%202824\" data-action=\"result-detail\" data-group=\"code:CSPB 2824\" >CSPB 2824</a>.",
+    "notes": "Covers foundational materials for computer science that is often assumed in advanced courses. Topics include set theory, Boolean algebra, functions and relations, graphs, propositional and predicate calculus, proofs, mathematical induction, recurrence relations, combinatorics, discrete probability. Focuses on examples based on diverse applications of computer science. Recommended prerequisite: Calc 2 (<a href=\"/search/?p=APPM%201360\" data-action=\"result-detail\" data-group=\"code:APPM 1360\" >APPM 1360</a> or <a href=\"/search/?p=MATH%202300\" data-action=\"result-detail\" data-group=\"code:MATH 2300\" >MATH 2300</a>) is strongly recommended. Same as <a href=\"/search/?p=CSPB%202824\" data-action=\"result-detail\" data-group=\"code:CSPB 2824\" >CSPB 2824</a>."
   },
   {
     "id": "MATH-2300",
@@ -830,7 +893,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Continuation of <a href=\"/search/?p=MATH%201300\" data-action=\"result-detail\" data-group=\"code:MATH 1300\" >MATH 1300</a>. Topics include transcendental functions, methods of integration, polar coordinates, differential equations, improper integrals, infinite sequences and series, Taylor polynomials and Taylor series.  Department enforced prerequisite: <a href=\"/search/?p=MATH%201300\" data-action=\"result-detail\" data-group=\"code:MATH 1300\" >MATH 1300</a> or <a href=\"/search/?p=MATH%201310\" data-action=\"result-detail\" data-group=\"code:MATH 1310\"  class=\"notoffered\">MATH 1310</a> or <a href=\"/search/?p=APPM%201345\" data-action=\"result-detail\" data-group=\"code:APPM 1345\"  class=\"notoffered\">APPM 1345</a> or <a href=\"/search/?p=APPM%201350\" data-action=\"result-detail\" data-group=\"code:APPM 1350\" >APPM 1350</a> (minimum grade C-). Degree credit not granted for this course and <a href=\"/search/?p=APPM%201360\" data-action=\"result-detail\" data-group=\"code:APPM 1360\" >APPM 1360</a>.",
+    "notes": "Continuation of <a href=\"/search/?p=MATH%201300\" data-action=\"result-detail\" data-group=\"code:MATH 1300\" >MATH 1300</a>. Topics include transcendental functions, methods of integration, polar coordinates, differential equations, improper integrals, infinite sequences and series, Taylor polynomials and Taylor series.  Department enforced prerequisite: <a href=\"/search/?p=MATH%201300\" data-action=\"result-detail\" data-group=\"code:MATH 1300\" >MATH 1300</a> or <a href=\"/search/?p=MATH%201310\" data-action=\"result-detail\" data-group=\"code:MATH 1310\"  class=\"notoffered\">MATH 1310</a> or <a href=\"/search/?p=APPM%201345\" data-action=\"result-detail\" data-group=\"code:APPM 1345\"  class=\"notoffered\">APPM 1345</a> or <a href=\"/search/?p=APPM%201350\" data-action=\"result-detail\" data-group=\"code:APPM 1350\" >APPM 1350</a> (minimum grade C-). Degree credit not granted for this course and <a href=\"/search/?p=APPM%201360\" data-action=\"result-detail\" data-group=\"code:APPM 1360\" >APPM 1360</a>."
   },
   {
     "id": "STAT-2600",
@@ -868,21 +933,54 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Introduces students to importing, tidying, exploring, visualizing, summarizing, and modeling data and then communicating the results of these analyses to answer relevant questions and make decisions. Students will learn how to program in R using reproducible workflows. During weekly lab sessions students will collaborate with their teammates to pose and answer questions using real-world datasets.",
+    "notes": "Introduces students to importing, tidying, exploring, visualizing, summarizing, and modeling data and then communicating the results of these analyses to answer relevant questions and make decisions. Students will learn how to program in R using reproducible workflows. During weekly lab sessions students will collaborate with their teammates to pose and answer questions using real-world datasets."
   },
   {
     "id": "CSPB-2270",
     "number": "CSPB 2270",
     "name": "Comp Sci 2: Data Struct",
     "credits": 4,
-    "prereqs": null,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "ASEN-1320"
+        },
+        {
+          "type": "or",
+          "rules": [
+            {
+              "type": "course",
+              "courseId": "CSCI-1300"
+            },
+            {
+              "type": "course",
+              "courseId": "CSCI-1310"
+            },
+            {
+              "type": "course",
+              "courseId": "CSPB-1300"
+            },
+            {
+              "type": "course",
+              "courseId": "ECEN-1310"
+            }
+          ]
+        }
+      ]
+    },
     "coreqs": null,
-    "status": "registered",
+    "status": "in_progress",
     "semester": "SU26",
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Studies data abstractions (e.g., stacks, queues, lists, trees, graphs, heaps, hash tables, priority queues) and their representation techniques (e.g., linking, arrays). Introduces concepts used in algorithm design and analysis including criteria for selecting data structures to fit their applications. Knowledge of C++ is highly recommended. Degree credit not granted for this course and <a href=\"/search/?p=CSCI%202275\" data-action=\"result-detail\" data-group=\"code:CSCI 2275\" >CSCI 2275</a>. Same as <a href=\"/search/?p=CSCI%202270\" data-action=\"result-detail\" data-group=\"code:CSCI 2270\" >CSCI 2270</a>.",
+    "notes": "Studies data abstractions (e.g., stacks, queues, lists, trees, graphs, heaps, hash tables, priority queues) and their representation techniques (e.g., linking, arrays). Introduces concepts used in algorithm design and analysis including criteria for selecting data structures to fit their applications. Knowledge of C++ is highly recommended. Degree credit not granted for this course and <a href=\"/search/?p=CSCI%202275\" data-action=\"result-detail\" data-group=\"code:CSCI 2275\" >CSCI 2275</a>. Same as <a href=\"/search/?p=CSCI%202270\" data-action=\"result-detail\" data-group=\"code:CSCI 2270\" >CSCI 2270</a>."
   },
   {
     "id": "GEOG-1962",
@@ -891,12 +989,14 @@
     "credits": 3,
     "prereqs": null,
     "coreqs": null,
-    "status": "registered",
+    "status": "in_progress",
     "semester": "SU26",
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Familiarizes students with a geographic understanding of conflicts around the globe and of economic, political and cultural globalization. Analyzes the relationship between global forces, regions and local interests in contemporary territorial and geopolitical tensions and conflicts, emphasizing issues such as nationalism, migration, labor and natural resources. Formerly <a href=\"/search/?p=GEOG%202002\" data-action=\"result-detail\" data-group=\"code:GEOG 2002\"  class=\"notoffered\">GEOG 2002</a>.",
+    "notes": "Familiarizes students with a geographic understanding of conflicts around the globe and of economic, political and cultural globalization. Analyzes the relationship between global forces, regions and local interests in contemporary territorial and geopolitical tensions and conflicts, emphasizing issues such as nationalism, migration, labor and natural resources. Formerly <a href=\"/search/?p=GEOG%202002\" data-action=\"result-detail\" data-group=\"code:GEOG 2002\"  class=\"notoffered\">GEOG 2002</a>."
   },
   {
     "id": "MATH-1300",
@@ -934,12 +1034,14 @@
       ]
     },
     "coreqs": null,
-    "status": "registered",
+    "status": "in_progress",
     "semester": "SU26",
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Topics include limits, derivatives of algebraic and transcendental functions, applications of the derivative, integration and applications of the definite integral. Students who have already earned college credit for calculus 1 are eligible to enroll in this course if they want to solidify their knowledge base in calculus 1. For more information about the math placement referred to in the &quot;Enrollment Requirements&quot;, contact your academic advisor. Degree credit not granted for this course and <a href=\"/search/?p=APPM%201345\" data-action=\"result-detail\" data-group=\"code:APPM 1345\"  class=\"notoffered\">APPM 1345</a> or <a href=\"/search/?p=APPM%201350\" data-action=\"result-detail\" data-group=\"code:APPM 1350\" >APPM 1350</a> or <a href=\"/search/?p=ECON%201088\" data-action=\"result-detail\" data-group=\"code:ECON 1088\" >ECON 1088</a> <a href=\"/search/?p=MATH%201081\" data-action=\"result-detail\" data-group=\"code:MATH 1081\"  class=\"notoffered\">MATH 1081</a> or <a href=\"/search/?p=MATH%201310\" data-action=\"result-detail\" data-group=\"code:MATH 1310\"  class=\"notoffered\">MATH 1310</a> or <a href=\"/search/?p=MATH%201330\" data-action=\"result-detail\" data-group=\"code:MATH 1330\"  class=\"notoffered\">MATH 1330</a>.",
+    "notes": "Topics include limits, derivatives of algebraic and transcendental functions, applications of the derivative, integration and applications of the definite integral. Students who have already earned college credit for calculus 1 are eligible to enroll in this course if they want to solidify their knowledge base in calculus 1. For more information about the math placement referred to in the &quot;Enrollment Requirements&quot;, contact your academic advisor. Degree credit not granted for this course and <a href=\"/search/?p=APPM%201345\" data-action=\"result-detail\" data-group=\"code:APPM 1345\"  class=\"notoffered\">APPM 1345</a> or <a href=\"/search/?p=APPM%201350\" data-action=\"result-detail\" data-group=\"code:APPM 1350\" >APPM 1350</a> or <a href=\"/search/?p=ECON%201088\" data-action=\"result-detail\" data-group=\"code:ECON 1088\" >ECON 1088</a> <a href=\"/search/?p=MATH%201081\" data-action=\"result-detail\" data-group=\"code:MATH 1081\"  class=\"notoffered\">MATH 1081</a> or <a href=\"/search/?p=MATH%201310\" data-action=\"result-detail\" data-group=\"code:MATH 1310\"  class=\"notoffered\">MATH 1310</a> or <a href=\"/search/?p=MATH%201330\" data-action=\"result-detail\" data-group=\"code:MATH 1330\"  class=\"notoffered\">MATH 1330</a>."
   },
   {
     "id": "CSCI-1300",
@@ -985,7 +1087,9 @@
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
-    "source": "audit"
+    "source": "audit",
+    "description": "Teaches techniques for writing computer programs in higher level programming languages to solve problems of interest in a range of application domains. Appropriate for students with little to no experience in computing or programming. Degree credit not granted for this course and <a href=\"/search/?p=ECEN%201310\" data-action=\"result-detail\" data-group=\"code:ECEN 1310\" >ECEN 1310</a>. Same as <a href=\"/search/?p=CSPB%201300\" data-action=\"result-detail\" data-group=\"code:CSPB 1300\" >CSPB 1300</a>.",
+    "notes": "Teaches techniques for writing computer programs in higher level programming languages to solve problems of interest in a range of application domains. Appropriate for students with little to no experience in computing or programming. Degree credit not granted for this course and <a href=\"/search/?p=ECEN%201310\" data-action=\"result-detail\" data-group=\"code:ECEN 1310\" >ECEN 1310</a>. Same as <a href=\"/search/?p=CSPB%201300\" data-action=\"result-detail\" data-group=\"code:CSPB 1300\" >CSPB 1300</a>."
   },
   {
     "id": "ENGL-3016",
@@ -995,13 +1099,15 @@
     "prereqs": null,
     "coreqs": null,
     "status": "completed",
+    "grade": "A",
     "semester": "SP26",
+    "gradePoints": 4,
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
     "source": "audit",
-    "grade": "A",
-    "gradePoints": 4
+    "description": "In this advanced-writing course, students will study the history of artificial intelligence (AI) technology and its current applications, develop hands-on skills for using AI text generators, and examine the ethical concerns and implications of AI technology. Students will learn how AI chatbots draw from vast amounts of data to generate responses to written prompts. They will explore different versions of AI language-generating tools and evaluate their strengths and weaknesses, and they will experiment with using AI at different stages of the writing process. They will practice formulating and revising prompts and verifying the authenticity of AI-produced responses and citations. Recommended corequisite: <a href=\"/search/?p=ENGL%201110\" data-action=\"result-detail\" data-group=\"code:ENGL 1110\"  class=\"notoffered\">ENGL 1110</a>, Grammar Bootcamp (1 credit) and recommended prerequisite of a lower-division writing course.",
+    "notes": "In this advanced-writing course, students will study the history of artificial intelligence (AI) technology and its current applications, develop hands-on skills for using AI text generators, and examine the ethical concerns and implications of AI technology. Students will learn how AI chatbots draw from vast amounts of data to generate responses to written prompts. They will explore different versions of AI language-generating tools and evaluate their strengths and weaknesses, and they will experiment with using AI at different stages of the writing process. They will practice formulating and revising prompts and verifying the authenticity of AI-produced responses and citations. Recommended corequisite: <a href=\"/search/?p=ENGL%201110\" data-action=\"result-detail\" data-group=\"code:ENGL 1110\"  class=\"notoffered\">ENGL 1110</a>, Grammar Bootcamp (1 credit) and recommended prerequisite of a lower-division writing course."
   },
   {
     "id": "GEOG-1001",
@@ -1011,13 +1117,15 @@
     "prereqs": null,
     "coreqs": null,
     "status": "completed",
+    "grade": "A",
     "semester": "SP26",
+    "gradePoints": 4,
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
     "source": "audit",
-    "grade": "A",
-    "gradePoints": 4
+    "description": "Understanding our fragile planet and the life it harbors requires understanding how the distribution of the sun's energy at the surface, the atmosphere and its circulation, and the distribution of ocean and lands shape patterns of temperature, precipitation and vegetation across the globe. Along with providing a foundation for understanding planet Earth, this course addresses the growing impacts of human systems on climate change and environmental quality.",
+    "notes": "Understanding our fragile planet and the life it harbors requires understanding how the distribution of the sun's energy at the surface, the atmosphere and its circulation, and the distribution of ocean and lands shape patterns of temperature, precipitation and vegetation across the globe. Along with providing a foundation for understanding planet Earth, this course addresses the growing impacts of human systems on climate change and environmental quality."
   },
   {
     "id": "MATH-1150",
@@ -1039,13 +1147,15 @@
     },
     "coreqs": null,
     "status": "completed",
+    "grade": "A",
     "semester": "SP26",
+    "gradePoints": 4,
     "countedTowardDegree": true,
     "countsTowardGPA": true,
     "countsTowardEarnedHours": true,
     "source": "audit",
-    "grade": "A",
-    "gradePoints": 4
+    "description": "Develops techniques and concepts prerequisite to calculus through the study of trigonometric, exponential, logarithmic, polynomial and other functions. For more information about the math placement referred to in the &quot;Enrollment Requirements&quot;, please contact your academic advisor. Degree credit not granted for this course and <a href=\"/search/?p=APPM%201235\" data-action=\"result-detail\" data-group=\"code:APPM 1235\" >APPM 1235</a> and <a href=\"/search/?p=MATH%201021\" data-action=\"result-detail\" data-group=\"code:MATH 1021\"  class=\"notoffered\">MATH 1021</a>.",
+    "notes": "Develops techniques and concepts prerequisite to calculus through the study of trigonometric, exponential, logarithmic, polynomial and other functions. For more information about the math placement referred to in the &quot;Enrollment Requirements&quot;, please contact your academic advisor. Degree credit not granted for this course and <a href=\"/search/?p=APPM%201235\" data-action=\"result-detail\" data-group=\"code:APPM 1235\" >APPM 1235</a> and <a href=\"/search/?p=MATH%201021\" data-action=\"result-detail\" data-group=\"code:MATH 1021\"  class=\"notoffered\">MATH 1021</a>."
   },
   {
     "id": "APPM-3650",
@@ -1075,8 +1185,11 @@
       ]
     },
     "coreqs": null,
-    "status": "not_started",
-    "source": "enriched"
+    "status": "planned",
+    "source": "enriched",
+    "semester": "SP27",
+    "description": "Covers data structures (stacks, queues, linked lists, hash tables, heaps), algorithms (divide and conquer, sorting, greedy, graph, dynamic programming), and asymptotic complexity with an emphasis on applied math topics. Assignments will include programming projects written in Python",
+    "notes": "Covers data structures (stacks, queues, linked lists, hash tables, heaps), algorithms (divide and conquer, sorting, greedy, graph, dynamic programming), and asymptotic complexity with an emphasis on applied math topics. Assignments will include programming projects written in Python"
   },
   {
     "id": "APPM-3310",
@@ -1105,8 +1218,11 @@
       ]
     },
     "coreqs": null,
-    "status": "not_started",
-    "source": "enriched"
+    "status": "planned",
+    "source": "enriched",
+    "semester": "SU27",
+    "description": "Introduces linear algebra and matrices with an emphasis on applications, including methods to solve systems of linear algebraic and linear ordinary differential equations. Discusses vector space concepts, decomposition theorems, and eigenvalue problems. Degree credit not granted for this course and <a href=\"/search/?p=MATH%202130\" data-action=\"result-detail\" data-group=\"code:MATH 2130\" >MATH 2130</a> and <a href=\"/search/?p=MATH%202135\" data-action=\"result-detail\" data-group=\"code:MATH 2135\" >MATH 2135</a>.",
+    "notes": "Introduces linear algebra and matrices with an emphasis on applications, including methods to solve systems of linear algebraic and linear ordinary differential equations. Discusses vector space concepts, decomposition theorems, and eigenvalue problems. Degree credit not granted for this course and <a href=\"/search/?p=MATH%202130\" data-action=\"result-detail\" data-group=\"code:MATH 2130\" >MATH 2130</a> and <a href=\"/search/?p=MATH%202135\" data-action=\"result-detail\" data-group=\"code:MATH 2135\" >MATH 2135</a>."
   },
   {
     "id": "APPM-2340",
@@ -1128,7 +1244,9 @@
     },
     "coreqs": null,
     "status": "not_started",
-    "source": "enriched"
+    "source": "enriched",
+    "description": "Covers vectors and vector analysis, partial derivatives and the multivariable Taylor theorem, and multiple integrals. Introduces matrices and statistical applications.",
+    "notes": "Covers vectors and vector analysis, partial derivatives and the multivariable Taylor theorem, and multiple integrals. Introduces matrices and statistical applications."
   },
   {
     "id": "APPM-2350",
@@ -1149,8 +1267,11 @@
       ]
     },
     "coreqs": null,
-    "status": "not_started",
-    "source": "enriched"
+    "status": "planned",
+    "source": "enriched",
+    "semester": "SP27",
+    "description": "Covers multivariable calculus, vector analysis, and theorems of Gauss, Green, and Stokes. Degree credit not granted for this course and <a href=\"/search/?p=MATH%202400\" data-action=\"result-detail\" data-group=\"code:MATH 2400\" >MATH 2400</a>.",
+    "notes": "Covers multivariable calculus, vector analysis, and theorems of Gauss, Green, and Stokes. Degree credit not granted for this course and <a href=\"/search/?p=MATH%202400\" data-action=\"result-detail\" data-group=\"code:MATH 2400\" >MATH 2400</a>."
   },
   {
     "id": "MATH-2400",
@@ -1172,7 +1293,9 @@
     },
     "coreqs": null,
     "status": "not_started",
-    "source": "enriched"
+    "source": "enriched",
+    "description": "Continuation of <a href=\"/search/?p=MATH%202300\" data-action=\"result-detail\" data-group=\"code:MATH 2300\" >MATH 2300</a>. Topics include vectors, three-dimensional analytic geometry, partial differentiation and multiple integrals, and vector analysis. Department enforced prerequisite: <a href=\"/search/?p=MATH%202300\" data-action=\"result-detail\" data-group=\"code:MATH 2300\" >MATH 2300</a> or <a href=\"/search/?p=APPM%201360\" data-action=\"result-detail\" data-group=\"code:APPM 1360\" >APPM 1360</a> (minimum grade C-). Degree credit not granted for this course and <a href=\"/search/?p=APPM%202350\" data-action=\"result-detail\" data-group=\"code:APPM 2350\" >APPM 2350</a>.",
+    "notes": "Continuation of <a href=\"/search/?p=MATH%202300\" data-action=\"result-detail\" data-group=\"code:MATH 2300\" >MATH 2300</a>. Topics include vectors, three-dimensional analytic geometry, partial differentiation and multiple integrals, and vector analysis. Department enforced prerequisite: <a href=\"/search/?p=MATH%202300\" data-action=\"result-detail\" data-group=\"code:MATH 2300\" >MATH 2300</a> or <a href=\"/search/?p=APPM%201360\" data-action=\"result-detail\" data-group=\"code:APPM 1360\" >APPM 1360</a> (minimum grade C-). Degree credit not granted for this course and <a href=\"/search/?p=APPM%202350\" data-action=\"result-detail\" data-group=\"code:APPM 2350\" >APPM 2350</a>."
   },
   {
     "id": "STAT-4250",
@@ -1203,7 +1326,9 @@
     },
     "coreqs": null,
     "status": "not_started",
-    "source": "enriched"
+    "source": "enriched",
+    "description": "Develops and analyzes approximate methods of solving the Bayesian inverse problem for high-dimensional dynamical systems. After briefly reviewing mathematical foundations in probability and statistics, the course covers the Kalman filter, particle filters, variational methods and ensemble Kalman filters. The emphasis is on mathematical formulation and analysis of methods. Same as <a href=\"/search/?p=APPM%205510\" data-action=\"result-detail\" data-group=\"code:APPM 5510\" >APPM 5510</a>, <a href=\"/search/?p=APPM%204510\" data-action=\"result-detail\" data-group=\"code:APPM 4510\" >APPM 4510</a> and <a href=\"/search/?p=STAT%205250\" data-action=\"result-detail\" data-group=\"code:STAT 5250\" >STAT 5250</a>.",
+    "notes": "Develops and analyzes approximate methods of solving the Bayesian inverse problem for high-dimensional dynamical systems. After briefly reviewing mathematical foundations in probability and statistics, the course covers the Kalman filter, particle filters, variational methods and ensemble Kalman filters. The emphasis is on mathematical formulation and analysis of methods. Same as <a href=\"/search/?p=APPM%205510\" data-action=\"result-detail\" data-group=\"code:APPM 5510\" >APPM 5510</a>, <a href=\"/search/?p=APPM%204510\" data-action=\"result-detail\" data-group=\"code:APPM 4510\" >APPM 4510</a> and <a href=\"/search/?p=STAT%205250\" data-action=\"result-detail\" data-group=\"code:STAT 5250\" >STAT 5250</a>."
   },
   {
     "id": "STAT-4360",
@@ -1212,8 +1337,9 @@
     "credits": 0,
     "prereqs": null,
     "coreqs": null,
-    "status": "not_started",
-    "source": "stub"
+    "status": "planned",
+    "source": "stub",
+    "semester": "SU28"
   },
   {
     "id": "STAT-4430",
@@ -1249,7 +1375,9 @@
     },
     "coreqs": null,
     "status": "not_started",
-    "source": "enriched"
+    "source": "enriched",
+    "description": "Studies basic properties, trend-based models, seasonal models modeling and forecasting with ARIMA models, spectral analysis and frequency filtration. Same as <a href=\"/search/?p=STAT%205540\" data-action=\"result-detail\" data-group=\"code:STAT 5540\" >STAT 5540</a> and <a href=\"/search/?p=MATH%204540\" data-action=\"result-detail\" data-group=\"code:MATH 4540\" >MATH 4540</a> and <a href=\"/search/?p=MATH%205540\" data-action=\"result-detail\" data-group=\"code:MATH 5540\" >MATH 5540</a>.",
+    "notes": "Studies basic properties, trend-based models, seasonal models modeling and forecasting with ARIMA models, spectral analysis and frequency filtration. Same as <a href=\"/search/?p=STAT%205540\" data-action=\"result-detail\" data-group=\"code:STAT 5540\" >STAT 5540</a> and <a href=\"/search/?p=MATH%204540\" data-action=\"result-detail\" data-group=\"code:MATH 4540\" >MATH 4540</a> and <a href=\"/search/?p=MATH%205540\" data-action=\"result-detail\" data-group=\"code:MATH 5540\" >MATH 5540</a>."
   },
   {
     "id": "STAT-4630",
@@ -1293,7 +1421,9 @@
     },
     "coreqs": null,
     "status": "not_started",
-    "source": "enriched"
+    "source": "enriched",
+    "description": "Introduces Bayesian statistics, normal and non-normal approximation to likelihood and posteriors, the EM algorithm, data augmentation, and Markov Chain Monte Carlo (MCMC) methods. Additionally, introduces more advanced MCMC algorithms and requires significant statistical computing. Examples from a variety of areas, including biostatistics, environmental sciences, and engineering, will be given throughout the course. Recommended prerequisite: prior programming experience. Same as <a href=\"/search/?p=STAT%205630\" data-action=\"result-detail\" data-group=\"code:STAT 5630\" >STAT 5630</a>.",
+    "notes": "Introduces Bayesian statistics, normal and non-normal approximation to likelihood and posteriors, the EM algorithm, data augmentation, and Markov Chain Monte Carlo (MCMC) methods. Additionally, introduces more advanced MCMC algorithms and requires significant statistical computing. Examples from a variety of areas, including biostatistics, environmental sciences, and engineering, will be given throughout the course. Recommended prerequisite: prior programming experience. Same as <a href=\"/search/?p=STAT%205630\" data-action=\"result-detail\" data-group=\"code:STAT 5630\" >STAT 5630</a>."
   },
   {
     "id": "STAT-4700",
@@ -1319,7 +1449,9 @@
     },
     "coreqs": null,
     "status": "not_started",
-    "source": "enriched"
+    "source": "enriched",
+    "description": "Introduces students to philosophical issues that arise in statistical theory and practice. Topics include interpretations of probability, philosophical paradigms in statistics, inductive inference, causality, reproducible, and ethical issues arising in statistics and data analysis. Same as <a href=\"/search/?p=STAT%205700\" data-action=\"result-detail\" data-group=\"code:STAT 5700\" >STAT 5700</a>.",
+    "notes": "Introduces students to philosophical issues that arise in statistical theory and practice. Topics include interpretations of probability, philosophical paradigms in statistics, inductive inference, causality, reproducible, and ethical issues arising in statistics and data analysis. Same as <a href=\"/search/?p=STAT%205700\" data-action=\"result-detail\" data-group=\"code:STAT 5700\" >STAT 5700</a>."
   },
   {
     "id": "APPM-4120",
@@ -1345,7 +1477,9 @@
     },
     "coreqs": null,
     "status": "not_started",
-    "source": "enriched"
+    "source": "enriched",
+    "description": "Studies linear and nonlinear programming, the simplex method, duality, sensitivity, transportation and network flow problems, some constrained and unconstrained optimization theory, and the Kuhn-Tucker conditions, as time permits. Same as <a href=\"/search/?p=APPM%205120\" data-action=\"result-detail\" data-group=\"code:APPM 5120\" >APPM 5120</a> and <a href=\"/search/?p=MATH%204120\" data-action=\"result-detail\" data-group=\"code:MATH 4120\" >MATH 4120</a> and <a href=\"/search/?p=MATH%205120\" data-action=\"result-detail\" data-group=\"code:MATH 5120\" >MATH 5120</a>.",
+    "notes": "Studies linear and nonlinear programming, the simplex method, duality, sensitivity, transportation and network flow problems, some constrained and unconstrained optimization theory, and the Kuhn-Tucker conditions, as time permits. Same as <a href=\"/search/?p=APPM%205120\" data-action=\"result-detail\" data-group=\"code:APPM 5120\" >APPM 5120</a> and <a href=\"/search/?p=MATH%204120\" data-action=\"result-detail\" data-group=\"code:MATH 4120\" >MATH 4120</a> and <a href=\"/search/?p=MATH%205120\" data-action=\"result-detail\" data-group=\"code:MATH 5120\" >MATH 5120</a>."
   },
   {
     "id": "APPM-4320",
@@ -1377,7 +1511,9 @@
     },
     "coreqs": null,
     "status": "not_started",
-    "source": "enriched"
+    "source": "enriched",
+    "description": "Applies mathematical and computational methods to neuroscience. Techniques from linear algebra, differential equations, introductory dynamical systems, probability, stochastic processes, model validation, and machine learning will be learned and used. Neuroscience topics include neural spiking, network dynamics, probabilistic inference, learning, and plasticity. Will learn how the brain uses computational principles to enact decision making, vision, and memory. Recommended background includes linear algebra, differential equations, probability, and programming. Students will hone programming skills in MATLAB/Python and TensorFlow. Recommended prerequisite: <a href=\"/search/?p=APPM%203570\" data-action=\"result-detail\" data-group=\"code:APPM 3570\" >APPM 3570</a>/<a href=\"/search/?p=STAT%203100\" data-action=\"result-detail\" data-group=\"code:STAT 3100\" >STAT 3100</a>, <a href=\"/search/?p=STAT%202600\" data-action=\"result-detail\" data-group=\"code:STAT 2600\" >STAT 2600</a> or <a href=\"/search/?p=CSCI%203022\" data-action=\"result-detail\" data-group=\"code:CSCI 3022\" >CSCI 3022</a>. Same as <a href=\"/search/?p=APPM%205370\" data-action=\"result-detail\" data-group=\"code:APPM 5370\" >APPM 5370</a>.",
+    "notes": "Applies mathematical and computational methods to neuroscience. Techniques from linear algebra, differential equations, introductory dynamical systems, probability, stochastic processes, model validation, and machine learning will be learned and used. Neuroscience topics include neural spiking, network dynamics, probabilistic inference, learning, and plasticity. Will learn how the brain uses computational principles to enact decision making, vision, and memory. Recommended background includes linear algebra, differential equations, probability, and programming. Students will hone programming skills in MATLAB/Python and TensorFlow. Recommended prerequisite: <a href=\"/search/?p=APPM%203570\" data-action=\"result-detail\" data-group=\"code:APPM 3570\" >APPM 3570</a>/<a href=\"/search/?p=STAT%203100\" data-action=\"result-detail\" data-group=\"code:STAT 3100\" >STAT 3100</a>, <a href=\"/search/?p=STAT%202600\" data-action=\"result-detail\" data-group=\"code:STAT 2600\" >STAT 2600</a> or <a href=\"/search/?p=CSCI%203022\" data-action=\"result-detail\" data-group=\"code:CSCI 3022\" >CSCI 3022</a>. Same as <a href=\"/search/?p=APPM%205370\" data-action=\"result-detail\" data-group=\"code:APPM 5370\" >APPM 5370</a>."
   },
   {
     "id": "APPM-4440",
@@ -1410,8 +1546,11 @@
       "type": "course",
       "courseId": "APPM-3310"
     },
-    "status": "not_started",
-    "source": "enriched"
+    "status": "planned",
+    "source": "enriched",
+    "semester": "SP28",
+    "description": "Provides a rigorous treatment of topics covered in Calculus 1 and 2. Topics include convergent sequences; continuous functions; differentiable functions; Darboux sums, Riemann sums, and integration; Taylor and power series and sequences of functions.",
+    "notes": "Provides a rigorous treatment of topics covered in Calculus 1 and 2. Topics include convergent sequences; continuous functions; differentiable functions; Darboux sums, Riemann sums, and integration; Taylor and power series and sequences of functions."
   },
   {
     "id": "APPM-4450",
@@ -1433,7 +1572,9 @@
     },
     "coreqs": null,
     "status": "not_started",
-    "source": "enriched"
+    "source": "enriched",
+    "description": "Continuation of <a href=\"/search/?p=APPM%204440\" data-action=\"result-detail\" data-group=\"code:APPM 4440\"  class=\"notoffered\">APPM 4440</a>. Study of multidimensional analysis including n-dimensional Euclidean space, continuity and uniform continuity of functions of several variables, differentiation, linear and nonlinear approximation, inverse function and implicit function theorems, and a short introduction to metric spaces.",
+    "notes": "Continuation of <a href=\"/search/?p=APPM%204440\" data-action=\"result-detail\" data-group=\"code:APPM 4440\"  class=\"notoffered\">APPM 4440</a>. Study of multidimensional analysis including n-dimensional Euclidean space, continuity and uniform continuity of functions of several variables, differentiation, linear and nonlinear approximation, inverse function and implicit function theorems, and a short introduction to metric spaces."
   },
   {
     "id": "APPM-4490",
@@ -1446,7 +1587,9 @@
     },
     "coreqs": null,
     "status": "not_started",
-    "source": "enriched"
+    "source": "enriched",
+    "description": "Presents the underlying theory behind machine learning in proofs-based format. Answers fundamental questions about what learning means and what can be learned via formal models of statistical learning theory. Analyzes some important classes of machine learning methods. Specific topics may include the PAC framework, VC-dimension and Rademacher complexity. Recommended prerequisite: <a href=\"/search/?p=CSCI%205622\" data-action=\"result-detail\" data-group=\"code:CSCI 5622\" >CSCI 5622</a> (minimum grade C-).",
+    "notes": "Presents the underlying theory behind machine learning in proofs-based format. Answers fundamental questions about what learning means and what can be learned via formal models of statistical learning theory. Analyzes some important classes of machine learning methods. Specific topics may include the PAC framework, VC-dimension and Rademacher complexity. Recommended prerequisite: <a href=\"/search/?p=CSCI%205622\" data-action=\"result-detail\" data-group=\"code:CSCI 5622\" >CSCI 5622</a> (minimum grade C-)."
   },
   {
     "id": "APPM-4515",
@@ -1491,7 +1634,9 @@
     },
     "coreqs": null,
     "status": "not_started",
-    "source": "enriched"
+    "source": "enriched",
+    "description": "Studies mathematical theories and techniques for modeling financial markets. Specific topics include the binomial model, risk neutral pricing, stochastic calculus, connection to partial differential equations and stochastic control theory. Same as <a href=\"/search/?p=APPM%205530\" data-action=\"result-detail\" data-group=\"code:APPM 5530\" >APPM 5530</a>, <a href=\"/search/?p=STAT%204230\" data-action=\"result-detail\" data-group=\"code:STAT 4230\"  class=\"notoffered\">STAT 4230</a> and <a href=\"/search/?p=STAT%205230\" data-action=\"result-detail\" data-group=\"code:STAT 5230\"  class=\"notoffered\">STAT 5230</a>.",
+    "notes": "Studies mathematical theories and techniques for modeling financial markets. Specific topics include the binomial model, risk neutral pricing, stochastic calculus, connection to partial differential equations and stochastic control theory. Same as <a href=\"/search/?p=APPM%205530\" data-action=\"result-detail\" data-group=\"code:APPM 5530\" >APPM 5530</a>, <a href=\"/search/?p=STAT%204230\" data-action=\"result-detail\" data-group=\"code:STAT 4230\"  class=\"notoffered\">STAT 4230</a> and <a href=\"/search/?p=STAT%205230\" data-action=\"result-detail\" data-group=\"code:STAT 5230\"  class=\"notoffered\">STAT 5230</a>."
   },
   {
     "id": "APPM-4565",
@@ -1513,7 +1658,9 @@
     },
     "coreqs": null,
     "status": "not_started",
-    "source": "enriched"
+    "source": "enriched",
+    "description": "Introduces mathematical techniques, including generating functions, the first- and second-moment method and Chernoff bounds to study the most fundamental properties of the Erdos-Renyl model and other celebrated random graph models such as preferential attachment, fixed degree distribution, and stochastic block models. Same as <a href=\"/search/?p=APPM%205565\" data-action=\"result-detail\" data-group=\"code:APPM 5565\" >APPM 5565</a>.",
+    "notes": "Introduces mathematical techniques, including generating functions, the first- and second-moment method and Chernoff bounds to study the most fundamental properties of the Erdos-Renyl model and other celebrated random graph models such as preferential attachment, fixed degree distribution, and stochastic block models. Same as <a href=\"/search/?p=APPM%205565\" data-action=\"result-detail\" data-group=\"code:APPM 5565\" >APPM 5565</a>."
   },
   {
     "id": "APPM-4600",
@@ -1526,7 +1673,9 @@
     },
     "coreqs": null,
     "status": "not_started",
-    "source": "enriched"
+    "source": "enriched",
+    "description": "Provides an introduction to numerical analysis and scientific computing. Numerical analysis topics include root finding, interpolation, quadrature, linear system solution techniques, and techniques for approximating eigenvalues. Scientific computing topics include code development and repository management in addition to an introduction to shared and distributed memory computing. Involves hands-on learning with weekly group interactions and a final project including a report and in-class presentation. Recommended prerequisite: knowledge of a programming language such as Python, and C++.",
+    "notes": "Provides an introduction to numerical analysis and scientific computing. Numerical analysis topics include root finding, interpolation, quadrature, linear system solution techniques, and techniques for approximating eigenvalues. Scientific computing topics include code development and repository management in addition to an introduction to shared and distributed memory computing. Involves hands-on learning with weekly group interactions and a final project including a report and in-class presentation. Recommended prerequisite: knowledge of a programming language such as Python, and C++."
   },
   {
     "id": "STAT-4640",
@@ -1547,8 +1696,11 @@
       ]
     },
     "coreqs": null,
-    "status": "not_started",
-    "source": "enriched"
+    "status": "planned",
+    "source": "enriched",
+    "semester": "SP28",
+    "description": "Course provides senior-level and graduate students the opportunity to apply the knowledge, skills, and abilities developed throughout the Statistics and Data Science major. Working in teams, students undertake a data-driven problem presented by domain experts from government, industry, or academia. The course provides valuable real-world experience for students intending to pursue graduate education or technical careers. Topics include team building, problem solving, research methods, project management, data ethics, and clear communication (oral, written, and visual). Same as <a href=\"/search/?p=STAT%205640\" data-action=\"result-detail\" data-group=\"code:STAT 5640\" >STAT 5640</a>.",
+    "notes": "Course provides senior-level and graduate students the opportunity to apply the knowledge, skills, and abilities developed throughout the Statistics and Data Science major. Working in teams, students undertake a data-driven problem presented by domain experts from government, industry, or academia. The course provides valuable real-world experience for students intending to pursue graduate education or technical careers. Topics include team building, problem solving, research methods, project management, data ethics, and clear communication (oral, written, and visual). Same as <a href=\"/search/?p=STAT%205640\" data-action=\"result-detail\" data-group=\"code:STAT 5640\" >STAT 5640</a>."
   },
   {
     "id": "STAT-4680",
@@ -1570,7 +1722,9 @@
     },
     "coreqs": null,
     "status": "not_started",
-    "source": "enriched"
+    "source": "enriched",
+    "description": "Educates and trains students to become effective interdisciplinary collaborators by developing the communication and collaboration skills necessary to apply technical statistics and data science skills to help domain experts answer research or policy questions. Topics include structuring effective meetings and projects; communicating statistics to non-statisticians; using peer feedback, self-reflection and video analysis to improve collaboration skills; creating reproducible statistical workflows; working ethically. Same as <a href=\"/search/?p=STAT%205680\" data-action=\"result-detail\" data-group=\"code:STAT 5680\" >STAT 5680</a>.",
+    "notes": "Educates and trains students to become effective interdisciplinary collaborators by developing the communication and collaboration skills necessary to apply technical statistics and data science skills to help domain experts answer research or policy questions. Topics include structuring effective meetings and projects; communicating statistics to non-statisticians; using peer feedback, self-reflection and video analysis to improve collaboration skills; creating reproducible statistical workflows; working ethically. Same as <a href=\"/search/?p=STAT%205680\" data-action=\"result-detail\" data-group=\"code:STAT 5680\" >STAT 5680</a>."
   },
   {
     "id": "STAT-4350",
@@ -1617,8 +1771,11 @@
       ]
     },
     "coreqs": null,
-    "status": "not_started",
-    "source": "enriched"
+    "status": "planned",
+    "source": "enriched",
+    "semester": "SP28",
+    "description": "Introduces students to state-of-the-art deep learning techniques employed in the industry. This course will focus on training neural networks and computer vision, including image classification and transformation, object detection, and facial recognition. Advanced topics will include domain adaptation and learning techniques. There will be an emphasis on reading current literature. Recommended prerequisite: knowledge of Python is required, and familiarity with TensorFlow and PyTorch is a plus but is not a requirement. Same as <a href=\"/search/?p=STAT%205350\" data-action=\"result-detail\" data-group=\"code:STAT 5350\" >STAT 5350</a>.",
+    "notes": "Introduces students to state-of-the-art deep learning techniques employed in the industry. This course will focus on training neural networks and computer vision, including image classification and transformation, object detection, and facial recognition. Advanced topics will include domain adaptation and learning techniques. There will be an emphasis on reading current literature. Recommended prerequisite: knowledge of Python is required, and familiarity with TensorFlow and PyTorch is a plus but is not a requirement. Same as <a href=\"/search/?p=STAT%205350\" data-action=\"result-detail\" data-group=\"code:STAT 5350\" >STAT 5350</a>."
   },
   {
     "id": "CSCI-4622",
@@ -1631,7 +1788,9 @@
     },
     "coreqs": null,
     "status": "not_started",
-    "source": "enriched"
+    "source": "enriched",
+    "description": "Introduces students to tools, methods, and theory to construct predictive and inferential models that learn from data. Focuses on supervised machine learning techniques including practical and theoretical understanding of the most widely used algorithms (decision trees, support vector machines, ensemble methods, and neural networks). Emphasizes both efficient implementation of algorithms and understanding of mathematical foundations. Same as <a href=\"/search/?p=CSPB%204622\" data-action=\"result-detail\" data-group=\"code:CSPB 4622\" >CSPB 4622</a>.",
+    "notes": "Introduces students to tools, methods, and theory to construct predictive and inferential models that learn from data. Focuses on supervised machine learning techniques including practical and theoretical understanding of the most widely used algorithms (decision trees, support vector machines, ensemble methods, and neural networks). Emphasizes both efficient implementation of algorithms and understanding of mathematical foundations. Same as <a href=\"/search/?p=CSPB%204622\" data-action=\"result-detail\" data-group=\"code:CSPB 4622\" >CSPB 4622</a>."
   },
   {
     "id": "STAT-4610",
@@ -1643,8 +1802,11 @@
       "courseId": "STAT-3400"
     },
     "coreqs": null,
-    "status": "not_started",
-    "source": "enriched"
+    "status": "planned",
+    "source": "enriched",
+    "semester": "SP28",
+    "description": "Consists of applications and methods of statistical learning. Reviews multiple linear regression and then covers classification, regularization, splines, tree-based methods, support vector machines, unsupervised learning and Gaussian process regression. Same as <a href=\"/search/?p=STAT%205610\" data-action=\"result-detail\" data-group=\"code:STAT 5610\" >STAT 5610</a>.",
+    "notes": "Consists of applications and methods of statistical learning. Reviews multiple linear regression and then covers classification, regularization, splines, tree-based methods, support vector machines, unsupervised learning and Gaussian process regression. Same as <a href=\"/search/?p=STAT%205610\" data-action=\"result-detail\" data-group=\"code:STAT 5610\" >STAT 5610</a>."
   },
   {
     "id": "APPM-4560",
@@ -1670,7 +1832,9 @@
     },
     "coreqs": null,
     "status": "not_started",
-    "source": "enriched"
+    "source": "enriched",
+    "description": "Brief review of conditional probability and expectation followed by a study of Markov chains, both discrete and continuous time, including Poisson point processes. Queuing theory, terminology and single queue systems are studied with some introduction to networks of queues. Uses Monte Carlo simulation of random variables throughout the semester to gain insight into the processes under study. Same as <a href=\"/search/?p=APPM%205560\" data-action=\"result-detail\" data-group=\"code:APPM 5560\" >APPM 5560</a> and <a href=\"/search/?p=STAT%204100\" data-action=\"result-detail\" data-group=\"code:STAT 4100\" >STAT 4100</a>.",
+    "notes": "Brief review of conditional probability and expectation followed by a study of Markov chains, both discrete and continuous time, including Poisson point processes. Queuing theory, terminology and single queue systems are studied with some introduction to networks of queues. Uses Monte Carlo simulation of random variables throughout the semester to gain insight into the processes under study. Same as <a href=\"/search/?p=APPM%205560\" data-action=\"result-detail\" data-group=\"code:APPM 5560\" >APPM 5560</a> and <a href=\"/search/?p=STAT%204100\" data-action=\"result-detail\" data-group=\"code:STAT 4100\" >STAT 4100</a>."
   },
   {
     "id": "STAT-4100",
@@ -1695,8 +1859,11 @@
       ]
     },
     "coreqs": null,
-    "status": "not_started",
-    "source": "enriched"
+    "status": "planned",
+    "source": "enriched",
+    "semester": "FA27",
+    "description": "Brief review of conditional probability and expectation followed by a study of Markov chains, both discrete and continuous time, including Poisson point processes. Queuing theory, terminology and single queue systems are studied with some introduction to networks of queues. Uses Monte Carlo simulation of random variables throughout the semester to gain insight into the processes under study. Same as <a href=\"/search/?p=APPM%204560\" data-action=\"result-detail\" data-group=\"code:APPM 4560\" >APPM 4560</a> and <a href=\"/search/?p=APPM%205560\" data-action=\"result-detail\" data-group=\"code:APPM 5560\" >APPM 5560</a>.",
+    "notes": "Brief review of conditional probability and expectation followed by a study of Markov chains, both discrete and continuous time, including Poisson point processes. Queuing theory, terminology and single queue systems are studied with some introduction to networks of queues. Uses Monte Carlo simulation of random variables throughout the semester to gain insight into the processes under study. Same as <a href=\"/search/?p=APPM%204560\" data-action=\"result-detail\" data-group=\"code:APPM 4560\" >APPM 4560</a> and <a href=\"/search/?p=APPM%205560\" data-action=\"result-detail\" data-group=\"code:APPM 5560\" >APPM 5560</a>."
   },
   {
     "id": "STAT-4400",
@@ -1705,8 +1872,97 @@
     "credits": 0,
     "prereqs": null,
     "coreqs": null,
+    "status": "planned",
+    "source": "stub",
+    "semester": "FA27"
+  },
+  {
+    "id": "STAT-4520",
+    "number": "STAT 4520",
+    "name": "Introduction to Mathematical Statistics",
+    "credits": 3,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "APPM-3570"
+        },
+        {
+          "type": "course",
+          "courseId": "STAT-3100"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-4510"
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "planned",
+    "source": "enriched",
+    "semester": "SU27",
+    "description": "Examines point and confidence interval estimation. Principles of maximum likelihood, sufficiency, and completeness: tests of simple and composite hypotheses, linear models, and multiple regression analysis if time permits. Analyzes various distribution-free methods. Same as <a href=\"/search/?p=STAT%205520\" data-action=\"result-detail\" data-group=\"code:STAT 5520\" >STAT 5520</a> and <a href=\"/search/?p=MATH%204520\" data-action=\"result-detail\" data-group=\"code:MATH 4520\" >MATH 4520</a> and <a href=\"/search/?p=MATH%205520\" data-action=\"result-detail\" data-group=\"code:MATH 5520\" >MATH 5520</a>.",
+    "notes": "Examines point and confidence interval estimation. Principles of maximum likelihood, sufficiency, and completeness: tests of simple and composite hypotheses, linear models, and multiple regression analysis if time permits. Analyzes various distribution-free methods. Same as <a href=\"/search/?p=STAT%205520\" data-action=\"result-detail\" data-group=\"code:STAT 5520\" >STAT 5520</a> and <a href=\"/search/?p=MATH%204520\" data-action=\"result-detail\" data-group=\"code:MATH 4520\" >MATH 4520</a> and <a href=\"/search/?p=MATH%205520\" data-action=\"result-detail\" data-group=\"code:MATH 5520\" >MATH 5520</a>."
+  },
+  {
+    "id": "STAT-3100",
+    "number": "STAT 3100",
+    "name": "Applied Probability",
+    "credits": 3,
+    "prereqs": null,
+    "coreqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "APPM-2350"
+        },
+        {
+          "type": "course",
+          "courseId": "APPM-2340"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-2400"
+        }
+      ]
+    },
+    "status": "planned",
+    "source": "enriched",
+    "semester": "SP27",
+    "description": "Studies axioms, counting formulas, conditional probability, independence, random variables, continuous and discrete distribution, expectation, joint distributions, moment generating functions, law of large numbers and the central limit theorem. Degree credit not granted for this course and <a href=\"/search/?p=MATH%204510\" data-action=\"result-detail\" data-group=\"code:MATH 4510\" >MATH 4510</a> and <a href=\"/search/?p=MATH%205510\" data-action=\"result-detail\" data-group=\"code:MATH 5510\" >MATH 5510</a>. Same as <a href=\"/search/?p=APPM%203570\" data-action=\"result-detail\" data-group=\"code:APPM 3570\" >APPM 3570</a>.",
+    "notes": "Studies axioms, counting formulas, conditional probability, independence, random variables, continuous and discrete distribution, expectation, joint distributions, moment generating functions, law of large numbers and the central limit theorem. Degree credit not granted for this course and <a href=\"/search/?p=MATH%204510\" data-action=\"result-detail\" data-group=\"code:MATH 4510\" >MATH 4510</a> and <a href=\"/search/?p=MATH%205510\" data-action=\"result-detail\" data-group=\"code:MATH 5510\" >MATH 5510</a>. Same as <a href=\"/search/?p=APPM%203570\" data-action=\"result-detail\" data-group=\"code:APPM 3570\" >APPM 3570</a>."
+  },
+  {
+    "id": "CSCI-2400",
+    "number": "CSCI 2400",
+    "name": "Computer Systems",
+    "credits": 4,
+    "prereqs": {
+      "type": "course",
+      "courseId": "CSCI-2270"
+    },
+    "coreqs": null,
     "status": "not_started",
-    "source": "stub"
+    "source": "enriched",
+    "description": "Covers how programs are represented and executed by modern computers, including low-level machine representations of programs and data, an understanding of how computer components and the memory hierarchy influence performance. Same as <a href=\"/search/?p=CSPB%202400\" data-action=\"result-detail\" data-group=\"code:CSPB 2400\" >CSPB 2400</a>.",
+    "notes": "Covers how programs are represented and executed by modern computers, including low-level machine representations of programs and data, an understanding of how computer components and the memory hierarchy influence performance. Same as <a href=\"/search/?p=CSPB%202400\" data-action=\"result-detail\" data-group=\"code:CSPB 2400\" >CSPB 2400</a>."
+  },
+  {
+    "id": "CSCI-3155",
+    "number": "CSCI 3155",
+    "name": "Principles of Programming Languages",
+    "credits": 3,
+    "prereqs": {
+      "type": "course",
+      "courseId": "CSCI-2824"
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "source": "enriched",
+    "description": "Studies principles governing the design and analysis of programming languages and their underlying execution models. Explores values, scoping, recursion, higher-order functions, type systems, control structures, and objects. Introduces formal semantics as a framework for understanding programming features. Introduces advanced programming concepts such as functional programming, higher-order functions, immutable values and structures, inductive types, functors, continuation-passing; and object-oriented programming using inheritance, generics and covariance/contravariance in a functional programming language such as Scala. Same as <a href=\"/search/?p=CSPB%203155\" data-action=\"result-detail\" data-group=\"code:CSPB 3155\" >CSPB 3155</a>.",
+    "notes": "Studies principles governing the design and analysis of programming languages and their underlying execution models. Explores values, scoping, recursion, higher-order functions, type systems, control structures, and objects. Introduces formal semantics as a framework for understanding programming features. Introduces advanced programming concepts such as functional programming, higher-order functions, immutable values and structures, inductive types, functors, continuation-passing; and object-oriented programming using inheritance, generics and covariance/contravariance in a functional programming language such as Scala. Same as <a href=\"/search/?p=CSPB%203155\" data-action=\"result-detail\" data-group=\"code:CSPB 3155\" >CSPB 3155</a>."
   },
   {
     "id": "STAT-3400",
@@ -1740,38 +1996,177 @@
       ]
     },
     "coreqs": null,
-    "status": "not_started",
-    "source": "enriched"
+    "status": "planned",
+    "source": "enriched",
+    "semester": "FA27",
+    "description": "Introduces methods, theory, and applications of linear statistical models, covering topics such as estimation, residual diagnostics, goodness of fit, transformations, and various strategies for variable selection and model comparison. Examples will be demonstrated using statistical programming language R.",
+    "notes": "Introduces methods, theory, and applications of linear statistical models, covering topics such as estimation, residual diagnostics, goodness of fit, transformations, and various strategies for variable selection and model comparison. Examples will be demonstrated using statistical programming language R."
   },
   {
-    "id": "STAT-4520",
-    "number": "STAT 4520",
-    "name": "Introduction to Mathematical Statistics",
-    "credits": 3,
+    "id": "APPM-1360",
+    "number": "APPM 1360",
+    "name": "Calculus 2 for Engineers",
+    "credits": 4,
     "prereqs": {
       "type": "or",
       "rules": [
         {
           "type": "course",
-          "courseId": "APPM-3570"
+          "courseId": "APPM-1345"
         },
         {
           "type": "course",
-          "courseId": "STAT-3100"
+          "courseId": "APPM-1350"
         },
         {
           "type": "course",
-          "courseId": "MATH-4510"
+          "courseId": "MATH-1300"
         }
       ]
     },
     "coreqs": null,
     "status": "not_started",
-    "source": "enriched"
+    "source": "enriched",
+    "description": "Continuation of <a href=\"/search/?p=APPM%201350\" data-action=\"result-detail\" data-group=\"code:APPM 1350\" >APPM 1350</a>. Focuses on applications of the definite integral, methods of integration, improper integrals, Taylor's theorem, and infinite series. Degree credit not granted for this course and <a href=\"/search/?p=MATH%202300\" data-action=\"result-detail\" data-group=\"code:MATH 2300\" >MATH 2300</a>.",
+    "notes": "Continuation of <a href=\"/search/?p=APPM%201350\" data-action=\"result-detail\" data-group=\"code:APPM 1350\" >APPM 1350</a>. Focuses on applications of the definite integral, methods of integration, improper integrals, Taylor's theorem, and infinite series. Degree credit not granted for this course and <a href=\"/search/?p=MATH%202300\" data-action=\"result-detail\" data-group=\"code:MATH 2300\" >MATH 2300</a>."
   },
   {
-    "id": "STAT-3100",
-    "number": "STAT 3100",
+    "id": "APPM-1350",
+    "number": "APPM 1350",
+    "name": "Calculus 1 for Engineers",
+    "credits": 4,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "APPM-1235"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-1021"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-1150"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-1160"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-1300"
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "source": "enriched",
+    "description": "Topics in analytical geometry and calculus including limits, rates of change of functions, derivatives and integrals of algebraic and transcendental functions, applications of differentiations and integration. Students who have already earned college credit for calculus 1 are eligible to enroll in this course if they want to solidify their knowledge base in calculus 1. For more information about the math placement referred to in the &quot;Enrollment Requirements&quot;, contact your academic advisor. Degree credit not granted for this course and <a href=\"/search/?p=APPM%201345\" data-action=\"result-detail\" data-group=\"code:APPM 1345\"  class=\"notoffered\">APPM 1345</a> or <a href=\"/search/?p=ECON%201088\" data-action=\"result-detail\" data-group=\"code:ECON 1088\" >ECON 1088</a> or <a href=\"/search/?p=MATH%201081\" data-action=\"result-detail\" data-group=\"code:MATH 1081\"  class=\"notoffered\">MATH 1081</a> or <a href=\"/search/?p=MATH%201300\" data-action=\"result-detail\" data-group=\"code:MATH 1300\" >MATH 1300</a> or <a href=\"/search/?p=MATH%201310\" data-action=\"result-detail\" data-group=\"code:MATH 1310\"  class=\"notoffered\">MATH 1310</a> or <a href=\"/search/?p=MATH%201330\" data-action=\"result-detail\" data-group=\"code:MATH 1330\"  class=\"notoffered\">MATH 1330</a>.",
+    "notes": "Topics in analytical geometry and calculus including limits, rates of change of functions, derivatives and integrals of algebraic and transcendental functions, applications of differentiations and integration. Students who have already earned college credit for calculus 1 are eligible to enroll in this course if they want to solidify their knowledge base in calculus 1. For more information about the math placement referred to in the &quot;Enrollment Requirements&quot;, contact your academic advisor. Degree credit not granted for this course and <a href=\"/search/?p=APPM%201345\" data-action=\"result-detail\" data-group=\"code:APPM 1345\"  class=\"notoffered\">APPM 1345</a> or <a href=\"/search/?p=ECON%201088\" data-action=\"result-detail\" data-group=\"code:ECON 1088\" >ECON 1088</a> or <a href=\"/search/?p=MATH%201081\" data-action=\"result-detail\" data-group=\"code:MATH 1081\"  class=\"notoffered\">MATH 1081</a> or <a href=\"/search/?p=MATH%201300\" data-action=\"result-detail\" data-group=\"code:MATH 1300\" >MATH 1300</a> or <a href=\"/search/?p=MATH%201310\" data-action=\"result-detail\" data-group=\"code:MATH 1310\"  class=\"notoffered\">MATH 1310</a> or <a href=\"/search/?p=MATH%201330\" data-action=\"result-detail\" data-group=\"code:MATH 1330\"  class=\"notoffered\">MATH 1330</a>."
+  },
+  {
+    "id": "APPM-1235",
+    "number": "APPM 1235",
+    "name": "Pre-Calculus for Engineers",
+    "credits": 4,
+    "prereqs": {
+      "type": "course",
+      "courseId": "MATH-1011"
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "enriched",
+    "description": "Prepares students for the challenging content and pace of the calculus sequence required for all engineering majors. Covers algebra, trigonometry and selected topics in analytical geometry. Prepares students for the calculus courses offered for engineering students. Requires students to engage in rigorous work sessions as they review topics that they must be comfortable with to pursue engineering course work. Structured to accustom students to the pace and culture of learning encountered in engineering math courses.  For more information about the math placement referred to in the &quot;Enrollment Requirements&quot;, please contact your academic advisor. Formerly <a href=\"/search/?p=GEEN%201235\" data-action=\"result-detail\" data-group=\"code:GEEN 1235\"  class=\"notoffered\">GEEN 1235</a>. Degree credit not granted for this course and <a href=\"/search/?p=MATH%201021\" data-action=\"result-detail\" data-group=\"code:MATH 1021\"  class=\"notoffered\">MATH 1021</a> and <a href=\"/search/?p=MATH%201150\" data-action=\"result-detail\" data-group=\"code:MATH 1150\" >MATH 1150</a>.",
+    "notes": "Prepares students for the challenging content and pace of the calculus sequence required for all engineering majors. Covers algebra, trigonometry and selected topics in analytical geometry. Prepares students for the calculus courses offered for engineering students. Requires students to engage in rigorous work sessions as they review topics that they must be comfortable with to pursue engineering course work. Structured to accustom students to the pace and culture of learning encountered in engineering math courses.  For more information about the math placement referred to in the &quot;Enrollment Requirements&quot;, please contact your academic advisor. Formerly <a href=\"/search/?p=GEEN%201235\" data-action=\"result-detail\" data-group=\"code:GEEN 1235\"  class=\"notoffered\">GEEN 1235</a>. Degree credit not granted for this course and <a href=\"/search/?p=MATH%201021\" data-action=\"result-detail\" data-group=\"code:MATH 1021\"  class=\"notoffered\">MATH 1021</a> and <a href=\"/search/?p=MATH%201150\" data-action=\"result-detail\" data-group=\"code:MATH 1150\" >MATH 1150</a>."
+  },
+  {
+    "id": "APPM-1340",
+    "number": "APPM 1340",
+    "name": "Calculus 1 with Algebra, Part A",
+    "credits": 4,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "APPM-1235"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-1021"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-1150"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-1160"
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "enriched",
+    "description": "Studies selected topics in analytical geometry and calculus: rates of change of functions, limits, derivatives and their applications. This course and <a href=\"/search/?p=APPM%201345\" data-action=\"result-detail\" data-group=\"code:APPM 1345\"  class=\"notoffered\">APPM 1345</a> together are equivalent to <a href=\"/search/?p=APPM%201350\" data-action=\"result-detail\" data-group=\"code:APPM 1350\" >APPM 1350</a>. The sequence of this course and <a href=\"/search/?p=APPM%201345\" data-action=\"result-detail\" data-group=\"code:APPM 1345\"  class=\"notoffered\">APPM 1345</a> is specifically designed for students whose manipulative skills in the techniques of high school algebra and precalculus may be inadequate for <a href=\"/search/?p=APPM%201350\" data-action=\"result-detail\" data-group=\"code:APPM 1350\" >APPM 1350</a>.  For more information about the math placement referred to in the &quot;Enrollment Requirements&quot;, please contact your academic advisor.",
+    "notes": "Studies selected topics in analytical geometry and calculus: rates of change of functions, limits, derivatives and their applications. This course and <a href=\"/search/?p=APPM%201345\" data-action=\"result-detail\" data-group=\"code:APPM 1345\"  class=\"notoffered\">APPM 1345</a> together are equivalent to <a href=\"/search/?p=APPM%201350\" data-action=\"result-detail\" data-group=\"code:APPM 1350\" >APPM 1350</a>. The sequence of this course and <a href=\"/search/?p=APPM%201345\" data-action=\"result-detail\" data-group=\"code:APPM 1345\"  class=\"notoffered\">APPM 1345</a> is specifically designed for students whose manipulative skills in the techniques of high school algebra and precalculus may be inadequate for <a href=\"/search/?p=APPM%201350\" data-action=\"result-detail\" data-group=\"code:APPM 1350\" >APPM 1350</a>.  For more information about the math placement referred to in the &quot;Enrollment Requirements&quot;, please contact your academic advisor."
+  },
+  {
+    "id": "APPM-1345",
+    "number": "APPM 1345",
+    "name": "Calculus 1 with Algebra, Part B",
+    "credits": 4,
+    "prereqs": {
+      "type": "course",
+      "courseId": "APPM-1340"
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "enriched",
+    "description": "Continuation of <a href=\"/search/?p=APPM%201340\" data-action=\"result-detail\" data-group=\"code:APPM 1340\"  class=\"notoffered\">APPM 1340</a>. Studies selected topics in calculus: derivatives and their applications, integration, differentiation and integration of transcendental functions. Algebraic and trigonometric topics are studied throughout, as needed. Degree credit not granted for this course and <a href=\"/search/?p=APPM%201350\" data-action=\"result-detail\" data-group=\"code:APPM 1350\" >APPM 1350</a> or <a href=\"/search/?p=ECON%201088\" data-action=\"result-detail\" data-group=\"code:ECON 1088\" >ECON 1088</a> or <a href=\"/search/?p=MATH%201081\" data-action=\"result-detail\" data-group=\"code:MATH 1081\"  class=\"notoffered\">MATH 1081</a> or <a href=\"/search/?p=MATH%201300\" data-action=\"result-detail\" data-group=\"code:MATH 1300\" >MATH 1300</a> or <a href=\"/search/?p=MATH%201310\" data-action=\"result-detail\" data-group=\"code:MATH 1310\"  class=\"notoffered\">MATH 1310</a> or <a href=\"/search/?p=MATH%201330\" data-action=\"result-detail\" data-group=\"code:MATH 1330\"  class=\"notoffered\">MATH 1330</a>.",
+    "notes": "Continuation of <a href=\"/search/?p=APPM%201340\" data-action=\"result-detail\" data-group=\"code:APPM 1340\"  class=\"notoffered\">APPM 1340</a>. Studies selected topics in calculus: derivatives and their applications, integration, differentiation and integration of transcendental functions. Algebraic and trigonometric topics are studied throughout, as needed. Degree credit not granted for this course and <a href=\"/search/?p=APPM%201350\" data-action=\"result-detail\" data-group=\"code:APPM 1350\" >APPM 1350</a> or <a href=\"/search/?p=ECON%201088\" data-action=\"result-detail\" data-group=\"code:ECON 1088\" >ECON 1088</a> or <a href=\"/search/?p=MATH%201081\" data-action=\"result-detail\" data-group=\"code:MATH 1081\"  class=\"notoffered\">MATH 1081</a> or <a href=\"/search/?p=MATH%201300\" data-action=\"result-detail\" data-group=\"code:MATH 1300\" >MATH 1300</a> or <a href=\"/search/?p=MATH%201310\" data-action=\"result-detail\" data-group=\"code:MATH 1310\"  class=\"notoffered\">MATH 1310</a> or <a href=\"/search/?p=MATH%201330\" data-action=\"result-detail\" data-group=\"code:MATH 1330\"  class=\"notoffered\">MATH 1330</a>."
+  },
+  {
+    "id": "APPM-2360",
+    "number": "APPM 2360",
+    "name": "Introduction to Differential Equations with Linear Algebra",
+    "credits": 4,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "APPM-1360"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-2300"
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "enriched",
+    "description": "Introduces ordinary differential equations, systems of linear equations, matrices, determinants, vector spaces, linear transformations, and systems of linear differential equations. Credit not granted for this course and both <a href=\"/search/?p=MATH%202130\" data-action=\"result-detail\" data-group=\"code:MATH 2130\" >MATH 2130</a> and <a href=\"/search/?p=MATH%203430\" data-action=\"result-detail\" data-group=\"code:MATH 3430\" >MATH 3430</a>.",
+    "notes": "Introduces ordinary differential equations, systems of linear equations, matrices, determinants, vector spaces, linear transformations, and systems of linear differential equations. Credit not granted for this course and both <a href=\"/search/?p=MATH%202130\" data-action=\"result-detail\" data-group=\"code:MATH 2130\" >MATH 2130</a> and <a href=\"/search/?p=MATH%203430\" data-action=\"result-detail\" data-group=\"code:MATH 3430\" >MATH 3430</a>."
+  },
+  {
+    "id": "APPM-3570",
+    "number": "APPM 3570",
     "name": "Applied Probability",
     "credits": 3,
     "prereqs": null,
@@ -1793,6 +2188,697 @@
       ]
     },
     "status": "not_started",
-    "source": "enriched"
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "enriched",
+    "description": "Studies axioms, counting formulas, conditional probability, independence, random variables, continuous and discrete distribution, expectation, joint distributions, moment generating functions, law of large numbers and the central limit theorem. Degree credit not granted for this course and <a href=\"/search/?p=MATH%204510\" data-action=\"result-detail\" data-group=\"code:MATH 4510\" >MATH 4510</a> and <a href=\"/search/?p=MATH%205510\" data-action=\"result-detail\" data-group=\"code:MATH 5510\" >MATH 5510</a>. Same as <a href=\"/search/?p=STAT%203100\" data-action=\"result-detail\" data-group=\"code:STAT 3100\" >STAT 3100</a>.",
+    "notes": "Studies axioms, counting formulas, conditional probability, independence, random variables, continuous and discrete distribution, expectation, joint distributions, moment generating functions, law of large numbers and the central limit theorem. Degree credit not granted for this course and <a href=\"/search/?p=MATH%204510\" data-action=\"result-detail\" data-group=\"code:MATH 4510\" >MATH 4510</a> and <a href=\"/search/?p=MATH%205510\" data-action=\"result-detail\" data-group=\"code:MATH 5510\" >MATH 5510</a>. Same as <a href=\"/search/?p=STAT%203100\" data-action=\"result-detail\" data-group=\"code:STAT 3100\" >STAT 3100</a>."
+  },
+  {
+    "id": "APPM-4520",
+    "number": "APPM 4520",
+    "name": "APPM 4520",
+    "credits": 0,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "stub"
+  },
+  {
+    "id": "APPM-4650",
+    "number": "APPM 4650",
+    "name": "APPM 4650",
+    "credits": 0,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "stub"
+  },
+  {
+    "id": "ASEN-1320",
+    "number": "ASEN 1320",
+    "name": "ASEN 1320",
+    "credits": 0,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "stub"
+  },
+  {
+    "id": "CSCI-1320",
+    "number": "CSCI 1320",
+    "name": "CSCI 1320",
+    "credits": 0,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "stub"
+  },
+  {
+    "id": "CSCI-2270",
+    "number": "CSCI 2270",
+    "name": "Computer Science 2: Data Structures",
+    "credits": 4,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "CSCI-1300"
+        },
+        {
+          "type": "course",
+          "courseId": "CSCI-1320"
+        },
+        {
+          "type": "course",
+          "courseId": "ECEN-1310"
+        },
+        {
+          "type": "course",
+          "courseId": "ASEN-1320"
+        }
+      ]
+    },
+    "coreqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "MATH-1300"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-1310"
+        },
+        {
+          "type": "course",
+          "courseId": "APPM-1345"
+        },
+        {
+          "type": "course",
+          "courseId": "APPM-1350"
+        }
+      ]
+    },
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "enriched",
+    "description": "Studies data abstractions (e.g., stacks, queues, lists, trees, graphs, heaps, hash tables, priority queues) and their representation techniques (e.g., linking, arrays). Introduces concepts used in algorithm design and analysis including criteria for selecting data structures to fit their applications. Knowledge of C++ is highly recommended. Degree credit not granted for this course and <a href=\"/search/?p=CSCI%202275\" data-action=\"result-detail\" data-group=\"code:CSCI 2275\" >CSCI 2275</a>. Same as <a href=\"/search/?p=CSPB%202270\" data-action=\"result-detail\" data-group=\"code:CSPB 2270\" >CSPB 2270</a>.",
+    "notes": "Studies data abstractions (e.g., stacks, queues, lists, trees, graphs, heaps, hash tables, priority queues) and their representation techniques (e.g., linking, arrays). Introduces concepts used in algorithm design and analysis including criteria for selecting data structures to fit their applications. Knowledge of C++ is highly recommended. Degree credit not granted for this course and <a href=\"/search/?p=CSCI%202275\" data-action=\"result-detail\" data-group=\"code:CSCI 2275\" >CSCI 2275</a>. Same as <a href=\"/search/?p=CSPB%202270\" data-action=\"result-detail\" data-group=\"code:CSPB 2270\" >CSPB 2270</a>."
+  },
+  {
+    "id": "CSCI-2275",
+    "number": "CSCI 2275",
+    "name": "Programming and Data Structures",
+    "credits": 4,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "MATH-1300"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-1310"
+        },
+        {
+          "type": "course",
+          "courseId": "APPM-1345"
+        },
+        {
+          "type": "course",
+          "courseId": "APPM-1350"
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "enriched",
+    "description": "Combines the content in <a href=\"/search/?p=CSCI%201300\" data-action=\"result-detail\" data-group=\"code:CSCI 1300\" >CSCI 1300</a> and <a href=\"/search/?p=CSCI%202270\" data-action=\"result-detail\" data-group=\"code:CSCI 2270\" >CSCI 2270</a> and is intended for students with experience with at least one object oriented programming language. Assumes knowledge of programming constructs- data types, conditionals, loops and classes. Students must pass a programming competency exam administered by the computer science department to take this class. The course includes an expedited instruction in the C++ programming language and then primarily focuses on the content in <a href=\"/search/?p=CSCI%202270\" data-action=\"result-detail\" data-group=\"code:CSCI 2270\" >CSCI 2270</a>: data abstractions (e.g., stacks, queues, lists, trees, graphs, heaps, hash tables, priority queues) and their representation techniques (e.g., linking, arrays). Introduces concepts used in algorithm design and analysis including criteria for selecting data structures to fit their applications. Degree credit not granted for this course and <a href=\"/search/?p=CSCI%202270\" data-action=\"result-detail\" data-group=\"code:CSCI 2270\" >CSCI 2270</a> or <a href=\"/search/?p=CSPB%202270\" data-action=\"result-detail\" data-group=\"code:CSPB 2270\" >CSPB 2270</a>.",
+    "notes": "Combines the content in <a href=\"/search/?p=CSCI%201300\" data-action=\"result-detail\" data-group=\"code:CSCI 1300\" >CSCI 1300</a> and <a href=\"/search/?p=CSCI%202270\" data-action=\"result-detail\" data-group=\"code:CSCI 2270\" >CSCI 2270</a> and is intended for students with experience with at least one object oriented programming language. Assumes knowledge of programming constructs- data types, conditionals, loops and classes. Students must pass a programming competency exam administered by the computer science department to take this class. The course includes an expedited instruction in the C++ programming language and then primarily focuses on the content in <a href=\"/search/?p=CSCI%202270\" data-action=\"result-detail\" data-group=\"code:CSCI 2270\" >CSCI 2270</a>: data abstractions (e.g., stacks, queues, lists, trees, graphs, heaps, hash tables, priority queues) and their representation techniques (e.g., linking, arrays). Introduces concepts used in algorithm design and analysis including criteria for selecting data structures to fit their applications. Degree credit not granted for this course and <a href=\"/search/?p=CSCI%202270\" data-action=\"result-detail\" data-group=\"code:CSCI 2270\" >CSCI 2270</a> or <a href=\"/search/?p=CSPB%202270\" data-action=\"result-detail\" data-group=\"code:CSPB 2270\" >CSPB 2270</a>."
+  },
+  {
+    "id": "CSCI-3022",
+    "number": "CSCI 3022",
+    "name": "Introduction to Data Science with Probability and Statistics",
+    "credits": 3,
+    "prereqs": {
+      "type": "and",
+      "rules": [
+        {
+          "type": "or",
+          "rules": [
+            {
+              "type": "course",
+              "courseId": "CSCI-2270"
+            },
+            {
+              "type": "course",
+              "courseId": "CSCI-2275"
+            }
+          ]
+        },
+        {
+          "type": "or",
+          "rules": [
+            {
+              "type": "course",
+              "courseId": "APPM-1360"
+            },
+            {
+              "type": "course",
+              "courseId": "MATH-2300"
+            }
+          ]
+        },
+        {
+          "type": "or",
+          "rules": [
+            {
+              "type": "course",
+              "courseId": "CSCI-2824"
+            },
+            {
+              "type": "course",
+              "courseId": "ECEN-2703"
+            },
+            {
+              "type": "course",
+              "courseId": "APPM-3170"
+            },
+            {
+              "type": "course",
+              "courseId": "MATH-2001"
+            }
+          ]
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "enriched",
+    "description": "Introduces students to the tools, methods and theory behind extracting insights from data. Covers algorithms of cleaning and munging data, probability theory and common distributions, statistical simulation, drawing inferences from data, and basic statistical modeling. Same as <a href=\"/search/?p=CSPB%203022\" data-action=\"result-detail\" data-group=\"code:CSPB 3022\" >CSPB 3022</a>.",
+    "notes": "Introduces students to the tools, methods and theory behind extracting insights from data. Covers algorithms of cleaning and munging data, probability theory and common distributions, statistical simulation, drawing inferences from data, and basic statistical modeling. Same as <a href=\"/search/?p=CSPB%203022\" data-action=\"result-detail\" data-group=\"code:CSPB 3022\" >CSPB 3022</a>."
+  },
+  {
+    "id": "ECEN-1310",
+    "number": "ECEN 1310",
+    "name": "Introduction to C Programming",
+    "credits": 4,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "enriched",
+    "description": "This introductory programming course teaches fundamental concepts using the C programming language.  The class generally meets programming requirements for majors within the engineering school and assumes no prior programming experience.  Includes a weekly computer lab session.  Covered topics include pointers, control flow, dynamic memory, and abstract data types. Degree credit not granted for this course and <a href=\"/search/?p=CSCI%201300\" data-action=\"result-detail\" data-group=\"code:CSCI 1300\" >CSCI 1300</a> and <a href=\"/search/?p=CSPB%201300\" data-action=\"result-detail\" data-group=\"code:CSPB 1300\" >CSPB 1300</a>. Recommended corequisite: <a href=\"/search/?p=APPM%201350\" data-action=\"result-detail\" data-group=\"code:APPM 1350\" >APPM 1350</a> or equivalent.",
+    "notes": "This introductory programming course teaches fundamental concepts using the C programming language.  The class generally meets programming requirements for majors within the engineering school and assumes no prior programming experience.  Includes a weekly computer lab session.  Covered topics include pointers, control flow, dynamic memory, and abstract data types. Degree credit not granted for this course and <a href=\"/search/?p=CSCI%201300\" data-action=\"result-detail\" data-group=\"code:CSCI 1300\" >CSCI 1300</a> and <a href=\"/search/?p=CSPB%201300\" data-action=\"result-detail\" data-group=\"code:CSPB 1300\" >CSPB 1300</a>. Recommended corequisite: <a href=\"/search/?p=APPM%201350\" data-action=\"result-detail\" data-group=\"code:APPM 1350\" >APPM 1350</a> or equivalent."
+  },
+  {
+    "id": "MATH-1021",
+    "number": "MATH 1021",
+    "name": "MATH 1021",
+    "credits": 0,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "stub"
+  },
+  {
+    "id": "MATH-1151",
+    "number": "MATH 1151",
+    "name": "Precalculus Supplemental Lab",
+    "credits": 1,
+    "prereqs": {
+      "type": "course",
+      "courseId": "MATH-1150"
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "enriched",
+    "description": "Provides students concurrently enrolled in <a href=\"/search/?p=MATH%201150\" data-action=\"result-detail\" data-group=\"code:MATH 1150\" >MATH 1150</a> with supplemental instruction.",
+    "notes": "Provides students concurrently enrolled in <a href=\"/search/?p=MATH%201150\" data-action=\"result-detail\" data-group=\"code:MATH 1150\" >MATH 1150</a> with supplemental instruction."
+  },
+  {
+    "id": "MATH-1160",
+    "number": "MATH 1160",
+    "name": "MATH 1160",
+    "credits": 0,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "stub"
+  },
+  {
+    "id": "MATH-1310",
+    "number": "MATH 1310",
+    "name": "MATH 1310",
+    "credits": 0,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "stub"
+  },
+  {
+    "id": "MATH-2130",
+    "number": "MATH 2130",
+    "name": "Introduction to Linear Algebra for Non-Mathematics Majors",
+    "credits": 3,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "MATH-2300"
+        },
+        {
+          "type": "course",
+          "courseId": "APPM-1360"
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "enriched",
+    "description": "Examines basic properties of systems of linear equations, vector spaces, inner products, linear independence, dimension, linear transformations, matrices, determinants, eigenvalues, eigenvectors and diagonalization. Intended for students who do not plan to major in Mathematics. Degree credit not granted for this course and <a href=\"/search/?p=MATH%202135\" data-action=\"result-detail\" data-group=\"code:MATH 2135\" >MATH 2135</a> and <a href=\"/search/?p=APPM%203310\" data-action=\"result-detail\" data-group=\"code:APPM 3310\" >APPM 3310</a>. Formerly <a href=\"/search/?p=MATH%203130\" data-action=\"result-detail\" data-group=\"code:MATH 3130\"  class=\"notoffered\">MATH 3130</a>.",
+    "notes": "Examines basic properties of systems of linear equations, vector spaces, inner products, linear independence, dimension, linear transformations, matrices, determinants, eigenvalues, eigenvectors and diagonalization. Intended for students who do not plan to major in Mathematics. Degree credit not granted for this course and <a href=\"/search/?p=MATH%202135\" data-action=\"result-detail\" data-group=\"code:MATH 2135\" >MATH 2135</a> and <a href=\"/search/?p=APPM%203310\" data-action=\"result-detail\" data-group=\"code:APPM 3310\" >APPM 3310</a>. Formerly <a href=\"/search/?p=MATH%203130\" data-action=\"result-detail\" data-group=\"code:MATH 3130\"  class=\"notoffered\">MATH 3130</a>."
+  },
+  {
+    "id": "MATH-2135",
+    "number": "MATH 2135",
+    "name": "Introduction to Linear Algebra for Mathematics Majors",
+    "credits": 3,
+    "prereqs": {
+      "type": "and",
+      "rules": [
+        {
+          "type": "or",
+          "rules": [
+            {
+              "type": "course",
+              "courseId": "MATH-2300"
+            },
+            {
+              "type": "course",
+              "courseId": "APPM-1360"
+            }
+          ]
+        },
+        {
+          "type": "or",
+          "rules": [
+            {
+              "type": "course",
+              "courseId": "MATH-2001"
+            },
+            {
+              "type": "course",
+              "courseId": "MATH-2002"
+            }
+          ]
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "enriched",
+    "description": "Examines basic properties of systems of linear equations, vector spaces, inner products, linear independence, dimension, linear transformations, matrices, determinants, eigenvalues, eigenvectors and diagonalization. Intended for students who plan to major in Mathematics. Degree credit not granted for this course and <a href=\"/search/?p=MATH%202130\" data-action=\"result-detail\" data-group=\"code:MATH 2130\" >MATH 2130</a> and <a href=\"/search/?p=APPM%203310\" data-action=\"result-detail\" data-group=\"code:APPM 3310\" >APPM 3310</a>. Formerly <a href=\"/search/?p=MATH%203135\" data-action=\"result-detail\" data-group=\"code:MATH 3135\"  class=\"notoffered\">MATH 3135</a>.",
+    "notes": "Examines basic properties of systems of linear equations, vector spaces, inner products, linear independence, dimension, linear transformations, matrices, determinants, eigenvalues, eigenvectors and diagonalization. Intended for students who plan to major in Mathematics. Degree credit not granted for this course and <a href=\"/search/?p=MATH%202130\" data-action=\"result-detail\" data-group=\"code:MATH 2130\" >MATH 2130</a> and <a href=\"/search/?p=APPM%203310\" data-action=\"result-detail\" data-group=\"code:APPM 3310\" >APPM 3310</a>. Formerly <a href=\"/search/?p=MATH%203135\" data-action=\"result-detail\" data-group=\"code:MATH 3135\"  class=\"notoffered\">MATH 3135</a>."
+  },
+  {
+    "id": "MATH-3001",
+    "number": "MATH 3001",
+    "name": "Analysis 1",
+    "credits": 3,
+    "prereqs": {
+      "type": "and",
+      "rules": [
+        {
+          "type": "or",
+          "rules": [
+            {
+              "type": "course",
+              "courseId": "MATH-2001"
+            },
+            {
+              "type": "course",
+              "courseId": "MATH-2002"
+            }
+          ]
+        },
+        {
+          "type": "or",
+          "rules": [
+            {
+              "type": "course",
+              "courseId": "MATH-2130"
+            },
+            {
+              "type": "course",
+              "courseId": "MATH-3130"
+            },
+            {
+              "type": "course",
+              "courseId": "MATH-2135"
+            },
+            {
+              "type": "course",
+              "courseId": "MATH-3135"
+            }
+          ]
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "enriched",
+    "description": "Provides a rigorous treatment of the basic results from elementary Calculus. Topics include the topology of the real line, sequences of numbers, continuous functions, differentiable functions and the Riemann integral.",
+    "notes": "Provides a rigorous treatment of the basic results from elementary Calculus. Topics include the topology of the real line, sequences of numbers, continuous functions, differentiable functions and the Riemann integral."
+  },
+  {
+    "id": "MATH-4510",
+    "number": "MATH 4510",
+    "name": "Introduction to Probability Theory",
+    "credits": 3,
+    "prereqs": {
+      "type": "and",
+      "rules": [
+        {
+          "type": "or",
+          "rules": [
+            {
+              "type": "course",
+              "courseId": "MATH-2400"
+            },
+            {
+              "type": "course",
+              "courseId": "APPM-2350"
+            }
+          ]
+        },
+        {
+          "type": "or",
+          "rules": [
+            {
+              "type": "course",
+              "courseId": "MATH-2130"
+            },
+            {
+              "type": "course",
+              "courseId": "MATH-2135"
+            }
+          ]
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "enriched",
+    "description": "Studies axioms, combinatorial analysis, independence and conditional probability, discrete and absolutely continuous distributions, expectation and distribution of functions of random variables, laws of large numbers, central limit theorems, and simple Markov chains if time permits. Degree credit not granted for this course and <a href=\"/search/?p=APPM%203570\" data-action=\"result-detail\" data-group=\"code:APPM 3570\" >APPM 3570</a> and <a href=\"/search/?p=STAT%203100\" data-action=\"result-detail\" data-group=\"code:STAT 3100\" >STAT 3100</a>. Same as <a href=\"/search/?p=MATH%205510\" data-action=\"result-detail\" data-group=\"code:MATH 5510\" >MATH 5510</a>.",
+    "notes": "Studies axioms, combinatorial analysis, independence and conditional probability, discrete and absolutely continuous distributions, expectation and distribution of functions of random variables, laws of large numbers, central limit theorems, and simple Markov chains if time permits. Degree credit not granted for this course and <a href=\"/search/?p=APPM%203570\" data-action=\"result-detail\" data-group=\"code:APPM 3570\" >APPM 3570</a> and <a href=\"/search/?p=STAT%203100\" data-action=\"result-detail\" data-group=\"code:STAT 3100\" >STAT 3100</a>. Same as <a href=\"/search/?p=MATH%205510\" data-action=\"result-detail\" data-group=\"code:MATH 5510\" >MATH 5510</a>."
+  },
+  {
+    "id": "MATH-4520",
+    "number": "MATH 4520",
+    "name": "Introduction to Mathematical Statistics",
+    "credits": 3,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "MATH-4510"
+        },
+        {
+          "type": "course",
+          "courseId": "APPM-3570"
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "enriched",
+    "description": "Examines point and confidence interval estimation. Principles of maximum likelihood, sufficiency, and completeness: tests of simple and composite hypotheses, linear models, and multiple regression analysis if time permits. Analyzes various distribution-free methods. Same as <a href=\"/search/?p=MATH%205520\" data-action=\"result-detail\" data-group=\"code:MATH 5520\" >MATH 5520</a> and <a href=\"/search/?p=STAT%204520\" data-action=\"result-detail\" data-group=\"code:STAT 4520\" >STAT 4520</a> and <a href=\"/search/?p=STAT%205520\" data-action=\"result-detail\" data-group=\"code:STAT 5520\" >STAT 5520</a>.",
+    "notes": "Examines point and confidence interval estimation. Principles of maximum likelihood, sufficiency, and completeness: tests of simple and composite hypotheses, linear models, and multiple regression analysis if time permits. Analyzes various distribution-free methods. Same as <a href=\"/search/?p=MATH%205520\" data-action=\"result-detail\" data-group=\"code:MATH 5520\" >MATH 5520</a> and <a href=\"/search/?p=STAT%204520\" data-action=\"result-detail\" data-group=\"code:STAT 4520\" >STAT 4520</a> and <a href=\"/search/?p=STAT%205520\" data-action=\"result-detail\" data-group=\"code:STAT 5520\" >STAT 5520</a>."
+  },
+  {
+    "id": "MCEN-1030",
+    "number": "MCEN 1030",
+    "name": "Introduction to Engineering Computing",
+    "credits": 3,
+    "prereqs": null,
+    "coreqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "APPM-1235"
+        },
+        {
+          "type": "course",
+          "courseId": "APPM-1340"
+        },
+        {
+          "type": "course",
+          "courseId": "APPM-1345"
+        },
+        {
+          "type": "course",
+          "courseId": "APPM-1350"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-1150"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-1300"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-1310"
+        }
+      ]
+    },
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "enriched",
+    "description": "Introduces concepts and methods of computer programming with emphasis on applications to mechanical engineering. Includes vector/array manipulation, for/if/else/while loops, function definition, problem solving with programming. Covers MATLAB/Python with no previous experience expected.",
+    "notes": "Introduces concepts and methods of computer programming with emphasis on applications to mechanical engineering. Includes vector/array manipulation, for/if/else/while loops, function definition, problem solving with programming. Covers MATLAB/Python with no previous experience expected."
+  },
+  {
+    "id": "STAT-4000",
+    "number": "STAT 4000",
+    "name": "Statistical Methods and Application I",
+    "credits": 3,
+    "prereqs": {
+      "type": "or",
+      "rules": [
+        {
+          "type": "course",
+          "courseId": "APPM-1360"
+        },
+        {
+          "type": "course",
+          "courseId": "MATH-2300"
+        }
+      ]
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "enriched",
+    "description": "Introduces exploratory data analysis, probability theory, statistical inference, and data modeling. Topics include discrete and continuous probability distributions, expectation, laws of large numbers, central limit theorem, statistical parameter estimation, hypothesis testing, and regression analysis. Considerable emphasis on applications in the R programming language. Same as <a href=\"/search/?p=STAT%205000\" data-action=\"result-detail\" data-group=\"code:STAT 5000\" >STAT 5000</a>.",
+    "notes": "Introduces exploratory data analysis, probability theory, statistical inference, and data modeling. Topics include discrete and continuous probability distributions, expectation, laws of large numbers, central limit theorem, statistical parameter estimation, hypothesis testing, and regression analysis. Considerable emphasis on applications in the R programming language. Same as <a href=\"/search/?p=STAT%205000\" data-action=\"result-detail\" data-group=\"code:STAT 5000\" >STAT 5000</a>."
+  },
+  {
+    "id": "STAT-4010",
+    "number": "STAT 4010",
+    "name": "Statistical Methods and Applications II",
+    "credits": 3,
+    "prereqs": {
+      "type": "course",
+      "courseId": "STAT-4000"
+    },
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "enriched",
+    "description": "Expands upon statistical techniques introduced in <a href=\"/search/?p=STAT%204000\" data-action=\"result-detail\" data-group=\"code:STAT 4000\" >STAT 4000</a>. Topics include modern regression analysis, analysis of variance (ANOVA), experimental design, nonparametric methods, and an introduction to Bayesian data analysis. Considerable emphasis on application in the R programming language. Same as <a href=\"/search/?p=STAT%205010\" data-action=\"result-detail\" data-group=\"code:STAT 5010\" >STAT 5010</a>.",
+    "notes": "Expands upon statistical techniques introduced in <a href=\"/search/?p=STAT%204000\" data-action=\"result-detail\" data-group=\"code:STAT 4000\" >STAT 4000</a>. Topics include modern regression analysis, analysis of variance (ANOVA), experimental design, nonparametric methods, and an introduction to Bayesian data analysis. Considerable emphasis on application in the R programming language. Same as <a href=\"/search/?p=STAT%205010\" data-action=\"result-detail\" data-group=\"code:STAT 5010\" >STAT 5010</a>."
+  },
+  {
+    "id": "APPM-3170",
+    "number": "APPM 3170",
+    "name": "APPM 3170",
+    "credits": 0,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "stub"
+  },
+  {
+    "id": "CSCI-1310",
+    "number": "CSCI 1310",
+    "name": "CSCI 1310",
+    "credits": 0,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "stub"
+  },
+  {
+    "id": "CSPB-1300",
+    "number": "CSPB 1300",
+    "name": "CSPB 1300",
+    "credits": 0,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "stub"
+  },
+  {
+    "id": "ECEN-2703",
+    "number": "ECEN 2703",
+    "name": "ECEN 2703",
+    "credits": 0,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "stub"
+  },
+  {
+    "id": "GEEN-3830",
+    "number": "GEEN 3830",
+    "name": "GEEN 3830",
+    "credits": 0,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "stub"
+  },
+  {
+    "id": "MATH-2001",
+    "number": "MATH 2001",
+    "name": "MATH 2001",
+    "credits": 0,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "stub"
+  },
+  {
+    "id": "MATH-2002",
+    "number": "MATH 2002",
+    "name": "MATH 2002",
+    "credits": 0,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "stub"
+  },
+  {
+    "id": "MATH-3130",
+    "number": "MATH 3130",
+    "name": "MATH 3130",
+    "credits": 0,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "stub"
+  },
+  {
+    "id": "MATH-3135",
+    "number": "MATH 3135",
+    "name": "MATH 3135",
+    "credits": 0,
+    "prereqs": null,
+    "coreqs": null,
+    "status": "not_started",
+    "countedTowardDegree": true,
+    "countsTowardGPA": true,
+    "countsTowardEarnedHours": true,
+    "source": "stub"
   }
 ]
