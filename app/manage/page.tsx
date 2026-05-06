@@ -50,6 +50,9 @@ interface CourseFormData {
   semester: string;
   status: CourseStatus;
   notes: string;
+  countedTowardDegree: boolean;
+  countsTowardGPA: boolean;
+  countsTowardEarnedHours: boolean;
 }
 
 const emptyForm: CourseFormData = {
@@ -61,7 +64,21 @@ const emptyForm: CourseFormData = {
   semester: "",
   status: "not_started",
   notes: "",
+  countedTowardDegree: true,
+  countsTowardGPA: true,
+  countsTowardEarnedHours: true,
 };
+
+function EditDialog({ onClose, children }: { onClose: () => void; children: React.ReactNode }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <button className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} aria-label="Close edit dialog" />
+      <div className="relative max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl border border-[#2a2a3e] bg-[#111120] shadow-2xl">
+        {children}
+      </div>
+    </div>
+  );
+}
 
 function CourseForm({
   initial,
@@ -82,15 +99,28 @@ function CourseForm({
 }) {
   const [form, setForm] = useState(initial);
 
-  function update(field: keyof CourseFormData, value: string) {
+  function update(field: keyof CourseFormData, value: string | boolean) {
     setForm((f) => ({ ...f, [field]: value }));
   }
 
   return (
-    <div className="bg-[#111120] border border-[#1e1e34] rounded-xl p-5 space-y-4">
-      <h3 className="text-sm font-semibold text-[#d0d0e8]">
-        {isEdit ? "Edit Course" : "Add New Course"}
-      </h3>
+    <div className="p-5 space-y-4">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h3 className="text-sm font-semibold text-[#d0d0e8]">
+            {isEdit ? "Edit Course" : "Add New Course"}
+          </h3>
+          <p className="mt-1 text-xs text-[#6a6a8a]">
+            {isEdit ? `${form.dept} ${form.num}` : "Create a course record manually."}
+          </p>
+        </div>
+        <button
+          onClick={onCancel}
+          className="rounded-lg border border-[#2a2a3e] bg-[#1e1e34] px-2.5 py-1 text-xs text-[#8888a8] hover:text-[#d0d0e8]"
+        >
+          Close
+        </button>
+      </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
@@ -187,6 +217,36 @@ function CourseForm({
         />
       </div>
 
+      <div className="grid grid-cols-3 gap-3 rounded-xl border border-[#1e1e34] bg-[#0d0d1a] p-3">
+        <label className="flex items-start gap-2 text-xs text-[#8888a8]">
+          <input
+            type="checkbox"
+            checked={form.countedTowardDegree}
+            onChange={(e) => update("countedTowardDegree", e.target.checked)}
+            className="mt-0.5 accent-[#d4a843]"
+          />
+          <span><span className="block text-[#d0d0e8]">Degree progress</span>Counts toward requirements.</span>
+        </label>
+        <label className="flex items-start gap-2 text-xs text-[#8888a8]">
+          <input
+            type="checkbox"
+            checked={form.countsTowardGPA}
+            onChange={(e) => update("countsTowardGPA", e.target.checked)}
+            className="mt-0.5 accent-[#d4a843]"
+          />
+          <span><span className="block text-[#d0d0e8]">GPA</span>Counts in GPA denominator.</span>
+        </label>
+        <label className="flex items-start gap-2 text-xs text-[#8888a8]">
+          <input
+            type="checkbox"
+            checked={form.countsTowardEarnedHours}
+            onChange={(e) => update("countsTowardEarnedHours", e.target.checked)}
+            className="mt-0.5 accent-[#d4a843]"
+          />
+          <span><span className="block text-[#d0d0e8]">Earned hours</span>Counts toward earned credits.</span>
+        </label>
+      </div>
+
       {error && (
         <p className="text-xs text-red-400">{error}</p>
       )}
@@ -267,7 +327,9 @@ export default function ManageCoursesPage() {
           gradePoints,
           notes: form.notes || undefined,
           manuallyAdded: true,
-          countedTowardDegree: true,
+          countedTowardDegree: form.countedTowardDegree,
+          countsTowardGPA: form.countsTowardGPA,
+          countsTowardEarnedHours: form.countsTowardEarnedHours,
         }),
       });
       if (!res.ok) {
@@ -301,6 +363,9 @@ export default function ManageCoursesPage() {
           semester: form.semester || undefined,
           status: form.status,
           notes: form.notes || undefined,
+          countedTowardDegree: form.countedTowardDegree,
+          countsTowardGPA: form.countsTowardGPA,
+          countsTowardEarnedHours: form.countsTowardEarnedHours,
         }),
       });
       if (!res.ok) {
@@ -354,6 +419,9 @@ export default function ManageCoursesPage() {
     semester: editingCourse.semester ?? "",
     status: editingCourse.status,
     notes: editingCourse.notes ?? "",
+    countedTowardDegree: editingCourse.countedTowardDegree !== false,
+    countsTowardGPA: editingCourse.countsTowardGPA !== false,
+    countsTowardEarnedHours: editingCourse.countsTowardEarnedHours !== false,
   } : null;
 
   return (
@@ -376,31 +444,34 @@ export default function ManageCoursesPage() {
         )}
       </div>
 
-      {/* Add Form */}
+      {/* Add/Edit Dialog */}
       {showForm && (
-        <CourseForm
-          initial={emptyForm}
-          isEdit={false}
-          onSave={handleAdd}
-          onCancel={() => { setShowForm(false); setFormError(null); }}
-          saving={saving}
-          error={formError}
-          semesters={semesters}
-        />
+        <EditDialog onClose={() => { setShowForm(false); setFormError(null); }}>
+          <CourseForm
+            initial={emptyForm}
+            isEdit={false}
+            onSave={handleAdd}
+            onCancel={() => { setShowForm(false); setFormError(null); }}
+            saving={saving}
+            error={formError}
+            semesters={semesters}
+          />
+        </EditDialog>
       )}
 
-      {/* Edit Form */}
       {editingCourse && editFormData && (
-        <CourseForm
-          key={editingCourse.id}
-          initial={editFormData}
-          isEdit={true}
-          onSave={handleEdit}
-          onCancel={() => { setEditingCourse(null); setFormError(null); }}
-          saving={saving}
-          error={formError}
-          semesters={semesters}
-        />
+        <EditDialog onClose={() => { setEditingCourse(null); setFormError(null); }}>
+          <CourseForm
+            key={editingCourse.id}
+            initial={editFormData}
+            isEdit={true}
+            onSave={handleEdit}
+            onCancel={() => { setEditingCourse(null); setFormError(null); }}
+            saving={saving}
+            error={formError}
+            semesters={semesters}
+          />
+        </EditDialog>
       )}
 
       {/* Search */}

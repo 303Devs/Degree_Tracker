@@ -318,7 +318,7 @@ export default function SettingsPage() {
           <h3 className="text-sm font-semibold text-[#d0d0e8]">Semesters</h3>
           <p className="text-xs text-[#6a6a8a] mt-0.5">
             Add semesters from the{" "}
-            <Link href="/planner" className="text-[#d4a843] hover:underline">Planner</Link>.
+            <Link href="/degree-plan" className="text-[#d4a843] hover:underline">Degree Plan</Link>.
             Delete planned semesters here.
           </p>
         </div>
@@ -379,14 +379,14 @@ export default function SettingsPage() {
         </div>
         <div className="px-5 py-4">
           <Link
-            href="/manage"
+            href="/course-library"
             className="inline-flex items-center gap-2 px-4 py-2 bg-[#d4a843]/10 border border-[#d4a843]/20 text-[#d4a843] rounded-xl text-sm font-medium hover:bg-[#d4a843]/20 transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
             </svg>
-            Manage Courses
+            Open Course Library
           </Link>
         </div>
       </section>

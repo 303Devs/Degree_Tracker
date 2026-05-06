@@ -250,8 +250,8 @@ export default function GPAPage() {
                 </div>
               ))}
               {progressSemantics.exclusions.length > 8 && (
-                <a href="/uncounted" className="text-[10px] text-[#d4a843] hover:text-[#e8c068]">
-                  See all {progressSemantics.exclusions.length} on Uncounted page →
+                <a href="/course-library" className="text-[10px] text-[#d4a843] hover:text-[#e8c068]">
+                  See all {progressSemantics.exclusions.length} in Course Library →
                 </a>
               )}
             </div>
@@ -341,13 +341,13 @@ export default function GPAPage() {
               return (
                 <div
                   key={c.id}
-                  className={`flex items-center gap-4 px-5 py-3 transition-opacity ${
+                  className={`grid grid-cols-[minmax(0,1fr)_8.5rem_12rem_3rem] items-center gap-4 px-5 py-3 transition-opacity ${
                     whatIfEnabled ? "" : "opacity-40 pointer-events-none"
                   }`}
                 >
                   <div className="flex-1 min-w-0">
                     <span className="font-mono text-xs text-indigo-300">{c.number}</span>
-                    <span className="text-xs text-[#8888a8] ml-2 truncate">{c.name}</span>
+                    <span className="text-xs text-[#8888a8] ml-2">{c.name}</span>
                     <span className="text-xs text-[#4a4a6a] ml-2">{c.credits}cr</span>
                   </div>
                   <StatusPill status={c.status} />
@@ -362,7 +362,7 @@ export default function GPAPage() {
                       }
                       setWhatIf(newMap);
                     }}
-                    className="px-2.5 py-1.5 bg-[#1a1a2e] border border-[#2a2a3e] rounded-lg text-xs text-[#d0d0e8] focus:outline-none focus:border-[#d4a843]/50"
+                    className="w-full px-2.5 py-1.5 bg-[#1a1a2e] border border-[#2a2a3e] rounded-lg text-xs text-[#d0d0e8] focus:outline-none focus:border-[#d4a843]/50"
                   >
                     <option value="">— pick grade —</option>
                     {GRADE_OPTIONS.map((g) => (
@@ -371,11 +371,9 @@ export default function GPAPage() {
                       </option>
                     ))}
                   </select>
-                  {pts !== null && (
-                    <span className={`text-xs font-mono font-bold w-8 text-right ${gradeColor(hypotheticalGrade!)}`}>
-                      {pts.toFixed(1)}
-                    </span>
-                  )}
+                  <span className={`text-xs font-mono font-bold text-right ${pts !== null ? gradeColor(hypotheticalGrade!) : "text-[#2f2f48]"}`}>
+                    {pts !== null ? pts.toFixed(1) : "—"}
+                  </span>
                 </div>
               );
             })}
