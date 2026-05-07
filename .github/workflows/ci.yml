@@ -2,24 +2,24 @@ name: CI
 
 on:
   push:
-    branches: ["**"]
+    branches:
+      - main
   pull_request:
-    branches: ["**"]
 
 jobs:
   test-and-build:
-    name: Test & Build
+    name: Install, test, and build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Check out repository
         uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: lts/*
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
@@ -27,8 +27,5 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Build
+      - name: Build application
         run: npm run build
-        env:
-          # Suppress Next.js telemetry in CI
-          NEXT_TELEMETRY_DISABLED: 1
