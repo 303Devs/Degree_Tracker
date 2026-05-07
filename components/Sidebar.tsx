@@ -44,37 +44,37 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-56 shrink-0 flex flex-col bg-[#0d0d14] border-r border-[#1e1e2e] min-h-screen">
+    <aside className="w-56 shrink-0 flex flex-col bg-[#10131d] border-r border-[#24283a] min-h-screen">
       {/* Logo */}
-      <div className="px-5 py-5 border-b border-[#1e1e2e]">
+      <div className="px-5 py-5 border-b border-[#24283a]">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-[#d4a843]/15 border border-[#d4a843]/30 flex items-center justify-center">
+          <div className="w-7 h-7 rounded-lg bg-[#d4a843]/12 border border-[#d4a843]/25 flex items-center justify-center">
             <span className="text-[#d4a843] text-xs font-bold">DT</span>
           </div>
           <div>
             <h1 className="text-xs font-bold text-[#d4a843] uppercase tracking-widest leading-none">
               Degree Tracker
             </h1>
-            <p className="text-[10px] text-[#4a4a6a] mt-0.5">CU Boulder</p>
+            <p className="text-[10px] text-[#737894] mt-0.5">CU Boulder</p>
           </div>
         </div>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-2.5 py-4 space-y-0.5">
+      <nav className="flex-1 px-2.5 py-4 space-y-1">
         {PRIMARY_NAV.map(({ href, label, icon }) => {
-          const active = pathname === href;
+          const active = pathname === href || (href === "/" && pathname === "/degree-plan");
           return (
             <Link
               key={href}
               href={href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 ${
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-150 ${
                 active
-                  ? "bg-[#d4a843]/12 text-[#d4a843] font-medium border border-[#d4a843]/20"
-                  : "text-[#6a6a8a] hover:text-[#c0c0d0] hover:bg-white/4 border border-transparent"
+                  ? "bg-[#d4a843]/12 text-[#f0d27a] font-medium border border-[#d4a843]/20 shadow-sm shadow-black/10"
+                  : "text-[#8a90aa] hover:text-[#d8dbea] hover:bg-white/[0.04] border border-transparent"
               }`}
             >
-              <span className={`shrink-0 ${active ? "text-[#d4a843]" : "text-[#4a4a6a]"}`}>
+              <span className={`shrink-0 ${active ? "text-[#d4a843]" : "text-[#6f7590]"}`}>
                 {ICONS[icon]}
               </span>
               <span className="leading-none">{label}</span>
@@ -84,9 +84,9 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-5 py-4 border-t border-[#1e1e2e]">
-        <p className="text-xs font-medium text-[#8888a8]">Anthony Merino</p>
-        <p className="text-[10px] text-[#4a4a6a] mt-0.5">B.S. Stats &amp; DS + CS Minor</p>
+      <div className="px-5 py-4 border-t border-[#24283a]">
+        <p className="text-xs font-medium text-[#a0a5ba]">Anthony Merino</p>
+        <p className="text-[10px] text-[#737894] mt-0.5">B.S. Stats &amp; DS + CS Minor</p>
       </div>
     </aside>
   );

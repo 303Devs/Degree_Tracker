@@ -250,8 +250,8 @@ export default function GPAPage() {
                 </div>
               ))}
               {progressSemantics.exclusions.length > 8 && (
-                <a href="/course-library" className="text-[10px] text-[#d4a843] hover:text-[#e8c068]">
-                  See all {progressSemantics.exclusions.length} in Course Library →
+                <a href="/courses" className="text-[10px] text-[#d4a843] hover:text-[#e8c068]">
+                  See all {progressSemantics.exclusions.length} in Courses →
                 </a>
               )}
             </div>

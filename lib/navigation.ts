@@ -5,9 +5,9 @@ export interface NavItem {
 }
 
 export const PRIMARY_NAV: NavItem[] = [
-  { href: "/upload", label: "Upload", icon: "upload" },
-  { href: "/degree-plan", label: "Degree Plan", icon: "plan" },
-  { href: "/course-library", label: "Course Library", icon: "library" },
+  { href: "/", label: "Audit Plan", icon: "plan" },
+  { href: "/courses", label: "Courses", icon: "library" },
   { href: "/gpa", label: "GPA", icon: "gpa" },
+  { href: "/upload", label: "Upload Audit", icon: "upload" },
   { href: "/settings", label: "Settings", icon: "settings" },
 ];

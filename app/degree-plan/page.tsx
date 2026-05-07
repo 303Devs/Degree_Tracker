@@ -9,11 +9,11 @@ export default function DegreePlanPage() {
       <div className="rounded-2xl border border-[#1e1e34] bg-[#111120] p-6">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.25em] text-[#d4a843] font-semibold">Degree Plan</p>
-            <h2 className="text-2xl font-bold text-[#d0d0e8] mt-2">Audit-first plan workspace</h2>
+            <p className="text-[10px] uppercase tracking-[0.25em] text-[#d4a843] font-semibold">Audit Plan</p>
+            <h2 className="text-2xl font-bold text-[#d0d0e8] mt-2">Audit-first planning workspace</h2>
             <p className="text-[#6a6a8a] text-sm mt-2 max-w-3xl leading-relaxed">
-              Requirements are the spine. Open each audit group to see completed, missing, planned, and elective work;
-              then use the attached semester timeline to place the remaining courses without leaving this workspace.
+              Audit groups are the spine. Open each group to see completed, missing, planned, and elective work;
+              then use the attached semester timeline to place remaining courses without leaving this workspace.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-2 text-[10px] uppercase tracking-wider sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
@@ -39,7 +39,7 @@ export default function DegreePlanPage() {
       <section aria-labelledby="semester-attachments" className="rounded-2xl border border-[#1e1e34] bg-[#0d0d1a] p-4 sm:p-5">
         <div className="mb-4 border-b border-[#1e1e34] pb-4">
           <h3 id="semester-attachments" className="text-sm font-semibold text-[#d0d0e8]">Semester attachments</h3>
-          <p className="text-xs text-[#6a6a8a] mt-1">The timeline is part of the degree plan, not a second embedded page. Prereq/coreq warnings remain contextual while placing courses.</p>
+          <p className="text-xs text-[#6a6a8a] mt-1">The timeline is part of the audit plan, not a second embedded page. Prereq/coreq warnings remain contextual while placing courses.</p>
         </div>
         <PlannerWorkspace embedded />
       </section>

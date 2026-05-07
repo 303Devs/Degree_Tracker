@@ -19,26 +19,29 @@ function makeCourse(overrides: Partial<Course> & { id: string }): Course {
 describe("303-40 UX consolidation", () => {
   it("uses the approved primary navigation only", () => {
     expect(PRIMARY_NAV.map((item) => item.label)).toEqual([
-      "Upload",
-      "Degree Plan",
-      "Course Library",
+      "Audit Plan",
+      "Courses",
       "GPA",
+      "Upload Audit",
       "Settings",
     ]);
     expect(PRIMARY_NAV.map((item) => item.href)).toEqual([
-      "/upload",
-      "/degree-plan",
-      "/course-library",
+      "/",
+      "/courses",
       "/gpa",
+      "/upload",
       "/settings",
     ]);
 
     const demotedLabels = [
       "Requirements",
+      "Planner",
       "Semester Planner",
+      "Course Library",
       "Course Catalog",
       "Manage Courses",
       "Uncounted Courses",
+      "Degree Plan",
     ];
     for (const label of demotedLabels) {
       expect(PRIMARY_NAV.some((item) => item.label === label)).toBe(false);

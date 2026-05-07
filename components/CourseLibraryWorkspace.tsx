@@ -359,7 +359,7 @@ export default function CourseLibraryWorkspace() {
   return (
     <div className="p-8 space-y-5 max-w-[1200px]">
       <div className="rounded-2xl border border-[#1e1e34] bg-[#111120] p-6">
-        <p className="text-[10px] uppercase tracking-[0.25em] text-[#d4a843] font-semibold">Course Library</p>
+        <p className="text-[10px] uppercase tracking-[0.25em] text-[#d4a843] font-semibold">Courses</p>
         <h2 className="text-2xl font-bold text-[#d0d0e8] mt-2">One editable course data surface</h2>
         <p className="text-[#6a6a8a] text-sm mt-2 max-w-3xl leading-relaxed">
           Catalog rows, audit rows, manual additions, uncounted attempts, planned courses, prereqs/coreqs, semester, grade,
