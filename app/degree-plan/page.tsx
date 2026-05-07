@@ -5,44 +5,49 @@ import PlannerWorkspace from "@/components/PlannerWorkspace";
 
 export default function DegreePlanPage() {
   return (
-    <div className="px-8 py-8 pb-12 space-y-6 max-w-[1400px]">
-      <div className="rounded-2xl border border-[#1e1e34] bg-[#111120] p-6">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.25em] text-[#d4a843] font-semibold">Audit Plan</p>
-            <h2 className="text-2xl font-bold text-[#d0d0e8] mt-2">Audit-first planning workspace</h2>
-            <p className="text-[#6a6a8a] text-sm mt-2 max-w-3xl leading-relaxed">
-              Audit groups are the spine. Open each group to see completed, missing, planned, and elective work;
-              then use the attached semester timeline to place remaining courses without leaving this workspace.
+    <div className="min-h-screen bg-[#f7f8fb] px-6 py-8 pb-12 text-slate-900 sm:px-8">
+      <div className="mx-auto max-w-[1440px] space-y-6">
+        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-indigo-700">Audit Plan</p>
+              <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-950">Requirement-first academic plan</h1>
+              <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600">
+                Audit groups are the spine. Open each workbook-style row to see completed, in-progress,
+                planned, and remaining courses; then use the attached semester context to evaluate timing
+                and prerequisite risk without leaving the audit.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-[10px] font-medium uppercase tracking-wide sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
+              <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-emerald-700">completed</span>
+              <span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-amber-700">in progress</span>
+              <span className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-indigo-700">planned</span>
+              <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-slate-600">remaining</span>
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="requirements-spine" className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+          <div className="mb-4 flex flex-col gap-3 border-b border-slate-100 pb-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 id="requirements-spine" className="text-base font-semibold text-slate-950">Requirements spine</h2>
+              <p className="mt-1 text-sm text-slate-500">Requirements are the primary unit; course options stay under the audit group they can satisfy.</p>
+            </div>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">workbook context</p>
+          </div>
+          <RequirementsWorkspace embedded />
+        </section>
+
+        <section aria-labelledby="semester-attachments" className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+          <div className="mb-4 border-b border-slate-100 pb-4">
+            <h2 id="semester-attachments" className="text-base font-semibold text-slate-950">Semester planning context</h2>
+            <p className="mt-1 text-sm text-slate-500">
+              The timeline remains attached to the audit plan. Use it to adjust placement after reviewing requirement-level options and warnings above.
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-2 text-[10px] uppercase tracking-wider sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
-            <span className="rounded-lg border border-green-500/20 bg-green-500/10 px-2 py-1 text-green-400">completed</span>
-            <span className="rounded-lg border border-[#d4a843]/20 bg-[#d4a843]/10 px-2 py-1 text-[#d4a843]">in progress</span>
-            <span className="rounded-lg border border-indigo-500/20 bg-indigo-500/10 px-2 py-1 text-indigo-300">planned</span>
-            <span className="rounded-lg border border-[#2a2a3a] bg-[#1e1e34] px-2 py-1 text-[#6a6a8a]">missing</span>
-          </div>
-        </div>
+          <PlannerWorkspace embedded />
+        </section>
       </div>
-
-      <section aria-labelledby="requirements-spine" className="rounded-2xl border border-[#1e1e34] bg-[#0d0d1a] p-4 sm:p-5">
-        <div className="mb-4 flex flex-col gap-3 border-b border-[#1e1e34] pb-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h3 id="requirements-spine" className="text-sm font-semibold text-[#d0d0e8]">Requirements spine</h3>
-            <p className="text-xs text-[#6a6a8a] mt-1">Audit groups organize the plan; rows expand only when course-level detail is needed.</p>
-          </div>
-          <p className="text-[10px] uppercase tracking-widest text-[#4a4a6a]">electives stay in context</p>
-        </div>
-        <RequirementsWorkspace embedded />
-      </section>
-
-      <section aria-labelledby="semester-attachments" className="rounded-2xl border border-[#1e1e34] bg-[#0d0d1a] p-4 sm:p-5">
-        <div className="mb-4 border-b border-[#1e1e34] pb-4">
-          <h3 id="semester-attachments" className="text-sm font-semibold text-[#d0d0e8]">Semester attachments</h3>
-          <p className="text-xs text-[#6a6a8a] mt-1">The timeline is part of the audit plan, not a second embedded page. Prereq/coreq warnings remain contextual while placing courses.</p>
-        </div>
-        <PlannerWorkspace embedded />
-      </section>
     </div>
   );
 }
