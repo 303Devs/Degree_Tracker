@@ -13,6 +13,11 @@ export interface AuditCourseWarning {
   missingCourseIds: string[];
 }
 
+export interface AuditWarningSummary extends AuditCourseWarning {
+  courseId: string;
+  courseNumber: string;
+}
+
 export interface AuditCourseOption {
   courseId: string;
   courseNumber: string;
@@ -37,6 +42,7 @@ export interface AuditRequirementViewModel {
   remainingLabel: string;
   buckets: Record<AuditCourseBucket, AuditCourseOption[]>;
   counts: AuditBucketCounts;
+  warningSummaries: AuditWarningSummary[];
   courseOptions: AuditCourseOption[];
   displayRule: string;
 }
@@ -101,6 +107,7 @@ export function buildAuditRequirementViewModels({
       remainingLabel: buildRemainingLabel(progress.completed, progress.total, unit),
       buckets,
       counts: countBuckets(buckets),
+      warningSummaries: buildWarningSummaries(options),
       courseOptions: options,
       displayRule: getDisplayRule(group),
     };
@@ -140,7 +147,13 @@ export function filterAuditRequirementViewModels(
 
     if (filteredOptions.length === 0) return [];
     const buckets = buildBuckets(filteredOptions);
-    return [{ ...view, buckets, counts: countBuckets(buckets), courseOptions: filteredOptions }];
+    return [{
+      ...view,
+      buckets,
+      counts: countBuckets(buckets),
+      warningSummaries: buildWarningSummaries(filteredOptions),
+      courseOptions: filteredOptions,
+    }];
   });
 }
 
@@ -165,6 +178,19 @@ function countBuckets(buckets: Record<AuditCourseBucket, AuditCourseOption[]>): 
     remaining: buckets.remaining.length,
     unknown: buckets.unknown.length,
   };
+}
+
+function buildWarningSummaries(options: AuditCourseOption[]): AuditWarningSummary[] {
+  return options.flatMap((option) => {
+    if (!option.warning) return [];
+    return [{
+      courseId: option.courseId,
+      courseNumber: option.courseNumber,
+      severity: option.warning.severity,
+      message: option.warning.message,
+      missingCourseIds: option.warning.missingCourseIds,
+    }];
+  });
 }
 
 function normalizeSearch(value: string): string {

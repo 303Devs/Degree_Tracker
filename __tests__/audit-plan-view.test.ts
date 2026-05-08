@@ -209,6 +209,35 @@ describe("buildAuditRequirementViewModels", () => {
     expect(planned?.warning?.severity).toBe("success");
   });
 
+  it("summarizes requirement warning details so expanded audit rows do not hide them in tooltips", () => {
+    const requirements = [makeGroup({ id: "calc-sequence", coursePool: ["MATH-1300", "MATH-2300", "MATH-2400"] })];
+    const semesters = [makeSemester({ id: "SP26", courses: ["MATH-2300"] })];
+    const courses = [
+      makeCourse({ id: "MATH-1300", status: "not_started", prereqs: { type: "course", courseId: "MATH-1011" } }),
+      makeCourse({ id: "MATH-2300", status: "planned", semester: "SP26", prereqs: { type: "course", courseId: "MATH-1300" } }),
+      makeCourse({ id: "MATH-2400", status: "completed", grade: "A" }),
+    ];
+
+    const [view] = buildAuditRequirementViewModels({ courses, requirements, semesters });
+
+    expect(view.warningSummaries).toEqual([
+      {
+        courseId: "MATH-1300",
+        courseNumber: "MATH 1300",
+        severity: "info",
+        message: "Prereqs required before planning",
+        missingCourseIds: ["MATH-1011"],
+      },
+      {
+        courseId: "MATH-2300",
+        courseNumber: "MATH 2300",
+        severity: "warning",
+        message: "Prereq missing: MATH-1300",
+        missingCourseIds: ["MATH-1300"],
+      },
+    ]);
+  });
+
   it("filters audit rows by course number, course name, and requirement text without losing matched options", () => {
     const requirements = [
       makeGroup({ id: "stats-core", name: "Statistics Core", category: "Major", coursePool: ["STAT-3100", "STAT-4520"] }),
@@ -246,5 +275,20 @@ describe("buildAuditRequirementViewModels", () => {
     expect(plannedOnly[0].courseOptions.map((option) => option.courseId)).toEqual(["STAT-4520"]);
     expect(plannedOnly[0].buckets.planned.map((option) => option.courseId)).toEqual(["STAT-4520"]);
     expect(plannedOnly[0].buckets.completed).toEqual([]);
+  });
+
+  it("keeps warning summaries aligned with filtered course options", () => {
+    const requirements = [makeGroup({ id: "calc-sequence", coursePool: ["MATH-1300", "MATH-2300"] })];
+    const semesters = [makeSemester({ id: "SP26", courses: ["MATH-2300"] })];
+    const courses = [
+      makeCourse({ id: "MATH-1300", status: "not_started", prereqs: { type: "course", courseId: "MATH-1011" } }),
+      makeCourse({ id: "MATH-2300", status: "planned", semester: "SP26", prereqs: { type: "course", courseId: "MATH-1300" } }),
+    ];
+    const views = buildAuditRequirementViewModels({ courses, requirements, semesters });
+
+    const filtered = filterAuditRequirementViewModels(views, "2300");
+
+    expect(filtered[0].courseOptions.map((option) => option.courseId)).toEqual(["MATH-2300"]);
+    expect(filtered[0].warningSummaries.map((warning) => warning.courseId)).toEqual(["MATH-2300"]);
   });
 });
