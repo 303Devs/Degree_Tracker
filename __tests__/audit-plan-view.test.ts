@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   buildAuditRequirementViewModels,
+  filterAuditRequirementViewModels,
   type AuditCourseBucket,
 } from "../lib/audit-plan-view";
 import type { Course, RequirementGroup, Semester } from "../lib/types";
@@ -206,5 +207,44 @@ describe("buildAuditRequirementViewModels", () => {
 
     expect(planned?.semester).toBe("FA26");
     expect(planned?.warning?.severity).toBe("success");
+  });
+
+  it("filters audit rows by course number, course name, and requirement text without losing matched options", () => {
+    const requirements = [
+      makeGroup({ id: "stats-core", name: "Statistics Core", category: "Major", coursePool: ["STAT-3100", "STAT-4520"] }),
+      makeGroup({ id: "writing", name: "Writing Requirement", category: "Gen Ed", coursePool: ["WRTG-3030"] }),
+    ];
+    const courses = [
+      makeCourse({ id: "STAT-3100", number: "STAT 3100", name: "Applied Regression", status: "completed" }),
+      makeCourse({ id: "STAT-4520", number: "STAT 4520", name: "Bayesian Data Analysis", status: "planned" }),
+      makeCourse({ id: "WRTG-3030", number: "WRTG 3030", name: "Technical Writing", status: "not_started" }),
+    ];
+    const views = buildAuditRequirementViewModels({ courses, requirements });
+
+    const byCourseName = filterAuditRequirementViewModels(views, "bayesian");
+    expect(byCourseName).toHaveLength(1);
+    expect(byCourseName[0].group.id).toBe("stats-core");
+    expect(byCourseName[0].courseOptions.map((option) => option.courseId)).toEqual(["STAT-4520"]);
+
+    const byRequirement = filterAuditRequirementViewModels(views, "writing requirement");
+    expect(byRequirement.map((view) => view.group.id)).toEqual(["writing"]);
+    expect(byRequirement[0].courseOptions.map((option) => option.courseId)).toEqual(["WRTG-3030"]);
+  });
+
+  it("can narrow option scanning to a status bucket", () => {
+    const requirements = [makeGroup({ id: "stats-core", coursePool: ["STAT-3100", "STAT-4520", "STAT-5000"] })];
+    const courses = [
+      makeCourse({ id: "STAT-3100", status: "completed" }),
+      makeCourse({ id: "STAT-4520", status: "planned" }),
+      makeCourse({ id: "STAT-5000", status: "not_started" }),
+    ];
+    const views = buildAuditRequirementViewModels({ courses, requirements });
+
+    const plannedOnly = filterAuditRequirementViewModels(views, "stat", "planned");
+
+    expect(plannedOnly).toHaveLength(1);
+    expect(plannedOnly[0].courseOptions.map((option) => option.courseId)).toEqual(["STAT-4520"]);
+    expect(plannedOnly[0].buckets.planned.map((option) => option.courseId)).toEqual(["STAT-4520"]);
+    expect(plannedOnly[0].buckets.completed).toEqual([]);
   });
 });

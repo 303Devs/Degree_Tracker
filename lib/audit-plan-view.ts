@@ -36,17 +36,21 @@ export interface AuditRequirementViewModel {
   progress: ReturnType<typeof calcProgress> & { unit: "courses" | "hours" };
   remainingLabel: string;
   buckets: Record<AuditCourseBucket, AuditCourseOption[]>;
-  counts: {
-    completed: number;
-    inProgress: number;
-    planned: number;
-    plannedCredits: number;
-    remaining: number;
-    unknown: number;
-  };
+  counts: AuditBucketCounts;
   courseOptions: AuditCourseOption[];
   displayRule: string;
 }
+
+export type AuditBucketFilter = AuditCourseBucket | "all";
+
+type AuditBucketCounts = {
+  completed: number;
+  inProgress: number;
+  planned: number;
+  plannedCredits: number;
+  remaining: number;
+  unknown: number;
+};
 
 export function buildAuditRequirementViewModels({
   courses,
@@ -89,32 +93,82 @@ export function buildAuditRequirementViewModels({
       return option;
     });
 
-    const buckets: Record<AuditCourseBucket, AuditCourseOption[]> = {
-      completed: [],
-      in_progress: [],
-      planned: [],
-      remaining: [],
-      unknown: [],
-    };
-    for (const option of options) buckets[option.bucket].push(option);
+    const buckets = buildBuckets(options);
 
     return {
       group,
       progress: { ...progress, unit },
       remainingLabel: buildRemainingLabel(progress.completed, progress.total, unit),
       buckets,
-      counts: {
-        completed: buckets.completed.length,
-        inProgress: buckets.in_progress.length,
-        planned: buckets.planned.length,
-        plannedCredits: buckets.planned.reduce((sum, option) => sum + option.credits, 0),
-        remaining: buckets.remaining.length,
-        unknown: buckets.unknown.length,
-      },
+      counts: countBuckets(buckets),
       courseOptions: options,
       displayRule: getDisplayRule(group),
     };
   });
+}
+
+export function filterAuditRequirementViewModels(
+  views: AuditRequirementViewModel[],
+  query: string,
+  bucketFilter: AuditBucketFilter = "all",
+): AuditRequirementViewModel[] {
+  const normalizedQuery = normalizeSearch(query);
+
+  return views.flatMap((view) => {
+    const optionMatchesBucket = (option: AuditCourseOption) => bucketFilter === "all" || option.bucket === bucketFilter;
+    const groupMatches = normalizedQuery.length === 0 || normalizeSearch([
+      view.group.name,
+      view.group.category,
+      view.group.notes ?? "",
+      view.displayRule,
+      view.group.id,
+    ].join(" ")).includes(normalizedQuery);
+
+    const filteredOptions = view.courseOptions.filter((option) => {
+      if (!optionMatchesBucket(option)) return false;
+      if (groupMatches || normalizedQuery.length === 0) return true;
+      return normalizeSearch([
+        option.courseId,
+        option.courseNumber,
+        option.courseName,
+        option.status,
+        option.grade ?? "",
+        option.semester ?? "",
+        option.selectionState,
+      ].join(" ")).includes(normalizedQuery);
+    });
+
+    if (filteredOptions.length === 0) return [];
+    const buckets = buildBuckets(filteredOptions);
+    return [{ ...view, buckets, counts: countBuckets(buckets), courseOptions: filteredOptions }];
+  });
+}
+
+function buildBuckets(options: AuditCourseOption[]): Record<AuditCourseBucket, AuditCourseOption[]> {
+  const buckets: Record<AuditCourseBucket, AuditCourseOption[]> = {
+    completed: [],
+    in_progress: [],
+    planned: [],
+    remaining: [],
+    unknown: [],
+  };
+  for (const option of options) buckets[option.bucket].push(option);
+  return buckets;
+}
+
+function countBuckets(buckets: Record<AuditCourseBucket, AuditCourseOption[]>): AuditBucketCounts {
+  return {
+    completed: buckets.completed.length,
+    inProgress: buckets.in_progress.length,
+    planned: buckets.planned.length,
+    plannedCredits: buckets.planned.reduce((sum, option) => sum + option.credits, 0),
+    remaining: buckets.remaining.length,
+    unknown: buckets.unknown.length,
+  };
+}
+
+function normalizeSearch(value: string): string {
+  return value.trim().toLowerCase().replace(/[-_]/g, " ").replace(/\s+/g, " ");
 }
 
 function formatCourseId(id: string): string {
