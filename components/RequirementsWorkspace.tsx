@@ -20,7 +20,7 @@ function gradeColor(grade: string): string {
 }
 
 function statusDotClass(bucket: AuditCourseBucket | "complete" | "in_progress" | "not_started"): string {
-  if (bucket === "completed" || bucket === "complete") return "bg-green-500";
+  if (bucket === "completed" || bucket === "complete") return "bg-emerald-500";
   if (bucket === "in_progress") return "bg-amber-500";
   if (bucket === "planned") return "bg-indigo-500";
   if (bucket === "unknown") return "bg-slate-400";
@@ -34,7 +34,7 @@ function StatusDot({ bucket }: { bucket: AuditCourseBucket | "complete" | "in_pr
 function MiniProgressBar({ pct, ipFrac = 0, plannedFrac = 0 }: { pct: number; ipFrac?: number; plannedFrac?: number }) {
   return (
     <div className="flex h-1.5 w-24 shrink-0 overflow-hidden rounded-full bg-slate-100 ring-1 ring-inset ring-slate-200/70">
-      <div className="h-full rounded-full bg-green-500 transition-all duration-500" style={{ width: `${Math.min(pct * 100, 100)}%` }} />
+      <div className="h-full rounded-full bg-emerald-500 transition-all duration-500" style={{ width: `${Math.min(pct * 100, 100)}%` }} />
       {ipFrac > 0 && <div className="h-full bg-amber-500/45" style={{ width: `${Math.min(ipFrac * 100, 100)}%` }} />}
       {plannedFrac > 0 && <div className="h-full bg-indigo-500/35" style={{ width: `${Math.min(plannedFrac * 100, 100)}%` }} />}
     </div>
@@ -79,7 +79,7 @@ function CourseOptionRow({
     <>
       <StatusDot bucket={option.bucket} />
       {isPick && (
-        <span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border ${isSelected ? "border-amber-400 bg-amber-400" : "border-slate-300 bg-white"}`}>
+        <span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border ${isSelected ? "border-indigo-400 bg-indigo-500" : "border-slate-300 bg-white"}`}>
           {isSelected && <span className="text-[10px] font-bold text-white">✓</span>}
         </span>
       )}
@@ -97,7 +97,7 @@ function CourseOptionRow({
     return (
       <button
         onClick={() => onToggle(option.courseId)}
-        className={`flex w-full items-center gap-3 rounded-xl border px-3 py-2 text-left transition-colors ${isSelected ? "border-amber-200 bg-amber-50/80 shadow-sm" : "border-transparent hover:border-slate-200 hover:bg-white"}`}
+        className={`flex w-full items-center gap-3 rounded-xl border px-3 py-2 text-left transition-colors ${isSelected ? "border-indigo-200 bg-indigo-50/70 shadow-sm" : "border-transparent hover:border-slate-200 hover:bg-white"}`}
       >
         {content}
       </button>
@@ -157,7 +157,7 @@ function GroupRow({ view, onUpdate }: { view: AuditRequirementViewModel; onUpdat
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm font-medium text-slate-800">{group.name}</span>
-              {isPick && <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-amber-700">pick</span>}
+              {isPick && <span className="rounded-full border border-indigo-200 bg-indigo-50 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-indigo-700">pick</span>}
               {warningCount > 0 && <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-amber-700">{warningCount} warning{warningCount === 1 ? "" : "s"}</span>}
               {minGradeWarnings.length > 0 && <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-amber-700">grade warn</span>}
             </div>
@@ -255,7 +255,7 @@ export default function RequirementsWorkspace({ embedded = false }: { embedded?:
   }, []);
 
   if (loading) return <div className={`flex items-center justify-center ${embedded ? "min-h-40" : "min-h-screen"} text-slate-500`}>Loading...</div>;
-  if (error) return <div className={`flex items-center justify-center ${embedded ? "min-h-40" : "min-h-screen"} p-8 text-sm text-red-400`}>Failed to load requirements: {error}</div>;
+  if (error) return <div className={`flex items-center justify-center ${embedded ? "min-h-40" : "min-h-screen"} p-8 text-sm text-rose-600`}>Failed to load requirements: {error}</div>;
   if (requirements.length === 0) {
     return (
       <div className={`flex flex-col items-center justify-center ${embedded ? "min-h-40" : "min-h-screen"} gap-4 p-8 text-center`}>
