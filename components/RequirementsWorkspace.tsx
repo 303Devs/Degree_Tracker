@@ -287,8 +287,15 @@ export default function RequirementsWorkspace({ embedded = false }: { embedded?:
     byCategory.set(view.group.category, list);
   }
 
+  const categorySummaries = Array.from(byCategory.entries()).map(([category, categoryViews]) => ({
+    category,
+    total: categoryViews.length,
+    complete: categoryViews.filter((view) => view.progress.pct >= 1).length,
+    active: categoryViews.some((view) => view.progress.pct < 1 && (view.counts.inProgress > 0 || view.counts.planned > 0)),
+  }));
+
   return (
-    <div className={embedded ? "space-y-4" : "max-w-6xl space-y-5 p-8"}>
+    <div className={embedded ? "space-y-3" : "max-w-none space-y-5 p-8"}>
       {!embedded && (
         <div className="flex items-center justify-between">
           <div>
@@ -300,32 +307,60 @@ export default function RequirementsWorkspace({ embedded = false }: { embedded?:
       )}
       {embedded && saving && <span className="animate-pulse text-xs text-[#d4a843]">Saving...</span>}
 
-      <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[#1e1e34] bg-[#111120] p-3">
-        {([
-          ["needs_action", `Needs action ${stats.needsAction}`],
-          ["pick", `Pick groups ${stats.pick}`],
-          ["complete", `Complete ${stats.complete}`],
-          ["all", `All ${requirements.length}`],
-        ] as const).map(([value, label]) => (
-          <button key={value} onClick={() => setFilter(value)} className={`rounded-lg border px-3 py-1.5 text-xs transition-colors ${filter === value ? "border-[#d4a843]/35 bg-[#d4a843]/12 text-[#d4a843]" : "border-[#2a2a3e] bg-[#0d0d1a] text-[#8888a8] hover:text-[#d0d0e8]"}`}>{label}</button>
-        ))}
-      </div>
-
-      {Array.from(byCategory.entries()).map(([category, categoryViews]) => {
-        const categoryDone = categoryViews.every((view) => view.progress.pct >= 1);
-        const categoryActive = !categoryDone && categoryViews.some((view) => view.counts.inProgress > 0 || view.counts.planned > 0);
-        return (
-          <section key={category} className="overflow-hidden rounded-xl border border-[#1e1e34] bg-[#111120]">
-            <div className="flex items-center gap-3 border-b border-[#1e1e34] bg-[#0e0e1c] px-4 py-3">
-              <StatusDot bucket={categoryDone ? "complete" : categoryActive ? "in_progress" : "not_started"} />
-              <h3 className="text-sm font-semibold text-[#d0d0e8]">{category}</h3>
-              <div className="ml-auto text-xs text-[#4a4a6a]">{categoryViews.filter((view) => view.progress.pct >= 1).length}/{categoryViews.length} done</div>
+      <div className="grid gap-3 lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[240px_minmax(0,1fr)]">
+        <aside className="space-y-3 lg:sticky lg:top-4 lg:self-start">
+          <div className="rounded-xl border border-[#1e1e34] bg-[#111120] p-2.5">
+            <div className="mb-2 px-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#4a4a6a]">Audit view</div>
+            <div className="flex flex-wrap gap-2 lg:flex-col">
+              {([
+                ["needs_action", `Needs action ${stats.needsAction}`],
+                ["pick", `Pick groups ${stats.pick}`],
+                ["complete", `Complete ${stats.complete}`],
+                ["all", `All ${requirements.length}`],
+              ] as const).map(([value, label]) => (
+                <button key={value} onClick={() => setFilter(value)} className={`rounded-lg border px-3 py-1.5 text-left text-xs transition-colors ${filter === value ? "border-[#d4a843]/35 bg-[#d4a843]/12 text-[#d4a843]" : "border-[#2a2a3e] bg-[#0d0d1a] text-[#8888a8] hover:text-[#d0d0e8]"}`}>{label}</button>
+              ))}
             </div>
-            <div>{categoryViews.map((view) => <GroupRow key={view.group.id} view={view} onUpdate={handleUpdateSelected} />)}</div>
-          </section>
-        );
-      })}
-      {visibleViews.length === 0 && <div className="rounded-xl border border-[#1e1e34] bg-[#111120] p-8 text-center text-sm text-[#6a6a8a]">No requirements match this filter.</div>}
+          </div>
+
+          {categorySummaries.length > 0 && (
+            <div className="hidden rounded-xl border border-[#1e1e34] bg-[#111120] p-2.5 lg:block">
+              <div className="mb-2 px-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#4a4a6a]">Requirement groups</div>
+              <div className="space-y-1.5">
+                {categorySummaries.map(({ category, complete, total, active }) => (
+                  <div key={category} className="rounded-lg border border-[#1a1a2e] bg-[#0d0d1a] px-2.5 py-2">
+                    <div className="flex items-start gap-2">
+                      <StatusDot bucket={complete === total ? "complete" : active ? "in_progress" : "not_started"} />
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate text-xs font-medium text-[#d0d0e8]" title={category}>{category}</div>
+                        <div className="mt-0.5 text-[10px] text-[#6a6a8a]">{complete}/{total} done</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </aside>
+
+        <div className="min-w-0 space-y-3">
+          {Array.from(byCategory.entries()).map(([category, categoryViews]) => {
+            const categoryDone = categoryViews.every((view) => view.progress.pct >= 1);
+            const categoryActive = !categoryDone && categoryViews.some((view) => view.counts.inProgress > 0 || view.counts.planned > 0);
+            return (
+              <section key={category} className="overflow-hidden rounded-xl border border-[#1e1e34] bg-[#111120]">
+                <div className="flex items-center gap-3 border-b border-[#1e1e34] bg-[#0e0e1c] px-4 py-2.5">
+                  <StatusDot bucket={categoryDone ? "complete" : categoryActive ? "in_progress" : "not_started"} />
+                  <h3 className="text-sm font-semibold text-[#d0d0e8]">{category}</h3>
+                  <div className="ml-auto text-xs text-[#4a4a6a]">{categoryViews.filter((view) => view.progress.pct >= 1).length}/{categoryViews.length} done</div>
+                </div>
+                <div>{categoryViews.map((view) => <GroupRow key={view.group.id} view={view} onUpdate={handleUpdateSelected} />)}</div>
+              </section>
+            );
+          })}
+          {visibleViews.length === 0 && <div className="rounded-xl border border-[#1e1e34] bg-[#111120] p-8 text-center text-sm text-[#6a6a8a]">No requirements match this filter.</div>}
+        </div>
+      </div>
     </div>
   );
 }

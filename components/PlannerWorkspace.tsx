@@ -526,7 +526,8 @@ function ValidationPanel({
 // Main page
 // ---------------------------------------------------------------------------
 
-export default function PlannerWorkspace({ embedded = false }: { embedded?: boolean } = {}) {
+export default function PlannerWorkspace({ embedded = false, compact = false }: { embedded?: boolean; compact?: boolean } = {}) {
+  const isCompact = embedded || compact;
   const [courses, setCourses] = useState<Course[]>([]);
   const [semesters, setSemesters] = useState<Semester[]>([]);
   const [loading, setLoading] = useState(true);
@@ -799,9 +800,9 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <div className={`${embedded ? "space-y-4" : "p-6 space-y-5 min-h-screen"}`}>
+      <div className={`${isCompact ? "space-y-3" : "p-6 space-y-5 min-h-screen"}`}>
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
           {!embedded && (
             <div>
               <h2 className="text-2xl font-bold text-[#d0d0e8]">Semester Planner</h2>
@@ -818,7 +819,7 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
           )}
           <button
             onClick={() => setNewSemModal(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-[#d4a843]/10 border border-[#d4a843]/20 text-[#d4a843] rounded-xl text-sm font-medium hover:bg-[#d4a843]/20 transition-colors"
+            className={`${embedded ? "px-3 py-1.5 text-xs" : "px-4 py-2 text-sm"} flex shrink-0 items-center gap-2 rounded-xl border border-[#d4a843]/20 bg-[#d4a843]/10 font-medium text-[#d4a843] transition-colors hover:bg-[#d4a843]/20`}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -835,7 +836,7 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
         />
 
         {/* Legend */}
-        <div className="flex items-center gap-4 text-[10px] text-[#4a4a6a]">
+        <div className={`${embedded ? "hidden" : "flex"} items-center gap-4 text-[10px] text-[#4a4a6a]`}>
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-green-500" /> completed</span>
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#d4a843]" /> in progress</span>
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-400" /> registered</span>
