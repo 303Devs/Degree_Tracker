@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Course, RequirementGroup, Semester } from "@/lib/types";
 import { GRADE_SCALE } from "@/lib/prereqs";
 import {
@@ -9,6 +9,7 @@ import {
   type AuditCourseOption,
   type AuditRequirementViewModel,
 } from "@/lib/audit-plan-view";
+import { applyCourseSemester, buildCourseSemesterPatch } from "@/lib/course-planning";
 
 function gradeColor(grade: string): string {
   const pts = GRADE_SCALE[grade] ?? -1;
@@ -66,48 +67,82 @@ function WarningBadge({ option }: { option: AuditCourseOption }) {
 function CourseOptionRow({
   option,
   group,
+  semesters,
   onToggle,
+  onSemesterChange,
 }: {
   option: AuditCourseOption;
   group: RequirementGroup;
+  semesters: Semester[];
   onToggle?: (courseId: string) => void;
+  onSemesterChange?: (courseId: string, semesterId: string | null) => void;
 }) {
   const isPick = group.type === "pick_one" || group.type === "pick_n";
   const isSelected = option.selectionState === "selected";
   const isCompleted = option.status === "completed";
-  const content = (
-    <>
+  const canPlan =
+    !!option.course &&
+    option.status !== "completed" &&
+    option.status !== "in_progress" &&
+    option.status !== "registered";
+  const plannedSemesters = semesters.filter((semester) => semester.status !== "completed");
+
+  return (
+    <div className={`flex w-full items-center gap-3 rounded-lg border px-3 py-2 text-left transition-colors ${isSelected ? "border-[#d4a843]/25 bg-[#d4a843]/10" : "border-transparent hover:border-[#2a2a3e] hover:bg-[#1a1a2e]"}`}>
       <StatusDot bucket={option.bucket} />
       {isPick && (
-        <span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border ${isSelected ? "border-[#d4a843] bg-[#d4a843]" : "border-[#3a3a4a]"}`}>
+        <button
+          type="button"
+          disabled={!option.course}
+          onClick={() => option.course && onToggle?.(option.courseId)}
+          className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-colors ${isSelected ? "border-[#d4a843] bg-[#d4a843]" : "border-[#3a3a4a] hover:border-[#d4a843]/50"} disabled:cursor-not-allowed disabled:opacity-40`}
+          aria-label={`${isSelected ? "Clear" : "Select"} ${option.courseNumber} for ${group.name}`}
+        >
           {isSelected && <span className="text-[10px] font-bold text-[#0a0a12]">✓</span>}
-        </span>
+        </button>
       )}
       <span className="w-24 shrink-0 font-mono text-xs text-indigo-300">{option.courseNumber}</span>
       <span className="min-w-0 flex-1 truncate text-xs text-[#9090b0]">{option.courseName}</span>
       <span className="text-[10px] text-[#4a4a6a]">{option.credits}cr</span>
       {option.grade && <span className={`font-mono text-xs ${gradeColor(option.grade)}`}>{option.grade}</span>}
-      {option.semester && <span className="font-mono text-[10px] text-[#6a6a8a]">{option.semester}</span>}
+      <select
+        value={option.semester ?? ""}
+        disabled={!canPlan || plannedSemesters.length === 0}
+        onChange={(event) => {
+          if (!canPlan || !option.course) return;
+          onSemesterChange?.(option.course.id, event.target.value || null);
+        }}
+        className="max-w-[8.5rem] shrink-0 rounded border border-[#2a2a3e] bg-[#0d0d1a] px-2 py-1 text-[10px] text-[#d0d0e8] focus:border-[#d4a843]/50 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40"
+        aria-label={`Plan ${option.courseNumber} semester`}
+      >
+        <option value="">unplanned</option>
+        {plannedSemesters.map((semester) => (
+          <option key={semester.id} value={semester.id}>{semester.label}</option>
+        ))}
+      </select>
       {isPick && <span className="text-[9px] uppercase tracking-wider text-[#4a4a6a]">{isSelected ? "selected" : isCompleted ? "eligible done" : "eligible"}</span>}
       <WarningBadge option={option} />
-    </>
+    </div>
   );
-
-  if (isPick && onToggle && option.course) {
-    return (
-      <button
-        onClick={() => onToggle(option.courseId)}
-        className={`flex w-full items-center gap-3 rounded-lg border px-3 py-2 text-left transition-colors ${isSelected ? "border-[#d4a843]/25 bg-[#d4a843]/10" : "border-transparent hover:border-[#2a2a3e] hover:bg-[#1a1a2e]"}`}
-      >
-        {content}
-      </button>
-    );
-  }
-
-  return <div className="flex items-center gap-3 rounded-lg px-3 py-2">{content}</div>;
 }
 
-function BucketSection({ title, bucket, options, group, onToggle }: { title: string; bucket: AuditCourseBucket; options: AuditCourseOption[]; group: RequirementGroup; onToggle?: (courseId: string) => void }) {
+function BucketSection({
+  title,
+  bucket,
+  options,
+  group,
+  semesters,
+  onToggle,
+  onSemesterChange,
+}: {
+  title: string;
+  bucket: AuditCourseBucket;
+  options: AuditCourseOption[];
+  group: RequirementGroup;
+  semesters: Semester[];
+  onToggle?: (courseId: string) => void;
+  onSemesterChange?: (courseId: string, semesterId: string | null) => void;
+}) {
   if (options.length === 0) return null;
   return (
     <div>
@@ -115,13 +150,32 @@ function BucketSection({ title, bucket, options, group, onToggle }: { title: str
         <StatusDot bucket={bucket} /> {title}
       </div>
       <div className="space-y-1">
-        {options.map((option) => <CourseOptionRow key={option.courseId} option={option} group={group} onToggle={onToggle} />)}
+        {options.map((option) => (
+          <CourseOptionRow
+            key={option.courseId}
+            option={option}
+            group={group}
+            semesters={semesters}
+            onToggle={onToggle}
+            onSemesterChange={onSemesterChange}
+          />
+        ))}
       </div>
     </div>
   );
 }
 
-function GroupRow({ view, onUpdate }: { view: AuditRequirementViewModel; onUpdate: (groupId: string, selected: string[]) => void }) {
+function GroupRow({
+  view,
+  semesters,
+  onUpdate,
+  onSemesterChange,
+}: {
+  view: AuditRequirementViewModel;
+  semesters: Semester[];
+  onUpdate: (groupId: string, selected: string[]) => void;
+  onSemesterChange?: (courseId: string, semesterId: string | null) => void;
+}) {
   const [open, setOpen] = useState(false);
   const { group, progress, counts } = view;
   const done = progress.pct >= 1;
@@ -199,11 +253,11 @@ function GroupRow({ view, onUpdate }: { view: AuditRequirementViewModel; onUpdat
             ) : null}
           </div>
           <div className="grid gap-4 xl:grid-cols-2">
-            <BucketSection title="Completed / eligible options" bucket="completed" options={view.buckets.completed} group={group} onToggle={togglePick} />
-            <BucketSection title="In progress / registered" bucket="in_progress" options={view.buckets.in_progress} group={group} onToggle={togglePick} />
-            <BucketSection title="Planned in a future term" bucket="planned" options={view.buckets.planned} group={group} onToggle={togglePick} />
-            <BucketSection title="Remaining eligible options" bucket="remaining" options={view.buckets.remaining} group={group} onToggle={togglePick} />
-            <BucketSection title="Referenced by audit, not in library" bucket="unknown" options={view.buckets.unknown} group={group} />
+            <BucketSection title="Completed / eligible options" bucket="completed" options={view.buckets.completed} group={group} semesters={semesters} onToggle={togglePick} onSemesterChange={onSemesterChange} />
+            <BucketSection title="In progress / registered" bucket="in_progress" options={view.buckets.in_progress} group={group} semesters={semesters} onToggle={togglePick} onSemesterChange={onSemesterChange} />
+            <BucketSection title="Planned in a future term" bucket="planned" options={view.buckets.planned} group={group} semesters={semesters} onToggle={togglePick} onSemesterChange={onSemesterChange} />
+            <BucketSection title="Remaining eligible options" bucket="remaining" options={view.buckets.remaining} group={group} semesters={semesters} onToggle={togglePick} onSemesterChange={onSemesterChange} />
+            <BucketSection title="Referenced by audit, not in library" bucket="unknown" options={view.buckets.unknown} group={group} semesters={semesters} />
           </div>
         </div>
       )}
@@ -211,7 +265,13 @@ function GroupRow({ view, onUpdate }: { view: AuditRequirementViewModel; onUpdat
   );
 }
 
-export default function RequirementsWorkspace({ embedded = false }: { embedded?: boolean } = {}) {
+export default function RequirementsWorkspace({
+  embedded = false,
+  onCoursesChanged,
+}: {
+  embedded?: boolean;
+  onCoursesChanged?: () => void;
+} = {}) {
   const [courses, setCourses] = useState<Course[]>([]);
   const [requirements, setRequirements] = useState<RequirementGroup[]>([]);
   const [semesters, setSemesters] = useState<Semester[]>([]);
@@ -219,6 +279,8 @@ export default function RequirementsWorkspace({ embedded = false }: { embedded?:
   const [saving, setSaving] = useState(false);
   const [filter, setFilter] = useState<"needs_action" | "all" | "pick" | "complete">("needs_action");
   const [error, setError] = useState<string | null>(null);
+  const [mutationError, setMutationError] = useState<string | null>(null);
+  const coursesRef = useRef<Course[]>([]);
 
   useEffect(() => {
     Promise.all([
@@ -234,6 +296,10 @@ export default function RequirementsWorkspace({ embedded = false }: { embedded?:
       })
       .catch((err) => { setError(String(err)); setLoading(false); });
   }, []);
+
+  useEffect(() => {
+    coursesRef.current = courses;
+  }, [courses]);
 
   const views = useMemo(() => buildAuditRequirementViewModels({ courses, requirements, semesters }), [courses, requirements, semesters]);
 
@@ -253,6 +319,41 @@ export default function RequirementsWorkspace({ embedded = false }: { embedded?:
       setSaving(false);
     }
   }, []);
+
+  const handleUpdateCourseSemester = useCallback(async (courseId: string, semesterId: string | null) => {
+    const current = coursesRef.current.find((course) => course.id === courseId);
+    if (!current) {
+      setMutationError("Could not plan that course because it is missing from the course library.");
+      return;
+    }
+
+    setMutationError(null);
+    setCourses((prev) => prev.map((course) => (course.id === courseId ? applyCourseSemester(course, semesterId) : course)));
+    setSaving(true);
+
+    try {
+      const response = await fetch(`/api/courses/${courseId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(buildCourseSemesterPatch(current, semesterId)),
+      });
+      if (!response.ok) throw new Error(`PATCH failed with ${response.status}`);
+
+      const updatedCourse = (await response.json()) as Course;
+      setCourses((prev) => prev.map((course) => (course.id === courseId ? updatedCourse : course)));
+      onCoursesChanged?.();
+    } catch (err) {
+      setMutationError(`Could not update planned semester for ${current.number}: ${err instanceof Error ? err.message : String(err)}`);
+      try {
+        const latest = await fetch("/api/courses").then((response) => response.json());
+        setCourses(Array.isArray(latest) ? latest : coursesRef.current);
+      } catch {
+        setCourses((prev) => prev.map((course) => (course.id === courseId ? current : course)));
+      }
+    } finally {
+      setSaving(false);
+    }
+  }, [onCoursesChanged]);
 
   if (loading) return <div className={`flex items-center justify-center ${embedded ? "min-h-40" : "min-h-screen"} text-[#6a6a8a]`}>Loading...</div>;
   if (error) return <div className={`flex items-center justify-center ${embedded ? "min-h-40" : "min-h-screen"} p-8 text-sm text-red-400`}>Failed to load requirements: {error}</div>;
@@ -306,6 +407,11 @@ export default function RequirementsWorkspace({ embedded = false }: { embedded?:
         </div>
       )}
       {embedded && saving && <span className="animate-pulse text-xs text-[#d4a843]">Saving...</span>}
+      {mutationError && (
+        <div role="alert" className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-300">
+          {mutationError}
+        </div>
+      )}
 
       <div className="grid gap-3 lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[240px_minmax(0,1fr)]">
         <aside className="space-y-3 lg:sticky lg:top-4 lg:self-start">
@@ -354,7 +460,15 @@ export default function RequirementsWorkspace({ embedded = false }: { embedded?:
                   <h3 className="text-sm font-semibold text-[#d0d0e8]">{category}</h3>
                   <div className="ml-auto text-xs text-[#4a4a6a]">{categoryViews.filter((view) => view.progress.pct >= 1).length}/{categoryViews.length} done</div>
                 </div>
-                <div>{categoryViews.map((view) => <GroupRow key={view.group.id} view={view} onUpdate={handleUpdateSelected} />)}</div>
+                <div>{categoryViews.map((view) => (
+                  <GroupRow
+                    key={view.group.id}
+                    view={view}
+                    semesters={semesters}
+                    onUpdate={handleUpdateSelected}
+                    onSemesterChange={handleUpdateCourseSemester}
+                  />
+                ))}</div>
               </section>
             );
           })}

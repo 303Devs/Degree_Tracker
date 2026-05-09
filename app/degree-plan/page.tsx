@@ -2,8 +2,11 @@
 
 import RequirementsWorkspace from "@/components/RequirementsWorkspace";
 import PlannerWorkspace from "@/components/PlannerWorkspace";
+import { useState } from "react";
 
 export default function DegreePlanPage() {
+  const [plannerRefreshKey, setPlannerRefreshKey] = useState(0);
+
   return (
     <>
       <style>{`
@@ -57,7 +60,7 @@ export default function DegreePlanPage() {
               </div>
               <p className="text-[10px] font-semibold uppercase tracking-widest text-[#4a4a6a]">workbook context</p>
             </div>
-            <RequirementsWorkspace embedded />
+            <RequirementsWorkspace embedded onCoursesChanged={() => setPlannerRefreshKey((value) => value + 1)} />
           </section>
 
           <aside aria-labelledby="semester-attachments" className="min-w-0 rounded-2xl border border-[#1e1e34] bg-[#0d0d1a] p-3 shadow-sm sm:p-4 2xl:sticky 2xl:top-5 2xl:max-h-[calc(100vh-2.5rem)] 2xl:overflow-auto">
@@ -68,7 +71,7 @@ export default function DegreePlanPage() {
                 Secondary view for timing and prereq risk. Keep heavy drag/drop work out of the requirement scan path.
               </p>
             </div>
-            <PlannerWorkspace embedded compact />
+            <PlannerWorkspace embedded compact refreshKey={plannerRefreshKey} />
           </aside>
         </main>
       </div>

@@ -28,6 +28,7 @@ import {
   validatePlan,
   type PlannerValidationSummary,
 } from "@/lib/planner-validation";
+import { buildCourseSemesterPatch } from "@/lib/course-planning";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -526,7 +527,15 @@ function ValidationPanel({
 // Main page
 // ---------------------------------------------------------------------------
 
-export default function PlannerWorkspace({ embedded = false, compact = false }: { embedded?: boolean; compact?: boolean } = {}) {
+export default function PlannerWorkspace({
+  embedded = false,
+  compact = false,
+  refreshKey = 0,
+}: {
+  embedded?: boolean;
+  compact?: boolean;
+  refreshKey?: number;
+} = {}) {
   const isCompact = embedded || compact;
   const [courses, setCourses] = useState<Course[]>([]);
   const [semesters, setSemesters] = useState<Semester[]>([]);
@@ -577,7 +586,7 @@ export default function PlannerWorkspace({ embedded = false, compact = false }: 
       setAssignments(map);
       setLoading(false);
     }).catch((err) => { setError(String(err)); setLoading(false); });
-  }, []);
+  }, [refreshKey]);
 
   const sortedSems = useMemo(() => sortSemesters(semesters), [semesters]);
   const courseMap = useMemo(() => new Map(courses.map((c) => [c.id, c])), [courses]);
@@ -645,15 +654,7 @@ export default function PlannerWorkspace({ embedded = false, compact = false }: 
         await fetch(`/api/courses/${courseId}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            semester: toSemId !== "unplanned" ? toSemId : null,
-            status:
-              toSemId !== "unplanned" && course.status === "not_started"
-                ? "planned"
-                : toSemId === "unplanned" && course.status === "planned"
-                ? "not_started"
-                : course.status,
-          }),
+          body: JSON.stringify(buildCourseSemesterPatch(course, toSemId !== "unplanned" ? toSemId : null)),
         });
         // Refresh course list to get updated status
         const updated = await fetch("/api/courses").then((r) => r.json());
