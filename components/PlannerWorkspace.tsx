@@ -29,6 +29,7 @@ import {
   type PlannerValidationSummary,
 } from "@/lib/planner-validation";
 import { buildCourseSemesterPatch } from "@/lib/course-planning";
+import { buildAuditRequirementViewModels, type AuditRequirementViewModel } from "@/lib/audit-plan-view";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -65,6 +66,20 @@ function semIdToLabel(semId: string, semesters: Semester[]): string {
 
 function formatCourseId(id: string): string {
   return id.replaceAll("-", " ");
+}
+
+const CATEGORY_THEMES = [
+  "from-sky-50 to-blue-50 border-sky-100",
+  "from-violet-50 to-fuchsia-50 border-violet-100",
+  "from-emerald-50 to-teal-50 border-emerald-100",
+  "from-amber-50 to-orange-50 border-amber-100",
+  "from-rose-50 to-pink-50 border-rose-100",
+  "from-indigo-50 to-slate-50 border-indigo-100",
+];
+
+function categoryTheme(name: string) {
+  const seed = Array.from(name).reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  return CATEGORY_THEMES[seed % CATEGORY_THEMES.length];
 }
 
 // ---------------------------------------------------------------------------
@@ -130,21 +145,21 @@ function PlannerCard({
       style={style}
       {...(draggable ? { ...listeners, ...attributes } : {})}
       className={[
-        "bg-[#16162a] border rounded-xl p-3 select-none transition-all duration-150",
+        "rounded-2xl border bg-white p-3 shadow-sm select-none transition-all duration-150",
         isDragging ? "opacity-30 scale-95" : "",
-        overlay ? "shadow-2xl shadow-black/50 rotate-1 scale-105 border-[#d4a843]/40 bg-[#1e1e32]" : "",
-        !overlay && draggable ? "cursor-grab active:cursor-grabbing hover:border-[#d4a843]/25 hover:bg-[#1a1a2e]" : "",
+        overlay ? "rotate-1 scale-105 border-sky-300 shadow-2xl shadow-sky-200/70" : "",
+        !overlay && draggable ? "cursor-grab active:cursor-grabbing hover:border-sky-300 hover:bg-sky-50" : "",
         !overlay && !draggable ? "cursor-default opacity-80" : "",
-        !overlay && !isDragging ? "border-[#1e1e34]" : "",
+        !overlay && !isDragging ? "border-slate-200" : "",
       ].join(" ")}
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <span className="text-xs font-mono text-indigo-300 font-medium">{course.number}</span>
-          <p className="text-[11px] text-[#9090b0] mt-0.5 leading-snug line-clamp-2">{course.name}</p>
+          <span className="text-xs font-semibold text-sky-700">{course.number}</span>
+          <p className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-slate-500">{course.name}</p>
         </div>
         <div className="shrink-0 flex flex-col items-end gap-1">
-          <span className="text-[10px] text-[#4a4a6a]">{course.credits}cr</span>
+          <span className="text-[10px] text-slate-400">{course.credits}cr</span>
           <span className={`w-2 h-2 rounded-full ${statusDot[course.status] ?? "bg-[#2a2a3a]"}`} />
         </div>
       </div>
@@ -188,26 +203,26 @@ function SemesterColumn({
   const creditWarn = totalCredits > 18 || (totalCredits > 0 && totalCredits < 12 && (semester.status === "planned"));
 
   const headerBg: Record<string, string> = {
-    completed: "border-green-500/20 bg-green-500/5",
-    in_progress: "border-[#d4a843]/30 bg-[#d4a843]/5",
-    registered: "border-blue-500/20 bg-blue-500/5",
-    planned: "border-[#1e1e34]",
+    completed: "border-green-200 bg-green-50",
+    in_progress: "border-amber-200 bg-amber-50",
+    registered: "border-blue-200 bg-blue-50",
+    planned: "border-slate-200 bg-white",
   };
 
-  const ringColor = isOver ? "ring-1 ring-[#d4a843]/40 border-[#d4a843]/30" : "";
+  const ringColor = isOver ? "ring-4 ring-sky-100 border-sky-300" : "";
 
   return (
     <div
-      className={`flex-shrink-0 w-60 flex flex-col rounded-xl border bg-[#0e0e1c] transition-all duration-150 ${headerBg[semester.status] ?? "border-[#1e1e34]"} ${ringColor}`}
+      className={`flex min-w-0 flex-col rounded-3xl border bg-white shadow-sm transition-all duration-150 ${headerBg[semester.status] ?? "border-slate-200"} ${ringColor}`}
     >
       {/* Column header */}
-      <div className={`px-3 py-2.5 border-b ${headerBg[semester.status] ?? "border-[#1e1e34]"}`}>
+      <div className={`px-3 py-2.5 border-b ${headerBg[semester.status] ?? "border-slate-200"}`}>
         <div className="flex items-start justify-between gap-2">
-          <span className="text-sm font-semibold text-[#d0d0e8] leading-none">{semester.label}</span>
+          <span className="text-sm font-semibold leading-none text-slate-900">{semester.label}</span>
           <select
             value={semester.status}
             onChange={(e) => onStatusChange(semester.id, e.target.value as Semester["status"])}
-            className="max-w-[7.5rem] rounded border border-[#2a2a3e] bg-[#0d0d1a] px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-[#d0d0e8] focus:outline-none focus:border-[#d4a843]/50"
+            className="max-w-[7.5rem] rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[9px] text-slate-600 focus:border-sky-300 focus:outline-none"
             aria-label={`Set ${semester.label} status`}
           >
             <option value="completed">completed</option>
@@ -216,7 +231,7 @@ function SemesterColumn({
             <option value="planned">planned</option>
           </select>
         </div>
-        <div className={`text-[11px] mt-1 ${creditWarn ? "text-amber-400" : "text-[#4a4a6a]"}`}>
+        <div className={`text-[11px] mt-1 ${creditWarn ? "text-amber-400" : "text-slate-400"}`}>
           {totalCredits} credits{creditWarn ? (totalCredits > 18 ? " — overloaded" : " — underloaded") : ""}
         </div>
       </div>
@@ -236,10 +251,10 @@ function SemesterColumn({
         {courses.length === 0 && (
           <div
             className={`h-16 rounded-lg border border-dashed flex items-center justify-center transition-colors ${
-              isOver ? "border-[#d4a843]/50 bg-[#d4a843]/5" : "border-[#1e1e34]"
+              isOver ? "border-sky-300 bg-sky-50" : "border-slate-200"
             }`}
           >
-            <span className="text-[10px] text-[#3a3a5a]">drop here</span>
+            <span className="text-[10px] text-slate-400">drop here</span>
           </div>
         )}
       </div>
@@ -251,11 +266,25 @@ function SemesterColumn({
 // Unplanned pool (droppable)
 // ---------------------------------------------------------------------------
 
+function buildUnplannedRequirementGroups(views: AuditRequirementViewModel[], unplannedCourses: Course[]) {
+  const unplannedById = new Map(unplannedCourses.map((course) => [course.id, course]));
+  return views
+    .filter((view) => view.progress.pct < 1)
+    .map((view) => ({
+      view,
+      courses: view.courseOptions
+        .filter((option) => option.course && unplannedById.has(option.course.id))
+        .map((option) => ({ course: option.course!, warning: option.warning })),
+    }))
+    .filter((group) => group.courses.length > 0);
+}
+
 function UnplannedPool({
   courses,
   allCourses,
   sortedSems,
   assignments,
+  requirementGroups,
   collapsed,
   onToggle,
 }: {
@@ -263,56 +292,63 @@ function UnplannedPool({
   allCourses: Course[];
   sortedSems: Semester[];
   assignments: Map<string, string>;
+  requirementGroups: ReturnType<typeof buildUnplannedRequirementGroups>;
   collapsed: boolean;
   onToggle: () => void;
 }) {
   const { isOver, setNodeRef } = useDroppable({ id: "unplanned" });
 
   return (
-    <div
-      className={`bg-[#0e0e1c] border rounded-xl overflow-hidden transition-all ${
-        isOver ? "border-[#d4a843]/40 ring-1 ring-[#d4a843]/20" : "border-[#1e1e34]"
-      }`}
-    >
-      <button
-        className="w-full flex items-center justify-between px-4 py-3 hover:bg-white/3 transition-colors"
-        onClick={onToggle}
-      >
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-[#d0d0e8]">Unplanned Courses</span>
-          <span className="px-2 py-0.5 bg-[#1e1e34] text-[#6a6a8a] rounded text-xs tabular-nums">
-            {courses.length}
-          </span>
+    <div className={`overflow-hidden rounded-3xl border bg-white shadow-sm transition-all ${isOver ? "border-sky-300 ring-4 ring-sky-100" : "border-slate-200"}`}>
+      <button className="flex w-full items-center justify-between px-5 py-4 text-left transition-colors hover:bg-slate-50" onClick={onToggle}>
+        <div>
+          <div className="text-base font-semibold text-slate-950">Courses to place</div>
+          <div className="mt-1 text-sm text-slate-500">Grouped by the requirement they can help finish.</div>
         </div>
-        <svg
-          className={`w-4 h-4 text-[#6a6a8a] transition-transform ${collapsed ? "" : "rotate-180"}`}
-          fill="none" stroke="currentColor" viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
+        <div className="flex items-center gap-3">
+          <span className="rounded-full bg-sky-50 px-3 py-1 text-sm font-medium text-sky-700">{courses.length}</span>
+          <svg className={`h-4 w-4 text-slate-400 transition-transform ${collapsed ? "" : "rotate-180"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
       </button>
 
       {!collapsed && (
-        <div ref={setNodeRef} className="border-t border-[#1e1e34] p-3">
+        <div ref={setNodeRef} className="border-t border-slate-100 p-4">
           {courses.length === 0 ? (
-            <div
-              className={`h-16 rounded-lg border border-dashed flex items-center justify-center transition-colors ${
-                isOver ? "border-[#d4a843]/50 bg-[#d4a843]/5" : "border-[#1e1e34]"
-              }`}
-            >
-              <span className="text-xs text-[#3a3a5a]">All courses are planned</span>
+            <div className={`flex h-20 items-center justify-center rounded-2xl border border-dashed ${isOver ? "border-sky-300 bg-sky-50" : "border-slate-200"}`}>
+              <span className="text-sm text-slate-400">Everything is placed.</span>
+            </div>
+          ) : requirementGroups.length > 0 ? (
+            <div className="grid gap-4 lg:grid-cols-2">
+              {requirementGroups.map(({ view, courses: groupCourses }) => (
+                <section key={view.group.id} className={`rounded-3xl border bg-gradient-to-br p-3 ${categoryTheme(view.group.category)}`}>
+                  <div className="mb-3 flex items-start justify-between gap-3">
+                    <div>
+                      <div className="text-xs font-medium text-slate-500">{view.group.category}</div>
+                      <h3 className="mt-0.5 text-sm font-semibold text-slate-900">{view.group.name}</h3>
+                    </div>
+                    <span className="rounded-full bg-white/75 px-2.5 py-1 text-xs font-medium text-slate-600 shadow-sm">{view.remainingLabel}</span>
+                  </div>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {groupCourses.map(({ course, warning }) => (
+                      <div key={`${view.group.id}-${course.id}`} className="space-y-1">
+                        <PlannerCard course={course} semId="unplanned" allCourses={allCourses} sortedSems={sortedSems} assignments={assignments} />
+                        {warning && (
+                          <div className={`px-1 text-[10px] ${warning.severity === "warning" ? "text-amber-600" : "text-slate-500"}`}>
+                            {warning.message}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              ))}
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {courses.map((course) => (
-                <PlannerCard
-                  key={course.id}
-                  course={course}
-                  semId="unplanned"
-                  allCourses={allCourses}
-                  sortedSems={sortedSems}
-                  assignments={assignments}
-                />
+                <PlannerCard key={course.id} course={course} semId="unplanned" allCourses={allCourses} sortedSems={sortedSems} assignments={assignments} />
               ))}
             </div>
           )}
@@ -350,7 +386,7 @@ function Modal({ onClose, children }: { onClose: () => void; children: React.Rea
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-[#111120] border border-[#2a2a3e] rounded-2xl shadow-2xl max-w-lg w-full p-6 space-y-4">
+      <div className="relative bg-white border border-slate-200 rounded-2xl shadow-2xl max-w-lg w-full p-6 space-y-4">
         {children}
       </div>
     </div>
@@ -393,8 +429,8 @@ function ValidationPanel({
             {statusIcon}
           </span>
           <div>
-            <span className="text-sm font-semibold text-[#d0d0e8]">Plan Validation</span>
-            <span className="text-xs text-[#6a6a8a] ml-2">
+            <span className="text-sm font-semibold text-slate-900">Plan Validation</span>
+            <span className="text-xs text-slate-500 ml-2">
               {validation.clean
                 ? "All clear"
                 : `${issueCount} issue${issueCount !== 1 ? "s" : ""}${unmetCount > 0 ? `, ${unmetCount} unmet req${unmetCount !== 1 ? "s" : ""}` : ""}`}
@@ -403,12 +439,12 @@ function ValidationPanel({
         </div>
         <div className="flex items-center gap-3">
           {validation.projectedCompletionTerm && (
-            <span className="text-[10px] text-[#6a6a8a]">
+            <span className="text-[10px] text-slate-500">
               Est. completion: <span className="text-[#d4a843]">{validation.projectedCompletionTerm.semesterLabel}</span>
             </span>
           )}
           <svg
-            className={`w-4 h-4 text-[#6a6a8a] transition-transform ${open ? "rotate-180" : ""}`}
+            className={`w-4 h-4 text-slate-500 transition-transform ${open ? "rotate-180" : ""}`}
             fill="none" stroke="currentColor" viewBox="0 0 24 24"
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -417,7 +453,7 @@ function ValidationPanel({
       </button>
 
       {open && (
-        <div className="border-t border-[#1e1e34] p-4 space-y-4">
+        <div className="border-t border-slate-200 p-4 space-y-4">
           {/* Prereq violations */}
           {validation.prereqViolations.length > 0 && (
             <div>
@@ -427,7 +463,7 @@ function ValidationPanel({
                   <div key={v.courseId} className="flex items-center gap-2 text-sm">
                     <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
                     <span className="font-mono text-indigo-300 text-xs">{v.courseNumber}</span>
-                    <span className="text-[#6a6a8a] text-xs">in {v.semesterLabel} — missing:</span>
+                    <span className="text-slate-500 text-xs">in {v.semesterLabel} — missing:</span>
                     <span className="text-xs text-red-300 font-mono">
                       {v.missing.map((id) => id.replace("-", " ")).join(", ")}
                     </span>
@@ -446,7 +482,7 @@ function ValidationPanel({
                   <div key={v.courseId} className="flex items-center gap-2 text-sm">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
                     <span className="font-mono text-indigo-300 text-xs">{v.courseNumber}</span>
-                    <span className="text-[#6a6a8a] text-xs">in {v.semesterLabel} — missing:</span>
+                    <span className="text-slate-500 text-xs">in {v.semesterLabel} — missing:</span>
                     <span className="text-xs text-amber-300 font-mono">
                       {v.missing.map((id) => id.replace("-", " ")).join(", ")}
                     </span>
@@ -464,8 +500,8 @@ function ValidationPanel({
                 {validation.termLoadIssues.map((t) => (
                   <div key={t.semesterId} className="flex items-center gap-2 text-xs">
                     <span className={`w-1.5 h-1.5 rounded-full ${t.kind === "overloaded" ? "bg-red-500" : "bg-amber-500"} shrink-0`} />
-                    <span className="text-[#d0d0e8]">{t.semesterLabel}</span>
-                    <span className="text-[#6a6a8a]">
+                    <span className="text-slate-900">{t.semesterLabel}</span>
+                    <span className="text-slate-500">
                       {t.credits} credits — {t.kind === "overloaded" ? "over 18 limit" : "under 12 minimum"}
                     </span>
                   </div>
@@ -483,7 +519,7 @@ function ValidationPanel({
                   <div key={u.courseId} className="flex items-center gap-2 text-xs">
                     <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
                     <span className="font-mono text-indigo-300">{u.courseNumber}</span>
-                    <span className="text-[#6a6a8a] truncate">needed for: {u.groups.join(", ")}</span>
+                    <span className="text-slate-500 truncate">needed for: {u.groups.join(", ")}</span>
                   </div>
                 ))}
               </div>
@@ -493,20 +529,20 @@ function ValidationPanel({
           {/* Unmet requirements summary */}
           {validation.unmetRequirements.length > 0 && (
             <div>
-              <h4 className="text-xs text-[#6a6a8a] uppercase tracking-wide mb-2 font-medium">Unmet Requirements ({validation.unmetRequirements.length})</h4>
+              <h4 className="text-xs text-slate-500 uppercase tracking-wide mb-2 font-medium">Unmet Requirements ({validation.unmetRequirements.length})</h4>
               <div className="space-y-1">
                 {validation.unmetRequirements.slice(0, 10).map((r) => (
                   <div key={r.groupId} className="flex items-center gap-2 text-xs">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#2a2a3a] shrink-0" />
                     <span className="text-[#8888a8] flex-1 truncate">{r.groupName}</span>
-                    <span className="text-[#4a4a6a] font-mono shrink-0">
+                    <span className="text-slate-400 font-mono shrink-0">
                       {r.completed}/{r.total}
                       {r.inProgress > 0 && <span className="text-[#d4a843]"> +{r.inProgress}</span>}
                     </span>
                   </div>
                 ))}
                 {validation.unmetRequirements.length > 10 && (
-                  <span className="text-[10px] text-[#4a4a6a]">
+                  <span className="text-[10px] text-slate-400">
                     …and {validation.unmetRequirements.length - 10} more
                   </span>
                 )}
@@ -597,13 +633,18 @@ export default function PlannerWorkspace({
       completedVisibleCount >= completed.length
         ? completed
         : completed.slice(Math.max(0, completed.length - completedVisibleCount));
-    return sortSemesters([...visibleCompleted, ...active]);
+    return sortSemesters([...visibleCompleted, ...active]).reverse();
   }, [sortedSems, completedVisibleCount]);
 
   // Plan-level validation summary
   const validation = useMemo(
     () => validatePlan(courses, semesters, requirements, assignments),
     [courses, semesters, requirements, assignments]
+  );
+
+  const auditViews = useMemo(
+    () => buildAuditRequirementViewModels({ courses, requirements, semesters }),
+    [courses, requirements, semesters]
   );
 
   // Derive which courses are in each container
@@ -615,6 +656,11 @@ export default function PlannerWorkspace({
         return (assignments.get(c.id) ?? "unplanned") === "unplanned";
       }),
     [courses, assignments]
+  );
+
+  const unplannedRequirementGroups = useMemo(
+    () => buildUnplannedRequirementGroups(auditViews, unplannedCourses),
+    [auditViews, unplannedCourses]
   );
 
   const semCourses = useMemo(() => {
@@ -776,7 +822,7 @@ export default function PlannerWorkspace({
 
   if (loading) {
     return (
-      <div className={`flex items-center justify-center ${embedded ? "min-h-40" : "min-h-screen"} text-[#6a6a8a]`}>Loading…</div>
+      <div className={`flex items-center justify-center ${embedded ? "min-h-40" : "min-h-screen"} text-slate-500`}>Loading…</div>
     );
   }
 
@@ -791,7 +837,7 @@ export default function PlannerWorkspace({
   if (courses.length === 0) {
     return (
       <div className={`flex flex-col items-center justify-center ${embedded ? "min-h-40" : "min-h-screen"} gap-4 p-8 text-center`}>
-        <p className="text-[#6a6a8a]">No course data yet.</p>
+        <p className="text-slate-500">No course data yet.</p>
         <a href="/upload" className="text-[#d4a843] hover:text-[#e8c068] text-sm">
           Upload an audit PDF →
         </a>
@@ -800,27 +846,37 @@ export default function PlannerWorkspace({
   }
 
   return (
+    <>
+      {!embedded && (
+        <style>{`
+          @media (max-width: 767px) {
+            body { display: block; }
+            body > aside { display: none !important; }
+            body > main { width: 100vw; min-height: 100vh; overflow: visible; }
+          }
+        `}</style>
+      )}
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <div className={`${isCompact ? "space-y-3" : "p-6 space-y-5 min-h-screen"}`}>
+      <div className={`${isCompact ? "space-y-3" : "min-h-screen space-y-6 bg-gradient-to-br from-sky-50 via-white to-amber-50 p-4 text-slate-900 sm:p-6"}`}>
         {/* Header */}
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
           {!embedded && (
             <div>
-              <h2 className="text-2xl font-bold text-[#d0d0e8]">Semester Planner</h2>
-              <p className="text-[#6a6a8a] text-sm mt-0.5">
-                Drag courses between semesters. Prereqs are validated on drop.
+              <h2 className="text-3xl font-semibold text-slate-950">Semester Planner</h2>
+              <p className="text-slate-500 text-sm mt-0.5">
+                Plan by requirement, then place courses into semesters.
               </p>
             </div>
           )}
           {embedded && (
             <div>
-              <h3 className="text-sm font-semibold text-[#d0d0e8]">Semester timeline</h3>
-              <p className="text-xs text-[#6a6a8a] mt-0.5">Attach remaining requirements to terms. Drops still validate prereqs/coreqs.</p>
+              <h3 className="text-sm font-semibold text-slate-900">Semester timeline</h3>
+              <p className="text-xs text-slate-500 mt-0.5">Attach remaining requirements to terms. Drops still validate prereqs/coreqs.</p>
             </div>
           )}
           <button
             onClick={() => setNewSemModal(true)}
-            className={`${embedded ? "px-3 py-1.5 text-xs" : "px-4 py-2 text-sm"} flex shrink-0 items-center gap-2 rounded-xl border border-[#d4a843]/20 bg-[#d4a843]/10 font-medium text-[#d4a843] transition-colors hover:bg-[#d4a843]/20`}
+            className={`${embedded ? "px-3 py-1.5 text-xs" : "px-4 py-2 text-sm"} flex shrink-0 items-center gap-2 rounded-xl border border-sky-200 bg-sky-50 font-medium text-sky-700 transition-colors hover:bg-sky-100`}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -837,7 +893,7 @@ export default function PlannerWorkspace({
         />
 
         {/* Legend */}
-        <div className={`${embedded ? "hidden" : "flex"} items-center gap-4 text-[10px] text-[#4a4a6a]`}>
+        <div className={`${embedded ? "hidden" : "hidden"} items-center gap-4 text-[10px] text-slate-400`}>
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-green-500" /> completed</span>
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#d4a843]" /> in progress</span>
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-400" /> registered</span>
@@ -848,17 +904,17 @@ export default function PlannerWorkspace({
         </div>
 
         {sortedSems.some((s) => s.status === "completed") && (
-          <div className="flex items-center justify-between rounded-xl border border-[#1e1e34] bg-[#111120] px-4 py-3">
+          <div className="flex items-center justify-between rounded-3xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
             <div>
-              <div className="text-sm font-semibold text-[#d0d0e8]">Completed semesters</div>
-              <div className="text-xs text-[#6a6a8a]">
+              <div className="text-sm font-semibold text-slate-900">Completed semesters</div>
+              <div className="text-xs text-slate-500">
                 Showing {Math.min(completedVisibleCount, sortedSems.filter((s) => s.status === "completed").length)} of {sortedSems.filter((s) => s.status === "completed").length} in the planner.
               </div>
             </div>
             <select
               value={completedVisibleCount}
               onChange={(e) => setCompletedVisibleCount(Number(e.target.value))}
-              className="rounded-lg border border-[#2a2a3e] bg-[#0d0d1a] px-3 py-2 text-xs text-[#d0d0e8] focus:outline-none focus:border-[#d4a843]/50"
+              className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-sky-300"
             >
               <option value={0}>Hide all</option>
               <option value={1}>Most recent</option>
@@ -874,14 +930,14 @@ export default function PlannerWorkspace({
           allCourses={courses}
           sortedSems={sortedSems}
           assignments={assignments}
+          requirementGroups={unplannedRequirementGroups}
           collapsed={unplannedCollapsed}
           onToggle={() => setUnplannedCollapsed((v) => !v)}
         />
 
         {/* Semester timeline */}
-        <div className="overflow-x-auto pb-4">
-          <div className="flex gap-3" style={{ minWidth: "max-content" }}>
-            {visibleSems.map((sem) => (
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          {visibleSems.map((sem) => (
               <SemesterColumn
                 key={sem.id}
                 semester={sem}
@@ -893,12 +949,11 @@ export default function PlannerWorkspace({
               />
             ))}
 
-            {sortedSems.length === 0 && (
-              <div className="flex items-center justify-center h-32 text-[#4a4a6a] text-sm">
-                No semesters yet. Add one to start planning.
-              </div>
-            )}
-          </div>
+          {sortedSems.length === 0 && (
+            <div className="flex h-32 items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-white text-sm text-slate-400 sm:col-span-2 xl:col-span-3 2xl:col-span-4">
+              No semesters yet. Add one to start planning.
+            </div>
+          )}
         </div>
       </div>
 
@@ -927,8 +982,8 @@ export default function PlannerWorkspace({
               </svg>
             </div>
             <div>
-              <h3 className="font-semibold text-[#d0d0e8] text-base">Prerequisite conflict</h3>
-              <p className="text-[#6a6a8a] text-sm mt-1">
+              <h3 className="font-semibold text-slate-900 text-base">Prerequisite conflict</h3>
+              <p className="text-slate-500 text-sm mt-1">
                 Can&apos;t place{" "}
                 <span className="text-indigo-300 font-mono">{prereqModal.course.number}</span> in{" "}
                 <span className="text-[#d4a843]">{prereqModal.toSemLabel}</span>.
@@ -938,13 +993,13 @@ export default function PlannerWorkspace({
 
           {prereqModal.validation.missingPrereqs.length > 0 && (
             <div>
-              <p className="text-xs text-[#6a6a8a] uppercase tracking-wide mb-2">Missing prerequisites</p>
+              <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Missing prerequisites</p>
               <div className="space-y-1">
                 {prereqModal.validation.missingPrereqs.map((id) => (
                   <div key={id} className="flex items-center gap-2 text-sm">
                     <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
                     <span className="font-mono text-indigo-300">{formatCourseId(id)}</span>
-                    <span className="text-[#6a6a8a]">required in an earlier semester</span>
+                    <span className="text-slate-500">required in an earlier semester</span>
                   </div>
                 ))}
               </div>
@@ -953,13 +1008,13 @@ export default function PlannerWorkspace({
 
           {prereqModal.validation.missingCoreqs.length > 0 && (
             <div>
-              <p className="text-xs text-[#6a6a8a] uppercase tracking-wide mb-2">Missing corequisites</p>
+              <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Missing corequisites</p>
               <div className="space-y-1">
                 {prereqModal.validation.missingCoreqs.map((id) => (
                   <div key={id} className="flex items-center gap-2 text-sm">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
                     <span className="font-mono text-indigo-300">{formatCourseId(id)}</span>
-                    <span className="text-[#6a6a8a]">required in the same or earlier semester</span>
+                    <span className="text-slate-500">required in the same or earlier semester</span>
                   </div>
                 ))}
               </div>
@@ -968,7 +1023,7 @@ export default function PlannerWorkspace({
 
           <button
             onClick={() => setPrereqModal(null)}
-            className="w-full py-2.5 bg-[#1e1e34] hover:bg-[#2a2a40] border border-[#2a2a3e] rounded-xl text-sm transition-colors"
+            className="w-full py-2.5 bg-[#1e1e34] hover:bg-[#2a2a40] border border-slate-200 rounded-xl text-sm transition-colors"
           >
             Got it
           </button>
@@ -986,8 +1041,8 @@ export default function PlannerWorkspace({
               </svg>
             </div>
             <div>
-              <h3 className="font-semibold text-[#d0d0e8] text-base">Cascade warning</h3>
-              <p className="text-[#6a6a8a] text-sm mt-1">
+              <h3 className="font-semibold text-slate-900 text-base">Cascade warning</h3>
+              <p className="text-slate-500 text-sm mt-1">
                 Moving{" "}
                 <span className="text-indigo-300 font-mono">{cascadeModal.course.number}</span> to{" "}
                 <span className="text-[#d4a843]">{cascadeModal.toSemLabel}</span> would break
@@ -996,13 +1051,13 @@ export default function PlannerWorkspace({
             </div>
           </div>
 
-          <div className="bg-[#0e0e1c] border border-[#1e1e34] rounded-xl p-3 space-y-1.5">
+          <div className="bg-[#0e0e1c] border border-slate-200 rounded-xl p-3 space-y-1.5">
             {cascadeModal.affected.map((item, i) => (
               <div key={i} className="flex items-center gap-2 text-sm">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
                 <span className="font-mono text-indigo-300">{item.number}</span>
-                <span className="text-[#6a6a8a] flex-1 truncate">{item.name}</span>
-                <span className="text-[10px] text-[#4a4a6a]">{item.semLabel}</span>
+                <span className="text-slate-500 flex-1 truncate">{item.name}</span>
+                <span className="text-[10px] text-slate-400">{item.semLabel}</span>
               </div>
             ))}
           </div>
@@ -1016,7 +1071,7 @@ export default function PlannerWorkspace({
             </button>
             <button
               onClick={() => setCascadeModal(null)}
-              className="flex-1 py-2.5 bg-[#1e1e34] hover:bg-[#2a2a40] border border-[#2a2a3e] rounded-xl text-sm transition-colors"
+              className="flex-1 py-2.5 bg-[#1e1e34] hover:bg-[#2a2a40] border border-slate-200 rounded-xl text-sm transition-colors"
             >
               Cancel
             </button>
@@ -1027,11 +1082,11 @@ export default function PlannerWorkspace({
       {/* New semester modal */}
       {newSemModal && (
         <Modal onClose={() => setNewSemModal(false)}>
-          <h3 className="font-semibold text-[#d0d0e8] text-base">Add Planned Semester</h3>
+          <h3 className="font-semibold text-slate-900 text-base">Add Planned Semester</h3>
 
           <div className="space-y-3">
             <div>
-              <label className="text-xs text-[#6a6a8a] uppercase tracking-wide mb-1.5 block">Term</label>
+              <label className="text-xs text-slate-500 uppercase tracking-wide mb-1.5 block">Term</label>
               <div className="flex gap-2">
                 {(["fall", "spring", "summer"] as const).map((t) => (
                   <button
@@ -1040,7 +1095,7 @@ export default function PlannerWorkspace({
                     className={`flex-1 py-2 rounded-lg text-sm font-medium border transition-colors ${
                       newSemForm.type === t
                         ? "bg-[#d4a843]/15 border-[#d4a843]/30 text-[#d4a843]"
-                        : "bg-[#1a1a2e] border-[#2a2a3e] text-[#6a6a8a] hover:text-[#8888a8]"
+                        : "bg-[#1a1a2e] border-slate-200 text-slate-500 hover:text-[#8888a8]"
                     }`}
                   >
                     {t.charAt(0).toUpperCase() + t.slice(1)}
@@ -1050,18 +1105,18 @@ export default function PlannerWorkspace({
             </div>
 
             <div>
-              <label className="text-xs text-[#6a6a8a] uppercase tracking-wide mb-1.5 block">Year</label>
+              <label className="text-xs text-slate-500 uppercase tracking-wide mb-1.5 block">Year</label>
               <input
                 type="number"
                 value={newSemForm.year}
                 min={2024}
                 max={2035}
                 onChange={(e) => setNewSemForm((f) => ({ ...f, year: parseInt(e.target.value) || f.year }))}
-                className="w-full px-3 py-2 bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl text-sm text-[#d0d0e8] focus:outline-none focus:border-[#d4a843]/50"
+                className="w-full px-3 py-2 bg-[#1a1a2e] border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-sky-300"
               />
             </div>
 
-            <div className="text-xs text-[#6a6a8a] bg-[#0e0e1c] border border-[#1e1e34] rounded-lg px-3 py-2">
+            <div className="text-xs text-slate-500 bg-[#0e0e1c] border border-slate-200 rounded-lg px-3 py-2">
               Will create:{" "}
               <span className="text-[#d4a843] font-medium">
                 {newSemForm.type.charAt(0).toUpperCase() + newSemForm.type.slice(1)} {newSemForm.year}
@@ -1079,7 +1134,7 @@ export default function PlannerWorkspace({
             </button>
             <button
               onClick={() => setNewSemModal(false)}
-              className="flex-1 py-2.5 bg-[#1e1e34] hover:bg-[#2a2a40] border border-[#2a2a3e] rounded-xl text-sm transition-colors"
+              className="flex-1 py-2.5 bg-[#1e1e34] hover:bg-[#2a2a40] border border-slate-200 rounded-xl text-sm transition-colors"
             >
               Cancel
             </button>
@@ -1087,5 +1142,6 @@ export default function PlannerWorkspace({
         </Modal>
       )}
     </DndContext>
+    </>
   );
 }

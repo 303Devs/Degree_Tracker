@@ -17,12 +17,12 @@ function gradeColor(grade: string): string {
   if (pts >= 2.7) return "text-indigo-400";
   if (pts >= 1.7) return "text-yellow-400";
   if (pts >= 0) return "text-red-400";
-  return "text-[#6a6a8a]";
+  return "text-slate-400";
 }
 
 function statusDotClass(bucket: AuditCourseBucket | "complete" | "in_progress" | "not_started"): string {
   if (bucket === "completed" || bucket === "complete") return "bg-green-500";
-  if (bucket === "in_progress") return "bg-[#d4a843]";
+  if (bucket === "in_progress") return "bg-amber-400";
   if (bucket === "planned") return "bg-indigo-500";
   if (bucket === "unknown") return "bg-[#3a3a4a]";
   return "bg-[#2a2a3a]";
@@ -32,11 +32,25 @@ function StatusDot({ bucket }: { bucket: AuditCourseBucket | "complete" | "in_pr
   return <span className={`inline-block h-2 w-2 shrink-0 rounded-full ${statusDotClass(bucket)}`} />;
 }
 
+const CATEGORY_THEMES = [
+  "from-sky-50 to-blue-50 border-sky-100",
+  "from-violet-50 to-fuchsia-50 border-violet-100",
+  "from-emerald-50 to-teal-50 border-emerald-100",
+  "from-amber-50 to-orange-50 border-amber-100",
+  "from-rose-50 to-pink-50 border-rose-100",
+  "from-indigo-50 to-slate-50 border-indigo-100",
+];
+
+function categoryTheme(name: string) {
+  const seed = Array.from(name).reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  return CATEGORY_THEMES[seed % CATEGORY_THEMES.length];
+}
+
 function MiniProgressBar({ pct, ipFrac = 0, plannedFrac = 0 }: { pct: number; ipFrac?: number; plannedFrac?: number }) {
   return (
-    <div className="flex h-1 w-24 shrink-0 overflow-hidden rounded-full bg-[#1a1a2e]">
+    <div className="hidden h-1 w-24 shrink-0 sm:flex overflow-hidden rounded-full bg-slate-100">
       <div className="h-full rounded-full bg-green-500 transition-all duration-500" style={{ width: `${Math.min(pct * 100, 100)}%` }} />
-      {ipFrac > 0 && <div className="h-full bg-[#d4a843]/45" style={{ width: `${Math.min(ipFrac * 100, 100)}%` }} />}
+      {ipFrac > 0 && <div className="h-full bg-amber-400/45" style={{ width: `${Math.min(ipFrac * 100, 100)}%` }} />}
       {plannedFrac > 0 && <div className="h-full bg-indigo-500/35" style={{ width: `${Math.min(plannedFrac * 100, 100)}%` }} />}
     </div>
   );
@@ -45,23 +59,35 @@ function MiniProgressBar({ pct, ipFrac = 0, plannedFrac = 0 }: { pct: number; ip
 function BucketPill({ label, count, bucket }: { label: string; count: number; bucket: AuditCourseBucket }) {
   const tone: Record<AuditCourseBucket, string> = {
     completed: "border-green-500/20 bg-green-500/10 text-green-400",
-    in_progress: "border-[#d4a843]/20 bg-[#d4a843]/10 text-[#d4a843]",
-    planned: "border-indigo-500/20 bg-indigo-500/10 text-indigo-300",
-    remaining: "border-[#2a2a3a] bg-[#17172a] text-[#8888a8]",
-    unknown: "border-[#3a3a4a] bg-[#202032] text-[#6a6a8a]",
+    in_progress: "border-amber-400/20 bg-amber-400/10 text-amber-600",
+    planned: "border-indigo-500/20 bg-indigo-500/10 text-sky-700",
+    remaining: "border-[#2a2a3a] bg-[#17172a] text-slate-500",
+    unknown: "border-[#3a3a4a] bg-[#202032] text-slate-400",
   };
   return <span className={`rounded-md border px-1.5 py-0.5 text-[10px] ${tone[bucket]}`}>{label} {count}</span>;
 }
 
-function WarningBadge({ option }: { option: AuditCourseOption }) {
-  if (!option.warning) return null;
-  const tone =
-    option.warning.severity === "warning"
-      ? "border-amber-500/25 bg-amber-500/10 text-amber-300"
-      : option.warning.severity === "success"
-        ? "border-green-500/20 bg-green-500/10 text-green-400"
-        : "border-indigo-500/20 bg-indigo-500/10 text-indigo-300";
-  return <span title={option.warning.message} className={`rounded border px-1.5 py-0.5 text-[9px] uppercase tracking-wider ${tone}`}>{option.warning.severity === "warning" ? "warning" : option.warning.severity === "success" ? "ok" : "check"}</span>;
+function CourseStatusPill({ option }: { option: AuditCourseOption }) {
+  if (option.warning?.severity === "warning") {
+    return <span title={option.warning.message} className="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[11px] font-medium text-amber-700">Blocked</span>;
+  }
+
+  const labels: Record<AuditCourseBucket, string> = {
+    completed: "Completed",
+    in_progress: "In progress",
+    planned: "Planned",
+    remaining: "Remaining",
+    unknown: "Missing",
+  };
+  const tone: Record<AuditCourseBucket, string> = {
+    completed: "border-emerald-200 bg-emerald-50 text-emerald-700",
+    in_progress: "border-amber-200 bg-amber-50 text-amber-700",
+    planned: "border-sky-200 bg-sky-50 text-sky-700",
+    remaining: "border-slate-200 bg-slate-50 text-slate-600",
+    unknown: "border-slate-200 bg-slate-100 text-slate-500",
+  };
+
+  return <span className={`rounded-full border px-2.5 py-1 text-[11px] font-medium ${tone[option.bucket]}`}>{labels[option.bucket]}</span>;
 }
 
 function CourseOptionRow({
@@ -79,7 +105,6 @@ function CourseOptionRow({
 }) {
   const isPick = group.type === "pick_one" || group.type === "pick_n";
   const isSelected = option.selectionState === "selected";
-  const isCompleted = option.status === "completed";
   const canPlan =
     !!option.course &&
     option.status !== "completed" &&
@@ -88,40 +113,48 @@ function CourseOptionRow({
   const plannedSemesters = semesters.filter((semester) => semester.status !== "completed");
 
   return (
-    <div className={`flex w-full items-center gap-3 rounded-lg border px-3 py-2 text-left transition-colors ${isSelected ? "border-[#d4a843]/25 bg-[#d4a843]/10" : "border-transparent hover:border-[#2a2a3e] hover:bg-[#1a1a2e]"}`}>
-      <StatusDot bucket={option.bucket} />
-      {isPick && (
-        <button
-          type="button"
-          disabled={!option.course}
-          onClick={() => option.course && onToggle?.(option.courseId)}
-          className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-colors ${isSelected ? "border-[#d4a843] bg-[#d4a843]" : "border-[#3a3a4a] hover:border-[#d4a843]/50"} disabled:cursor-not-allowed disabled:opacity-40`}
-          aria-label={`${isSelected ? "Clear" : "Select"} ${option.courseNumber} for ${group.name}`}
+    <div className={`flex w-full flex-col gap-3 rounded-2xl border px-3 py-3 text-left transition-colors sm:flex-row sm:items-center ${isSelected ? "border-amber-200 bg-amber-50/70" : "border-slate-100 bg-white hover:border-sky-200 hover:bg-sky-50/50"}`}>
+      <div className="flex min-w-0 flex-1 items-start gap-3">
+        {isPick && (
+          <button
+            type="button"
+            disabled={!option.course}
+            onClick={() => option.course && onToggle?.(option.courseId)}
+            className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors ${isSelected ? "border-amber-400 bg-amber-400" : "border-slate-300 bg-white hover:border-amber-300"} disabled:cursor-not-allowed disabled:opacity-40`}
+            aria-label={`${isSelected ? "Clear" : "Select"} ${option.courseNumber} for ${group.name}`}
+          >
+            {isSelected && <span className="text-[11px] font-bold text-white">✓</span>}
+          </button>
+        )}
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+            <span className="font-mono text-sm font-semibold text-sky-700">{option.courseNumber}</span>
+            <span className="min-w-0 text-sm font-medium leading-5 text-slate-800">{option.courseName}</span>
+            <span className="text-xs text-slate-400">{option.credits} credits</span>
+          </div>
+          {option.grade && <div className={`mt-1 font-mono text-xs ${gradeColor(option.grade)}`}>Grade: {option.grade}</div>}
+          {option.warning?.severity === "warning" && <div className="mt-1 text-xs text-amber-700">{option.warning.message}</div>}
+        </div>
+      </div>
+
+      <div className="flex shrink-0 flex-wrap items-center gap-2 sm:justify-end">
+        <CourseStatusPill option={option} />
+        <select
+          value={option.semester ?? ""}
+          disabled={!canPlan || plannedSemesters.length === 0}
+          onChange={(event) => {
+            if (!canPlan || !option.course) return;
+            onSemesterChange?.(option.course.id, event.target.value || null);
+          }}
+          className="max-w-[9rem] rounded-full border border-slate-200 bg-white/80 px-2.5 py-1 text-xs text-slate-500 focus:border-sky-300 focus:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
+          aria-label={`Plan ${option.courseNumber} semester`}
         >
-          {isSelected && <span className="text-[10px] font-bold text-[#0a0a12]">✓</span>}
-        </button>
-      )}
-      <span className="w-24 shrink-0 font-mono text-xs text-indigo-300">{option.courseNumber}</span>
-      <span className="min-w-0 flex-1 truncate text-xs text-[#9090b0]">{option.courseName}</span>
-      <span className="text-[10px] text-[#4a4a6a]">{option.credits}cr</span>
-      {option.grade && <span className={`font-mono text-xs ${gradeColor(option.grade)}`}>{option.grade}</span>}
-      <select
-        value={option.semester ?? ""}
-        disabled={!canPlan || plannedSemesters.length === 0}
-        onChange={(event) => {
-          if (!canPlan || !option.course) return;
-          onSemesterChange?.(option.course.id, event.target.value || null);
-        }}
-        className="max-w-[8.5rem] shrink-0 rounded border border-[#2a2a3e] bg-[#0d0d1a] px-2 py-1 text-[10px] text-[#d0d0e8] focus:border-[#d4a843]/50 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40"
-        aria-label={`Plan ${option.courseNumber} semester`}
-      >
-        <option value="">unplanned</option>
-        {plannedSemesters.map((semester) => (
-          <option key={semester.id} value={semester.id}>{semester.label}</option>
-        ))}
-      </select>
-      {isPick && <span className="text-[9px] uppercase tracking-wider text-[#4a4a6a]">{isSelected ? "selected" : isCompleted ? "eligible done" : "eligible"}</span>}
-      <WarningBadge option={option} />
+          <option value="">Plan term</option>
+          {plannedSemesters.map((semester) => (
+            <option key={semester.id} value={semester.id}>{semester.label}</option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 }
@@ -146,7 +179,7 @@ function BucketSection({
   if (options.length === 0) return null;
   return (
     <div>
-      <div className="mb-1 flex items-center gap-2 px-1 text-[10px] uppercase tracking-widest text-[#4a4a6a]">
+      <div className="mb-2 flex items-center gap-2 px-1 text-xs font-medium text-slate-500">
         <StatusDot bucket={bucket} /> {title}
       </div>
       <div className="space-y-1">
@@ -204,60 +237,50 @@ function GroupRow({
   };
 
   return (
-    <div className="border-b border-[#1a1a2e] last:border-0">
-      <button className="w-full px-4 py-3 text-left transition-colors hover:bg-white/3" onClick={() => setOpen((value) => !value)}>
+    <div className="border-b border-slate-100 last:border-0">
+      <button className="w-full px-5 py-4 text-left transition-colors hover:bg-sky-50/60" onClick={() => setOpen((value) => !value)}>
         <div className="flex items-center gap-3">
           <StatusDot bucket={done ? "complete" : active ? "in_progress" : "not_started"} />
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sm text-[#d0d0e8]">{group.name}</span>
-              {isPick && <span className="rounded border border-[#d4a843]/20 bg-[#d4a843]/10 px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-[#d4a843]">pick</span>}
+              <span className="text-base font-medium text-slate-950">{group.name}</span>
+              {isPick && <span className="rounded border border-amber-400/20 bg-amber-400/10 px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-amber-600">pick</span>}
               {warningCount > 0 && <span className="rounded border border-amber-500/20 bg-amber-500/10 px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-amber-300">{warningCount} warning{warningCount === 1 ? "" : "s"}</span>}
               {minGradeWarnings.length > 0 && <span className="rounded border border-amber-500/20 bg-amber-500/10 px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-amber-300">grade warn</span>}
             </div>
-            <div className="mt-1 flex flex-wrap items-center gap-2 text-[10px] text-[#6a6a8a]">
+            <div className="mt-1 flex flex-wrap items-center gap-2 text-[10px] text-slate-400">
               <span>{view.displayRule}</span>
               {group.notes && <span>• {group.notes}</span>}
             </div>
           </div>
-          <div className="hidden items-center gap-1 md:flex">
-            <BucketPill label="done" count={counts.completed} bucket="completed" />
-            <BucketPill label="IP" count={counts.inProgress} bucket="in_progress" />
-            <BucketPill label="planned" count={counts.planned} bucket="planned" />
-            <BucketPill label="remaining" count={counts.remaining} bucket="remaining" />
-          </div>
+
           <MiniProgressBar
             pct={progress.pct}
             ipFrac={progress.total > 0 ? progress.inProgress / progress.total : 0}
             plannedFrac={progress.total > 0 ? (progress.unit === "hours" ? counts.plannedCredits : counts.planned) / progress.total : 0}
           />
-          <span className={`w-24 text-right font-mono text-xs tabular-nums ${done ? "text-green-400" : active ? "text-[#d4a843]" : "text-[#6a6a8a]"}`}>
+          <span className={`hidden w-24 text-right font-mono text-xs tabular-nums sm:block ${done ? "text-green-400" : active ? "text-amber-600" : "text-slate-400"}`}>
             {progress.completed}/{progress.total} {progress.unit === "hours" ? "hrs" : ""}
           </span>
-          <svg className={`h-3.5 w-3.5 shrink-0 text-[#4a4a6a] transition-transform ${open ? "rotate-90" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+          <svg className={`h-3.5 w-3.5 shrink-0 text-slate-400 transition-transform ${open ? "rotate-90" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
         </div>
-        <div className="mt-2 flex flex-wrap items-center gap-1 md:hidden">
-          <BucketPill label="done" count={counts.completed} bucket="completed" />
-          <BucketPill label="IP" count={counts.inProgress} bucket="in_progress" />
-          <BucketPill label="planned" count={counts.planned} bucket="planned" />
-          <BucketPill label="remaining" count={counts.remaining} bucket="remaining" />
-        </div>
+
       </button>
 
       {open && (
-        <div className="border-t border-[#1a1a2e] bg-[#0e0e1c]/60 px-4 py-4">
-          <div className="mb-3 flex items-center justify-between gap-3 rounded-lg border border-[#1e1e34] bg-[#111120] px-3 py-2">
-            <span className="text-xs text-[#8888a8]">{view.remainingLabel}</span>
+        <div className="border-t border-slate-100 bg-slate-50/60 px-4 py-4">
+          <div className="mb-3 flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
+            <span className="text-xs text-slate-500">{view.remainingLabel}</span>
             {isPick && group.selectedCourses?.length ? (
-              <button onClick={() => onUpdate(group.id, [])} className="text-xs text-[#6a6a8a] underline transition-colors hover:text-[#d0d0e8]">clear choices</button>
+              <button onClick={() => onUpdate(group.id, [])} className="text-xs text-slate-400 underline transition-colors hover:text-slate-900">clear choices</button>
             ) : null}
           </div>
           <div className="grid gap-4 xl:grid-cols-2">
-            <BucketSection title="Completed / eligible options" bucket="completed" options={view.buckets.completed} group={group} semesters={semesters} onToggle={togglePick} onSemesterChange={onSemesterChange} />
-            <BucketSection title="In progress / registered" bucket="in_progress" options={view.buckets.in_progress} group={group} semesters={semesters} onToggle={togglePick} onSemesterChange={onSemesterChange} />
-            <BucketSection title="Planned in a future term" bucket="planned" options={view.buckets.planned} group={group} semesters={semesters} onToggle={togglePick} onSemesterChange={onSemesterChange} />
-            <BucketSection title="Remaining eligible options" bucket="remaining" options={view.buckets.remaining} group={group} semesters={semesters} onToggle={togglePick} onSemesterChange={onSemesterChange} />
-            <BucketSection title="Referenced by audit, not in library" bucket="unknown" options={view.buckets.unknown} group={group} semesters={semesters} />
+            <BucketSection title="Completed" bucket="completed" options={view.buckets.completed} group={group} semesters={semesters} onToggle={togglePick} onSemesterChange={onSemesterChange} />
+            <BucketSection title="In progress" bucket="in_progress" options={view.buckets.in_progress} group={group} semesters={semesters} onToggle={togglePick} onSemesterChange={onSemesterChange} />
+            <BucketSection title="Planned" bucket="planned" options={view.buckets.planned} group={group} semesters={semesters} onToggle={togglePick} onSemesterChange={onSemesterChange} />
+            <BucketSection title="Options" bucket="remaining" options={view.buckets.remaining} group={group} semesters={semesters} onToggle={togglePick} onSemesterChange={onSemesterChange} />
+            <BucketSection title="Missing from library" bucket="unknown" options={view.buckets.unknown} group={group} semesters={semesters} />
           </div>
         </div>
       )}
@@ -355,13 +378,13 @@ export default function RequirementsWorkspace({
     }
   }, [onCoursesChanged]);
 
-  if (loading) return <div className={`flex items-center justify-center ${embedded ? "min-h-40" : "min-h-screen"} text-[#6a6a8a]`}>Loading...</div>;
+  if (loading) return <div className={`flex items-center justify-center ${embedded ? "min-h-40" : "min-h-screen"} text-slate-400`}>Loading...</div>;
   if (error) return <div className={`flex items-center justify-center ${embedded ? "min-h-40" : "min-h-screen"} p-8 text-sm text-red-400`}>Failed to load requirements: {error}</div>;
   if (requirements.length === 0) {
     return (
       <div className={`flex flex-col items-center justify-center ${embedded ? "min-h-40" : "min-h-screen"} gap-4 p-8 text-center`}>
-        <p className="text-[#6a6a8a]">No requirements loaded yet.</p>
-        <a href="/upload" className="text-sm text-[#d4a843] hover:text-[#e8c068]">Upload an audit PDF &rarr;</a>
+        <p className="text-slate-400">No requirements loaded yet.</p>
+        <a href="/upload" className="text-sm text-amber-600 hover:text-[#e8c068]">Upload an audit PDF &rarr;</a>
       </div>
     );
   }
@@ -370,8 +393,11 @@ export default function RequirementsWorkspace({
     if (view.progress.pct >= 1) acc.complete++;
     else acc.needsAction++;
     if (view.group.type === "pick_n" || view.group.type === "pick_one") acc.pick++;
+    acc.planned += view.counts.planned;
+    acc.warnings += view.courseOptions.filter((option) => option.warning?.severity === "warning").length;
     return acc;
-  }, { complete: 0, needsAction: 0, pick: 0 });
+  }, { complete: 0, needsAction: 0, pick: 0, planned: 0, warnings: 0 });
+  const completionPct = views.length ? Math.round((stats.complete / views.length) * 100) : 0;
 
   const visibleViews = views.filter((view) => {
     const done = view.progress.pct >= 1;
@@ -396,50 +422,64 @@ export default function RequirementsWorkspace({
   }));
 
   return (
-    <div className={embedded ? "space-y-3" : "max-w-none space-y-5 p-8"}>
+    <div className={embedded ? "space-y-5" : "max-w-none space-y-5 p-8"}>
+      <div className="grid gap-3 md:grid-cols-4">
+        {[
+          ["Progress", `${completionPct}%`, "complete", "from-sky-500 to-blue-500"],
+          ["Done", `${stats.complete}`, "requirements", "from-emerald-500 to-teal-500"],
+          ["Remaining", `${stats.needsAction}`, "to finish", "from-amber-400 to-orange-500"],
+          ["Planned", `${stats.planned}`, "courses", "from-violet-500 to-fuchsia-500"],
+        ].map(([label, value, detail, gradient]) => (
+          <div key={label} className={`rounded-3xl bg-gradient-to-br ${gradient} p-4 text-white shadow-lg shadow-slate-200/70`}>
+            <div className="text-sm font-medium text-white/85">{label}</div>
+            <div className="mt-2 text-3xl font-semibold tracking-tight">{value}</div>
+            <div className="mt-1 text-xs text-white/80">{detail}</div>
+          </div>
+        ))}
+      </div>
       {!embedded && (
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-[#d0d0e8]">Audit Plan</h2>
-            <p className="mt-1 text-sm text-[#6a6a8a]">Requirement groups are the spine; planning context stays attached to each audit row.</p>
+            <h2 className="text-2xl font-bold text-slate-900">Audit Plan</h2>
+            <p className="mt-1 text-sm text-slate-400">Choose courses and plan semesters from each card.</p>
           </div>
-          {saving && <span className="animate-pulse text-xs text-[#d4a843]">Saving...</span>}
+          {saving && <span className="animate-pulse text-xs text-amber-600">Saving...</span>}
         </div>
       )}
-      {embedded && saving && <span className="animate-pulse text-xs text-[#d4a843]">Saving...</span>}
+      {embedded && saving && <span className="animate-pulse text-xs text-amber-600">Saving...</span>}
       {mutationError && (
         <div role="alert" className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-300">
           {mutationError}
         </div>
       )}
 
-      <div className="grid gap-3 lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[240px_minmax(0,1fr)]">
+      <div className="grid gap-5 lg:grid-cols-[200px_minmax(0,1fr)]">
         <aside className="space-y-3 lg:sticky lg:top-4 lg:self-start">
-          <div className="rounded-xl border border-[#1e1e34] bg-[#111120] p-2.5">
-            <div className="mb-2 px-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#4a4a6a]">Audit view</div>
+          <div className="rounded-3xl border border-white bg-white/90 p-3 shadow-lg shadow-sky-100/60">
+            <div className="mb-2 px-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">Show</div>
             <div className="flex flex-wrap gap-2 lg:flex-col">
               {([
-                ["needs_action", `Needs action ${stats.needsAction}`],
-                ["pick", `Pick groups ${stats.pick}`],
-                ["complete", `Complete ${stats.complete}`],
+                ["needs_action", `Remaining ${stats.needsAction}`],
+                ["pick", `Choices ${stats.pick}`],
+                ["complete", `Done ${stats.complete}`],
                 ["all", `All ${requirements.length}`],
               ] as const).map(([value, label]) => (
-                <button key={value} onClick={() => setFilter(value)} className={`rounded-lg border px-3 py-1.5 text-left text-xs transition-colors ${filter === value ? "border-[#d4a843]/35 bg-[#d4a843]/12 text-[#d4a843]" : "border-[#2a2a3e] bg-[#0d0d1a] text-[#8888a8] hover:text-[#d0d0e8]"}`}>{label}</button>
+                <button key={value} onClick={() => setFilter(value)} className={`rounded-full border px-3 py-1.5 text-left text-xs transition-colors ${filter === value ? "border-amber-400/35 bg-amber-400/12 text-amber-600" : "border-slate-200 bg-white text-slate-500 hover:text-slate-900"}`}>{label}</button>
               ))}
             </div>
           </div>
 
           {categorySummaries.length > 0 && (
-            <div className="hidden rounded-xl border border-[#1e1e34] bg-[#111120] p-2.5 lg:block">
-              <div className="mb-2 px-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#4a4a6a]">Requirement groups</div>
+            <div className="hidden rounded-3xl border border-white bg-white/90 p-3 shadow-lg shadow-sky-100/60 lg:block">
+              <div className="mb-2 px-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">Areas</div>
               <div className="space-y-1.5">
                 {categorySummaries.map(({ category, complete, total, active }) => (
-                  <div key={category} className="rounded-lg border border-[#1a1a2e] bg-[#0d0d1a] px-2.5 py-2">
+                  <div key={category} className={`rounded-2xl border bg-gradient-to-br px-2.5 py-2 ${categoryTheme(category)}`}>
                     <div className="flex items-start gap-2">
                       <StatusDot bucket={complete === total ? "complete" : active ? "in_progress" : "not_started"} />
                       <div className="min-w-0 flex-1">
-                        <div className="truncate text-xs font-medium text-[#d0d0e8]" title={category}>{category}</div>
-                        <div className="mt-0.5 text-[10px] text-[#6a6a8a]">{complete}/{total} done</div>
+                        <div className="truncate text-xs font-medium text-slate-900" title={category}>{category}</div>
+                        <div className="mt-0.5 text-[10px] text-slate-400">{complete}/{total} done</div>
                       </div>
                     </div>
                   </div>
@@ -454,11 +494,11 @@ export default function RequirementsWorkspace({
             const categoryDone = categoryViews.every((view) => view.progress.pct >= 1);
             const categoryActive = !categoryDone && categoryViews.some((view) => view.counts.inProgress > 0 || view.counts.planned > 0);
             return (
-              <section key={category} className="overflow-hidden rounded-xl border border-[#1e1e34] bg-[#111120]">
-                <div className="flex items-center gap-3 border-b border-[#1e1e34] bg-[#0e0e1c] px-4 py-2.5">
+              <section key={category} className="overflow-hidden rounded-3xl border border-white bg-white/95 shadow-lg shadow-sky-100/60">
+                <div className={`flex items-center gap-3 border-b bg-gradient-to-r px-5 py-3 ${categoryTheme(category)}`}>
                   <StatusDot bucket={categoryDone ? "complete" : categoryActive ? "in_progress" : "not_started"} />
-                  <h3 className="text-sm font-semibold text-[#d0d0e8]">{category}</h3>
-                  <div className="ml-auto text-xs text-[#4a4a6a]">{categoryViews.filter((view) => view.progress.pct >= 1).length}/{categoryViews.length} done</div>
+                  <h3 className="text-sm font-semibold text-slate-900">{category}</h3>
+                  <div className="ml-auto rounded-full bg-white/70 px-2.5 py-1 text-xs font-medium text-slate-600">{categoryViews.filter((view) => view.progress.pct >= 1).length}/{categoryViews.length} done</div>
                 </div>
                 <div>{categoryViews.map((view) => (
                   <GroupRow
@@ -472,7 +512,7 @@ export default function RequirementsWorkspace({
               </section>
             );
           })}
-          {visibleViews.length === 0 && <div className="rounded-xl border border-[#1e1e34] bg-[#111120] p-8 text-center text-sm text-[#6a6a8a]">No requirements match this filter.</div>}
+          {visibleViews.length === 0 && <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-400">No requirements match this filter.</div>}
         </div>
       </div>
     </div>

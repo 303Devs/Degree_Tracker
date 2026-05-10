@@ -1,80 +1,47 @@
 "use client";
 
+import Link from "next/link";
 import RequirementsWorkspace from "@/components/RequirementsWorkspace";
-import PlannerWorkspace from "@/components/PlannerWorkspace";
-import { useState } from "react";
 
 export default function DegreePlanPage() {
-  const [plannerRefreshKey, setPlannerRefreshKey] = useState(0);
-
   return (
     <>
       <style>{`
         @media (max-width: 767px) {
-          body {
-            display: block;
-          }
-
-          body > aside {
-            display: none !important;
-          }
-
-          body > main {
-            width: 100vw;
-            min-height: 100vh;
-            overflow: visible;
-          }
+          body { display: block; }
+          body > aside { display: none !important; }
+          body > main { width: 100vw; min-height: 100vh; overflow: visible; }
         }
       `}</style>
-      <div className="min-h-screen bg-[#080812] px-4 py-5 pb-10 text-[#d0d0e8] sm:px-6 lg:px-8">
-      <div className="mx-auto flex max-w-[1520px] flex-col gap-5">
-        <header className="rounded-2xl border border-[#1e1e34] bg-[#101020]/95 px-4 py-3 shadow-sm sm:px-5">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-3">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#d4a843]">Audit Plan</p>
-                <span className="rounded-full border border-[#2a2a3e] bg-[#0d0d1a] px-2.5 py-1 text-[10px] uppercase tracking-wider text-[#8888a8]">
-                  current audit snapshot
-                </span>
+      <div className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-amber-50 px-4 py-6 pb-12 text-slate-900 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-[1320px] flex-col gap-6">
+          <header className="rounded-[2rem] border border-white/80 bg-white/90 px-5 py-5 shadow-lg shadow-sky-100/60 sm:px-7">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-sky-600">Degree Tracker</p>
+                <h1 className="mt-1 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Audit Plan</h1>
+                <p className="mt-2 max-w-2xl text-base leading-7 text-slate-600">
+                  See what is done, what remains, and which courses can help you finish.
+                </p>
               </div>
-              <h1 className="mt-1 text-xl font-semibold tracking-tight text-[#f1f1ff] sm:text-2xl">Requirement-first academic plan</h1>
-              <p className="mt-1 max-w-4xl text-sm leading-relaxed text-[#8888a8]">
-                Use the audit requirements as the workspace. Course options and semester timing stay close enough to make decisions, but secondary enough to keep the spine readable.
-              </p>
+              <Link href="/planner" className="inline-flex w-fit items-center justify-center rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700 transition-colors hover:border-sky-300 hover:bg-sky-100">
+                Open Planner
+              </Link>
             </div>
-            <div className="grid grid-cols-2 gap-2 text-[10px] font-medium uppercase tracking-wide sm:grid-cols-4 lg:w-auto lg:min-w-[420px]">
-              <span className="rounded-lg border border-green-500/20 bg-green-500/10 px-3 py-2 text-green-400">completed</span>
-              <span className="rounded-lg border border-[#d4a843]/25 bg-[#d4a843]/10 px-3 py-2 text-[#d4a843]">in progress</span>
-              <span className="rounded-lg border border-indigo-500/20 bg-indigo-500/10 px-3 py-2 text-indigo-300">planned</span>
-              <span className="rounded-lg border border-[#2a2a3e] bg-[#0d0d1a] px-3 py-2 text-[#8888a8]">remaining</span>
-            </div>
-          </div>
-        </header>
+          </header>
 
-        <main className="grid gap-5 2xl:grid-cols-[minmax(0,1fr)_360px]">
-          <section aria-labelledby="requirements-spine" className="min-w-0 rounded-2xl border border-[#1e1e34] bg-[#0d0d1a] p-3 shadow-sm sm:p-4">
-            <div className="mb-3 flex flex-col gap-2 border-b border-[#1e1e34] pb-3 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <h2 id="requirements-spine" className="text-base font-semibold text-[#f1f1ff]">Requirements spine</h2>
-                <p className="mt-1 text-sm text-[#8888a8]">Requirement rows are the primary surface; options expand beneath the audit group they satisfy.</p>
+          <main className="grid gap-5">
+            <section aria-labelledby="audit-plan" className="min-w-0 rounded-[2rem] border border-white/80 bg-white/90 p-4 shadow-lg shadow-sky-100/60 sm:p-6">
+              <div className="mb-4 flex flex-col gap-1 border-b border-slate-100 pb-4 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <h2 id="audit-plan" className="text-xl font-semibold text-slate-950">Requirements and course options</h2>
+                  <p className="mt-1 text-sm text-slate-500">Open a card to choose or plan a course.</p>
+                </div>
               </div>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-[#4a4a6a]">workbook context</p>
-            </div>
-            <RequirementsWorkspace embedded onCoursesChanged={() => setPlannerRefreshKey((value) => value + 1)} />
-          </section>
-
-          <aside aria-labelledby="semester-attachments" className="min-w-0 rounded-2xl border border-[#1e1e34] bg-[#0d0d1a] p-3 shadow-sm sm:p-4 2xl:sticky 2xl:top-5 2xl:max-h-[calc(100vh-2.5rem)] 2xl:overflow-auto">
-            <div className="mb-3 border-b border-[#1e1e34] pb-3">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#4a4a6a]">supporting context</p>
-              <h2 id="semester-attachments" className="mt-1 text-base font-semibold text-[#f1f1ff]">Semester planning</h2>
-              <p className="mt-1 text-sm leading-relaxed text-[#8888a8]">
-                Secondary view for timing and prereq risk. Keep heavy drag/drop work out of the requirement scan path.
-              </p>
-            </div>
-            <PlannerWorkspace embedded compact refreshKey={plannerRefreshKey} />
-          </aside>
-        </main>
-      </div>
+              <RequirementsWorkspace embedded />
+            </section>
+          </main>
+        </div>
       </div>
     </>
   );
