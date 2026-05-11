@@ -116,9 +116,9 @@ function PlannerCard({
   }, [course, semId, sortedSems, allCourses, assignments]);
 
   const statusDot: Record<string, string> = {
-    completed: "bg-emerald-500",
+    completed: "bg-green-500",
     in_progress: "bg-amber-500",
-    registered: "bg-sky-500",
+    registered: "bg-blue-400",
     planned: "bg-indigo-500",
     not_started: "bg-slate-300",
   };
@@ -131,8 +131,8 @@ function PlannerCard({
       className={[
         "rounded-xl border bg-white p-3 shadow-sm select-none transition-all duration-150",
         isDragging ? "opacity-30 scale-95" : "",
-        overlay ? "rotate-1 scale-105 border-indigo-200 bg-white shadow-2xl shadow-slate-300/60" : "",
-        !overlay && draggable ? "cursor-grab active:cursor-grabbing hover:border-indigo-200 hover:bg-indigo-50/40" : "",
+        overlay ? "rotate-1 scale-105 border-amber-300 bg-white shadow-2xl shadow-slate-300/60" : "",
+        !overlay && draggable ? "cursor-grab active:cursor-grabbing hover:border-amber-200 hover:bg-amber-50/40" : "",
         !overlay && !draggable ? "cursor-default opacity-80" : "",
         !overlay && !isDragging ? "border-slate-200" : "",
       ].join(" ")}
@@ -151,9 +151,9 @@ function PlannerCard({
       {course.prereqs && semId !== "unplanned" && (
         <div className="mt-2 flex items-center gap-1">
           <span
-            className={`w-1.5 h-1.5 rounded-full ${prereqOk ? "bg-emerald-500" : "bg-rose-500"}`}
+            className={`w-1.5 h-1.5 rounded-full ${prereqOk ? "bg-green-500" : "bg-red-500"}`}
           />
-          <span className={`text-[9px] ${prereqOk ? "text-emerald-600" : "text-rose-600"}`}>
+          <span className={`text-[9px] ${prereqOk ? "text-emerald-600" : "text-red-500"}`}>
             {prereqOk ? "prereqs ok" : "prereqs missing"}
           </span>
         </div>
@@ -189,15 +189,15 @@ function SemesterColumn({
   const headerBg: Record<string, string> = {
     completed: "border-emerald-200 bg-emerald-50/80",
     in_progress: "border-amber-200 bg-amber-50/80",
-    registered: "border-sky-200 bg-sky-50/80",
+    registered: "border-blue-200 bg-blue-50/80",
     planned: "border-slate-200 bg-slate-50/80",
   };
 
-  const ringColor = isOver ? "ring-2 ring-indigo-100 border-indigo-200" : "";
+  const ringColor = isOver ? "ring-2 ring-amber-200 border-amber-300" : "";
 
   return (
     <div
-      className={`flex-shrink-0 w-60 flex flex-col rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-150 ${ringColor}`}
+      className={`flex-shrink-0 w-60 flex flex-col rounded-2xl border bg-white shadow-sm transition-all duration-150 ${headerBg[semester.status] ?? "border-slate-200"} ${ringColor}`}
     >
       {/* Column header */}
       <div className={`px-3 py-2.5 border-b ${headerBg[semester.status] ?? "border-slate-200"}`}>
@@ -206,7 +206,7 @@ function SemesterColumn({
           <select
             value={semester.status}
             onChange={(e) => onStatusChange(semester.id, e.target.value as Semester["status"])}
-            className="max-w-[7.5rem] rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-slate-600 focus:outline-none focus:border-indigo-300"
+            className="max-w-[7.5rem] rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-slate-600 focus:outline-none focus:border-amber-300"
             aria-label={`Set ${semester.label} status`}
           >
             <option value="completed">completed</option>
@@ -235,7 +235,7 @@ function SemesterColumn({
         {courses.length === 0 && (
           <div
             className={`h-16 rounded-lg border border-dashed flex items-center justify-center transition-colors ${
-              isOver ? "border-indigo-200 bg-indigo-50" : "border-slate-200 bg-slate-50/70"
+              isOver ? "border-amber-300 bg-amber-50" : "border-slate-200 bg-slate-50/70"
             }`}
           >
             <span className="text-[10px] text-slate-400">drop here</span>
@@ -270,7 +270,7 @@ function UnplannedPool({
   return (
     <div
       className={`overflow-hidden rounded-2xl border bg-white shadow-sm transition-all ${
-        isOver ? "border-indigo-200 ring-2 ring-indigo-100" : "border-slate-200"
+        isOver ? "border-amber-300 ring-2 ring-amber-100" : "border-slate-200"
       }`}
     >
       <button
@@ -296,7 +296,7 @@ function UnplannedPool({
           {courses.length === 0 ? (
             <div
               className={`h-16 rounded-lg border border-dashed flex items-center justify-center transition-colors ${
-                isOver ? "border-indigo-200 bg-indigo-50" : "border-slate-200 bg-white"
+                isOver ? "border-amber-300 bg-amber-50" : "border-slate-200 bg-white"
               }`}
             >
               <span className="text-xs text-slate-400">All courses are planned</span>
@@ -329,7 +329,7 @@ function SemesterBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
     completed: "bg-emerald-50 text-emerald-700 border-emerald-200",
     in_progress: "bg-amber-50 text-amber-700 border-amber-200",
-    registered: "bg-sky-50 text-sky-700 border-sky-200",
+    registered: "bg-blue-50 text-blue-700 border-blue-200",
     planned: "bg-indigo-50 text-indigo-700 border-indigo-200",
   };
   const label: Record<string, string> = {
@@ -420,14 +420,14 @@ function ValidationPanel({
           {/* Prereq violations */}
           {validation.prereqViolations.length > 0 && (
             <div>
-              <h4 className="text-xs text-rose-600 uppercase tracking-wide mb-2 font-medium">Prerequisite Violations</h4>
+              <h4 className="text-xs text-red-400 uppercase tracking-wide mb-2 font-medium">Prerequisite Violations</h4>
               <div className="space-y-1">
                 {validation.prereqViolations.map((v) => (
                   <div key={v.courseId} className="flex items-center gap-2 text-sm">
-                    <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
                     <span className="font-mono text-indigo-700 text-xs">{v.courseNumber}</span>
                     <span className="text-slate-500 text-xs">in {v.semesterLabel} — missing:</span>
-                    <span className="text-xs text-rose-600 font-mono">
+                    <span className="text-xs text-red-600 font-mono">
                       {v.missing.map((id) => id.replace("-", " ")).join(", ")}
                     </span>
                   </div>
@@ -462,7 +462,7 @@ function ValidationPanel({
               <div className="space-y-1">
                 {validation.termLoadIssues.map((t) => (
                   <div key={t.semesterId} className="flex items-center gap-2 text-xs">
-                    <span className={`w-1.5 h-1.5 rounded-full ${t.kind === "overloaded" ? "bg-rose-500" : "bg-amber-500"} shrink-0`} />
+                    <span className={`w-1.5 h-1.5 rounded-full ${t.kind === "overloaded" ? "bg-red-500" : "bg-amber-500"} shrink-0`} />
                     <span className="text-slate-900">{t.semesterLabel}</span>
                     <span className="text-slate-500">
                       {t.credits} credits — {t.kind === "overloaded" ? "over 18 limit" : "under 12 minimum"}
@@ -780,7 +780,7 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
 
   if (error) {
     return (
-      <div className={`flex items-center justify-center ${embedded ? "min-h-40" : "min-h-screen"} text-rose-600 text-sm p-8`}>
+      <div className={`flex items-center justify-center ${embedded ? "min-h-40" : "min-h-screen"} text-red-400 text-sm p-8`}>
         Failed to load planner data: {error}
       </div>
     );
@@ -836,13 +836,13 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
 
         {/* Legend */}
         <div className="flex flex-wrap items-center gap-4 text-[10px] text-slate-500">
-          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500" /> completed</span>
+          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-green-500" /> completed</span>
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-500" /> in progress</span>
-          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-sky-500" /> registered</span>
+          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-400" /> registered</span>
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-indigo-500" /> planned</span>
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-slate-300" /> not started</span>
-          <span className="ml-2 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> prereqs ok</span>
-          <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-rose-500" /> prereqs missing</span>
+          <span className="ml-2 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-green-500" /> prereqs ok</span>
+          <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-red-500" /> prereqs missing</span>
         </div>
 
         {sortedSems.some((s) => s.status === "completed") && (
@@ -856,7 +856,7 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
             <select
               value={completedVisibleCount}
               onChange={(e) => setCompletedVisibleCount(Number(e.target.value))}
-              className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-600 focus:outline-none focus:border-indigo-300"
+              className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-600 focus:outline-none focus:border-amber-300"
             >
               <option value={0}>Hide all</option>
               <option value={1}>Most recent</option>
@@ -918,8 +918,8 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
       {prereqModal && (
         <Modal onClose={() => setPrereqModal(null)}>
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center shrink-0">
-              <svg className="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-10 h-10 rounded-xl bg-red-500/15 border border-red-500/20 flex items-center justify-center shrink-0">
+              <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                   d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
@@ -940,7 +940,7 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
               <div className="space-y-1">
                 {prereqModal.validation.missingPrereqs.map((id) => (
                   <div key={id} className="flex items-center gap-2 text-sm">
-                    <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
                     <span className="font-mono text-indigo-700">{formatCourseId(id)}</span>
                     <span className="text-slate-500">required in an earlier semester</span>
                   </div>
@@ -977,7 +977,7 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
       {cascadeModal && (
         <Modal onClose={() => setCascadeModal(null)}>
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/20 flex items-center justify-center shrink-0">
               <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                   d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -1008,7 +1008,7 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
           <div className="flex gap-2">
             <button
               onClick={cascadeModal.onConfirm}
-              className="flex-1 py-2.5 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700 rounded-xl text-sm font-medium transition-colors"
+              className="flex-1 py-2.5 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/20 text-amber-700 rounded-xl text-sm font-medium transition-colors"
             >
               Move anyway
             </button>
@@ -1037,7 +1037,7 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
                     onClick={() => setNewSemForm((f) => ({ ...f, type: t }))}
                     className={`flex-1 rounded-lg border py-2 text-sm font-medium transition-colors ${
                       newSemForm.type === t
-                        ? "border-indigo-200 bg-indigo-50 text-indigo-700"
+                        ? "border-amber-300 bg-amber-50 text-amber-800"
                         : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                     }`}
                   >
@@ -1055,7 +1055,7 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
                 min={2024}
                 max={2035}
                 onChange={(e) => setNewSemForm((f) => ({ ...f, year: parseInt(e.target.value) || f.year }))}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-indigo-300"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-amber-300"
               />
             </div>
 
@@ -1071,7 +1071,7 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
             <button
               onClick={handleCreateSemester}
               disabled={newSemLoading}
-              className="flex-1 rounded-xl bg-indigo-600 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:opacity-50"
+              className="flex-1 rounded-xl bg-amber-500 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-amber-600 disabled:opacity-50"
             >
               {newSemLoading ? "Creating…" : "Create Semester"}
             </button>
