@@ -17,4 +17,6 @@
 body {
   background-color: var(--bg);
   color: var(--text);
+  font-family: ui-rounded, "SF Pro Rounded", "Avenir Next", Avenir, "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-feature-settings: "ss01" on, "cv01" on;
 }

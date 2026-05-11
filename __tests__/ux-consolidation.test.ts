@@ -20,6 +20,7 @@ describe("303-40 UX consolidation", () => {
   it("uses the approved primary navigation only", () => {
     expect(PRIMARY_NAV.map((item) => item.label)).toEqual([
       "Audit Plan",
+      "Semester Planner",
       "Courses",
       "GPA",
       "Upload Audit",
@@ -27,6 +28,7 @@ describe("303-40 UX consolidation", () => {
     ]);
     expect(PRIMARY_NAV.map((item) => item.href)).toEqual([
       "/",
+      "/planner",
       "/courses",
       "/gpa",
       "/upload",
@@ -36,7 +38,6 @@ describe("303-40 UX consolidation", () => {
     const demotedLabels = [
       "Requirements",
       "Planner",
-      "Semester Planner",
       "Course Library",
       "Course Catalog",
       "Manage Courses",
