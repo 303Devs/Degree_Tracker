@@ -194,26 +194,11 @@ function GroupRow({ view, onUpdate }: { view: AuditRequirementViewModel; onUpdat
 
       {open && (
         <div className="border-t border-slate-100 bg-slate-50/60 px-4 py-4">
-          <div className="mb-3 space-y-2">
-            <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
-              <span className="text-xs text-slate-600">{view.remainingLabel}</span>
-              {isPick && group.selectedCourses?.length ? (
-                <button onClick={() => onUpdate(group.id, [])} className="text-xs font-medium text-slate-500 underline transition-colors hover:text-slate-900">clear choices</button>
-              ) : null}
-            </div>
-            {view.warningSummaries.length > 0 && (
-              <div className="rounded-xl border border-amber-100 bg-white px-3 py-2 text-xs text-slate-600 shadow-sm">
-                <div className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-slate-400">Planning checks</div>
-                <ul className="space-y-1">
-                  {view.warningSummaries.map((warning) => (
-                    <li key={`${warning.courseId}-${warning.message}`} className="flex flex-wrap items-center gap-2">
-                      <span className={`rounded-full border px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider ${warning.severity === "warning" ? "border-amber-200 bg-amber-50 text-amber-700" : warning.severity === "success" ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-indigo-200 bg-indigo-50 text-indigo-700"}`}>{warning.courseNumber}</span>
-                      <span>{warning.message}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+          <div className="mb-3 flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
+            <span className="text-xs text-slate-600">{view.remainingLabel}</span>
+            {isPick && group.selectedCourses?.length ? (
+              <button onClick={() => onUpdate(group.id, [])} className="text-xs font-medium text-slate-500 underline transition-colors hover:text-slate-900">clear choices</button>
+            ) : null}
           </div>
           <div className="grid gap-4 xl:grid-cols-2">
             <BucketSection title="Completed / eligible options" bucket="completed" options={view.buckets.completed} group={group} onToggle={togglePick} />
