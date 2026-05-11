@@ -53,11 +53,11 @@ function isActive(pathname: string, href: string) {
 function BrandMark() {
   return (
     <div className="flex items-center gap-3">
-      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--accent)] text-sm font-extrabold tracking-tight text-white shadow-sm shadow-sky-200">
+      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--accent)] text-sm font-extrabold tracking-tight text-white shadow-sm shadow-sky-100">
         DT
       </div>
       <div className="min-w-0">
-        <p className="truncate text-sm font-extrabold tracking-tight text-[var(--text)]">Degree Tracker</p>
+        <p className="truncate text-sm font-bold tracking-tight text-[var(--text)]">Degree Tracker</p>
         <p className="text-xs font-medium text-[var(--text-secondary)]">CU Boulder</p>
       </div>
     </div>
@@ -70,31 +70,31 @@ export default function Sidebar() {
 
   return (
     <>
-      <header className="sticky top-0 z-30 border-b border-[var(--border)] bg-white/95 shadow-sm shadow-sky-100/50 backdrop-blur md:hidden">
+      <header className="sticky top-0 z-30 w-screen max-w-full overflow-hidden border-b border-[var(--border)] bg-white shadow-sm shadow-slate-200/60 md:hidden">
         <div className="px-4 py-3">
           <BrandMark />
         </div>
-        <nav className="flex gap-2 overflow-x-auto px-3 pb-3" aria-label="Primary navigation">
+        <nav className="grid w-full grid-cols-1 gap-2 px-3 pb-3" aria-label="Primary navigation">
           {navItems.map(({ href, label, shortLabel, icon, active }) => (
             <Link
               key={href}
               href={href}
               aria-current={active ? "page" : undefined}
-              className={`flex shrink-0 items-center gap-2 rounded-full border px-3 py-2 text-xs font-semibold transition-colors ${
+              className={`flex min-w-0 max-w-full items-center justify-start gap-2 overflow-hidden rounded-full border px-4 py-2 text-xs font-semibold transition-colors ${
                 active
                   ? "border-sky-200 bg-[var(--accent-soft)] text-[var(--accent-strong)]"
-                  : "border-[var(--border)] bg-white text-[var(--text-secondary)] hover:border-sky-200 hover:text-[var(--accent-strong)]"
+                  : "border-[var(--border)] bg-[var(--surface-subtle)] text-[var(--text-secondary)] hover:border-sky-200 hover:text-[var(--accent-strong)]"
               }`}
             >
               <span className="shrink-0">{ICONS[icon]}</span>
-              <span>{shortLabel ?? label}</span>
+              <span className="truncate">{shortLabel ?? label}</span>
             </Link>
           ))}
         </nav>
       </header>
 
-      <aside className="hidden min-h-screen w-64 shrink-0 flex-col border-r border-[var(--border)] bg-white/88 shadow-[12px_0_36px_rgba(37,99,135,0.08)] backdrop-blur md:flex">
-        <div className="border-b border-[var(--border)] px-5 py-6">
+      <aside className="hidden min-h-screen w-64 shrink-0 flex-col border-r border-[var(--border)] bg-white shadow-[10px_0_30px_rgba(15,23,42,0.06)] md:flex">
+        <div className="border-b border-[var(--border)] px-5 py-5">
           <BrandMark />
         </div>
 
@@ -106,7 +106,7 @@ export default function Sidebar() {
               aria-current={active ? "page" : undefined}
               className={`flex items-center gap-3 rounded-2xl border px-3.5 py-3 text-sm transition-colors ${
                 active
-                  ? "border-sky-200 bg-[var(--accent-soft)] font-bold text-[var(--accent-strong)] shadow-sm shadow-sky-100"
+                  ? "border-sky-200 bg-[var(--accent-soft)] font-bold text-[var(--accent-strong)] shadow-sm shadow-slate-100"
                   : "border-transparent text-[var(--text-secondary)] hover:border-[var(--border)] hover:bg-[var(--surface-subtle)] hover:text-[var(--accent-strong)]"
               }`}
             >
