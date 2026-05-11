@@ -3,25 +3,24 @@
 @tailwind utilities;
 
 :root {
-  --app-bg: #f4f7fb;
-  --app-bg-soft: #eef3f7;
+  --page-bg: #f5f7fa;
   --surface: #ffffff;
-  --surface-subtle: #f8fafc;
-  --surface-tinted: #edf7fc;
-  --border: #d9e4ec;
-  --border-strong: #b9cad7;
-  --text: #111827;
+  --surface-elevated: #ffffff;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text-primary: #0f172a;
   --text-secondary: #475569;
-  --text-muted: #718096;
-  --accent: #1686c7;
-  --accent-strong: #0b6fa8;
-  --accent-soft: #e8f5fc;
-  --success: #059669;
-  --warning: #d97706;
-  --danger: #dc2626;
-  --radius-card: 1.25rem;
-  --radius-control: 0.875rem;
-  --shadow-soft: 0 16px 36px rgba(15, 23, 42, 0.08);
+  --text-muted: #64748b;
+  --accent: #1a7fc4;
+  --accent-soft: #e8f4fb;
+  --status-complete: #16a34a;
+  --status-progress: #d97706;
+  --status-remaining: #64748b;
+  --status-blocked: #e11d48;
+  --radius-control: 8px;
+  --radius-card: 16px;
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.07);
+  --shadow-elevated: 0 8px 24px rgba(15, 23, 42, 0.08);
 }
 
 * {
@@ -29,16 +28,18 @@
 }
 
 html {
-  background: var(--app-bg);
+  min-height: 100%;
+  background: var(--page-bg);
 }
 
 body {
   min-height: 100vh;
   overflow-x: hidden;
-  background: linear-gradient(180deg, #fbfdff 0%, var(--app-bg) 100%);
-  color: var(--text);
-  font-family: "Avenir Next", Avenir, "Segoe UI", ui-rounded, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  font-feature-settings: "ss01" on, "cv01" on;
+  background: var(--page-bg);
+  color: var(--text-primary);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 main {
@@ -47,6 +48,6 @@ main {
 }
 
 ::selection {
-  background: rgba(22, 134, 199, 0.18);
-  color: var(--text);
+  background: rgba(26, 127, 196, 0.18);
+  color: var(--text-primary);
 }

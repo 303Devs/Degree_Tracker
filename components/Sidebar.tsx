@@ -1,47 +1,70 @@
 "use client";
 
 import type React from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PRIMARY_NAV, type NavItem } from "@/lib/navigation";
+import {
+  DESKTOP_PRIMARY_NAV,
+  DESKTOP_SECONDARY_NAV,
+  MOBILE_MORE_NAV,
+  MOBILE_TAB_NAV,
+  type NavIcon,
+  type NavItem,
+} from "@/lib/navigation";
 
-const ICONS: Record<NavItem["icon"], React.ReactNode> = {
-  upload: (
-    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.7}
-        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-    </svg>
-  ),
-  plan: (
-    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.7}
-        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+const iconProps = {
+  className: "h-4 w-4",
+  fill: "none",
+  stroke: "currentColor",
+  strokeLinecap: "round" as const,
+  strokeLinejoin: "round" as const,
+  strokeWidth: 1.8,
+  viewBox: "0 0 24 24",
+  "aria-hidden": true,
+};
+
+const ICONS: Record<NavIcon, React.ReactNode> = {
+  audit: (
+    <svg {...iconProps}>
+      <path d="M9 11l2 2 4-4" />
+      <path d="M7 3h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" />
     </svg>
   ),
   planner: (
-    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.7}
-        d="M8 7V3m8 4V3M5 11h14M7 21h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v12a2 2 0 002 2zm2-6h.01M12 15h.01M15 15h.01M9 18h.01M12 18h.01" />
+    <svg {...iconProps}>
+      <path d="M8 3v4M16 3v4M5 11h14" />
+      <path d="M7 5h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2z" />
     </svg>
   ),
-  library: (
-    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.7}
-        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+  courses: (
+    <svg {...iconProps}>
+      <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
+      <path d="M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z" />
     </svg>
   ),
   gpa: (
-    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.7}
-        d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+    <svg {...iconProps}>
+      <path d="M4 19V5M4 19h16" />
+      <path d="M8 16v-5M12 16V8M16 16v-3" />
+    </svg>
+  ),
+  upload: (
+    <svg {...iconProps}>
+      <path d="M12 16V4" />
+      <path d="M8 8l4-4 4 4" />
+      <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
     </svg>
   ),
   settings: (
-    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.7}
-        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.7}
-        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    <svg {...iconProps}>
+      <path d="M12 15.5A3.5 3.5 0 1112 8a3.5 3.5 0 010 7.5z" />
+      <path d="M19.4 15a1.7 1.7 0 00.34 1.88l.05.05a2 2 0 01-2.83 2.83l-.05-.05A1.7 1.7 0 0015 19.4a1.7 1.7 0 00-1 1.55V21a2 2 0 01-4 0v-.05A1.7 1.7 0 009 19.4a1.7 1.7 0 00-1.88.34l-.05.05a2 2 0 01-2.83-2.83l.05-.05A1.7 1.7 0 004.6 15a1.7 1.7 0 00-1.55-1H3a2 2 0 010-4h.05A1.7 1.7 0 004.6 9a1.7 1.7 0 00-.34-1.88l-.05-.05a2 2 0 012.83-2.83l.05.05A1.7 1.7 0 009 4.6a1.7 1.7 0 001-1.55V3a2 2 0 014 0v.05A1.7 1.7 0 0015 4.6a1.7 1.7 0 001.88-.34l.05-.05a2 2 0 012.83 2.83l-.05.05A1.7 1.7 0 0019.4 9a1.7 1.7 0 001.55 1H21a2 2 0 010 4h-.05A1.7 1.7 0 0019.4 15z" />
+    </svg>
+  ),
+  more: (
+    <svg {...iconProps}>
+      <path d="M5 12h.01M12 12h.01M19 12h.01" />
     </svg>
   ),
 };
@@ -50,79 +73,105 @@ function isActive(pathname: string, href: string) {
   return pathname === href || (href === "/" && pathname === "/degree-plan");
 }
 
-function BrandMark() {
+function DesktopNavItem({ item }: { item: NavItem }) {
+  const pathname = usePathname();
+  const active = isActive(pathname, item.href);
+
   return (
-    <div className="flex items-center gap-3">
-      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--accent)] text-sm font-extrabold tracking-tight text-white shadow-sm shadow-sky-100">
-        DT
-      </div>
-      <div className="min-w-0">
-        <p className="truncate text-sm font-bold tracking-tight text-[var(--text)]">Degree Tracker</p>
-        <p className="text-xs font-medium text-[var(--text-secondary)]">CU Boulder</p>
-      </div>
-    </div>
+    <Link
+      href={item.href}
+      title={item.label}
+      aria-label={item.label}
+      aria-current={active ? "page" : undefined}
+      className={`relative flex h-11 w-11 items-center justify-center rounded-lg transition-colors ${
+        active
+          ? "bg-[var(--accent-soft)] text-[var(--accent)]"
+          : "text-[var(--text-muted)] hover:bg-[var(--surface-subtle)] hover:text-[var(--text-primary)]"
+      }`}
+    >
+      {active && <span className="absolute left-0 h-6 w-0.5 rounded-full bg-[var(--accent)]" />}
+      {ICONS[item.icon]}
+    </Link>
+  );
+}
+
+function MobileTab({ item }: { item: NavItem }) {
+  const pathname = usePathname();
+  const active = isActive(pathname, item.href);
+
+  return (
+    <Link
+      href={item.href}
+      aria-label={item.label}
+      aria-current={active ? "page" : undefined}
+      className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 py-2 text-[11px] font-medium ${
+        active ? "text-[var(--accent)]" : "text-[var(--text-muted)]"
+      }`}
+    >
+      {ICONS[item.icon]}
+      <span className="truncate">{item.shortLabel ?? item.label}</span>
+    </Link>
   );
 }
 
 export default function Sidebar() {
+  const [moreOpen, setMoreOpen] = useState(false);
   const pathname = usePathname();
-  const navItems = PRIMARY_NAV.map((item) => ({ ...item, active: isActive(pathname, item.href) }));
+  const moreActive = MOBILE_MORE_NAV.some((item) => isActive(pathname, item.href));
 
   return (
     <>
-      <header className="sticky top-0 z-30 w-screen max-w-full overflow-hidden border-b border-[var(--border)] bg-white shadow-sm shadow-slate-200/60 md:hidden">
-        <div className="px-4 py-3">
-          <BrandMark />
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-14 flex-col border-r border-[var(--border)] bg-[var(--surface)] md:flex">
+        <div className="flex h-14 items-center justify-center border-b border-[var(--border)]">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--accent)] text-[11px] font-bold text-white" title="Degree Tracker">
+            DT
+          </span>
         </div>
-        <nav className="grid w-full grid-cols-1 gap-2 px-3 pb-3" aria-label="Primary navigation">
-          {navItems.map(({ href, label, shortLabel, icon, active }) => (
-            <Link
-              key={href}
-              href={href}
-              aria-current={active ? "page" : undefined}
-              className={`flex min-w-0 max-w-full items-center justify-start gap-2 overflow-hidden rounded-full border px-4 py-2 text-xs font-semibold transition-colors ${
-                active
-                  ? "border-sky-200 bg-[var(--accent-soft)] text-[var(--accent-strong)]"
-                  : "border-[var(--border)] bg-[var(--surface-subtle)] text-[var(--text-secondary)] hover:border-sky-200 hover:text-[var(--accent-strong)]"
-              }`}
-            >
-              <span className="shrink-0">{ICONS[icon]}</span>
-              <span className="truncate">{shortLabel ?? label}</span>
-            </Link>
-          ))}
+
+        <nav className="flex flex-1 flex-col items-center gap-1 py-3" aria-label="Primary navigation">
+          {DESKTOP_PRIMARY_NAV.map((item) => <DesktopNavItem key={item.href} item={item} />)}
+          <div className="my-2 h-px w-7 bg-[var(--border)]" />
+          {DESKTOP_SECONDARY_NAV.map((item) => <DesktopNavItem key={item.href} item={item} />)}
         </nav>
-      </header>
-
-      <aside className="hidden min-h-screen w-64 shrink-0 flex-col border-r border-[var(--border)] bg-white shadow-[10px_0_30px_rgba(15,23,42,0.06)] md:flex">
-        <div className="border-b border-[var(--border)] px-5 py-5">
-          <BrandMark />
-        </div>
-
-        <nav className="flex-1 space-y-1.5 px-3 py-5" aria-label="Primary navigation">
-          {navItems.map(({ href, label, icon, active }) => (
-            <Link
-              key={href}
-              href={href}
-              aria-current={active ? "page" : undefined}
-              className={`flex items-center gap-3 rounded-2xl border px-3.5 py-3 text-sm transition-colors ${
-                active
-                  ? "border-sky-200 bg-[var(--accent-soft)] font-bold text-[var(--accent-strong)] shadow-sm shadow-slate-100"
-                  : "border-transparent text-[var(--text-secondary)] hover:border-[var(--border)] hover:bg-[var(--surface-subtle)] hover:text-[var(--accent-strong)]"
-              }`}
-            >
-              <span className={`shrink-0 rounded-xl p-1.5 ${active ? "bg-white text-[var(--accent)]" : "bg-[var(--surface-subtle)] text-[var(--text-muted)]"}`}>
-                {ICONS[icon]}
-              </span>
-              <span className="leading-tight">{label}</span>
-            </Link>
-          ))}
-        </nav>
-
-        <div className="border-t border-[var(--border)] px-5 py-5">
-          <p className="text-sm font-bold text-[var(--text)]">Anthony Merino</p>
-          <p className="mt-1 text-xs leading-snug text-[var(--text-secondary)]">B.S. Stats &amp; DS + CS Minor</p>
-        </div>
       </aside>
+
+      <nav className="fixed inset-x-0 bottom-0 z-40 grid h-16 grid-cols-4 border-t border-[var(--border)] bg-[var(--surface)] shadow-[0_-1px_3px_rgba(0,0,0,0.07)] md:hidden" aria-label="Mobile navigation">
+        {MOBILE_TAB_NAV.map((item) => <MobileTab key={item.href} item={item} />)}
+        <button
+          type="button"
+          aria-label="More navigation"
+          aria-expanded={moreOpen}
+          onClick={() => setMoreOpen((open) => !open)}
+          className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 py-2 text-[11px] font-medium ${
+            moreOpen || moreActive ? "text-[var(--accent)]" : "text-[var(--text-muted)]"
+          }`}
+        >
+          {ICONS.more}
+          <span>More</span>
+        </button>
+      </nav>
+
+      {moreOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/20 md:hidden" onClick={() => setMoreOpen(false)}>
+          <div
+            className="absolute inset-x-3 bottom-20 rounded-2xl border border-[var(--border)] bg-[var(--surface-elevated)] p-2 shadow-[var(--shadow-elevated)]"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="px-3 py-2 text-[11px] font-semibold text-[var(--text-muted)]">More</div>
+            {MOBILE_MORE_NAV.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMoreOpen(false)}
+                className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--surface-subtle)]"
+              >
+                <span className="text-[var(--text-muted)]">{ICONS[item.icon]}</span>
+                <span>{item.label}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </>
   );
 }

@@ -19,11 +19,11 @@ function makeCourse(overrides: Partial<Course> & { id: string }): Course {
 describe("303-40 UX consolidation", () => {
   it("uses the approved primary navigation only", () => {
     expect(PRIMARY_NAV.map((item) => item.label)).toEqual([
-      "Audit Plan",
+      "Audit Dashboard",
       "Semester Planner",
       "Courses",
       "GPA",
-      "Upload Audit",
+      "Upload",
       "Settings",
     ]);
     expect(PRIMARY_NAV.map((item) => item.href)).toEqual([
