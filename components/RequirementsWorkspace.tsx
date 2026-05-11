@@ -5,8 +5,6 @@ import type { Course, RequirementGroup, Semester } from "@/lib/types";
 import { GRADE_SCALE } from "@/lib/prereqs";
 import {
   buildAuditRequirementViewModels,
-  filterAuditRequirementViewModels,
-  type AuditBucketFilter,
   type AuditCourseBucket,
   type AuditCourseOption,
   type AuditRequirementViewModel,
@@ -220,8 +218,6 @@ export default function RequirementsWorkspace({ embedded = false }: { embedded?:
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [filter, setFilter] = useState<"needs_action" | "all" | "pick" | "complete">("needs_action");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [bucketFilter, setBucketFilter] = useState<AuditBucketFilter>("all");
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -240,10 +236,6 @@ export default function RequirementsWorkspace({ embedded = false }: { embedded?:
   }, []);
 
   const views = useMemo(() => buildAuditRequirementViewModels({ courses, requirements, semesters }), [courses, requirements, semesters]);
-  const searchableViews = useMemo(
-    () => filterAuditRequirementViewModels(views, searchQuery, bucketFilter),
-    [views, searchQuery, bucketFilter],
-  );
 
   const handleUpdateSelected = useCallback(async (groupId: string, selectedCourses: string[]) => {
     setRequirements((prev) => prev.map((group) => (group.id === groupId ? { ...group, selectedCourses } : group)));
@@ -280,7 +272,7 @@ export default function RequirementsWorkspace({ embedded = false }: { embedded?:
     return acc;
   }, { complete: 0, needsAction: 0, pick: 0 });
 
-  const visibleViews = searchableViews.filter((view) => {
+  const visibleViews = views.filter((view) => {
     const done = view.progress.pct >= 1;
     if (filter === "all") return true;
     if (filter === "complete") return done;
@@ -308,46 +300,15 @@ export default function RequirementsWorkspace({ embedded = false }: { embedded?:
       )}
       {embedded && saving && <span className="animate-pulse text-xs text-amber-700">Saving...</span>}
 
-      <div className="space-y-3 rounded-2xl border border-slate-200 bg-slate-50/80 p-3 shadow-sm">
-        <div className="flex flex-wrap items-center gap-2">
-          {([
-            ["needs_action", `Needs action ${stats.needsAction}`],
-            ["pick", `Pick groups ${stats.pick}`],
-            ["complete", `Complete ${stats.complete}`],
-            ["all", `All ${requirements.length}`],
-          ] as const).map(([value, label]) => (
-            <button key={value} onClick={() => setFilter(value)} className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${filter === value ? "border-indigo-200 bg-white text-indigo-700 shadow-sm" : "border-slate-200 bg-transparent text-slate-500 hover:bg-white hover:text-slate-800"}`}>{label}</button>
-          ))}
-        </div>
-        <div className="flex flex-col gap-2 md:flex-row md:items-center">
-          <label className="min-w-0 flex-1">
-            <span className="sr-only">Search requirements and course options</span>
-            <input
-              value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder="Scan by requirement, course number, title, term, or status"
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm outline-none transition-colors placeholder:text-slate-400 focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100"
-            />
-          </label>
-          <div className="flex flex-wrap items-center gap-1">
-            {([
-              ["all", "All options"],
-              ["completed", "Done"],
-              ["in_progress", "IP"],
-              ["planned", "Planned"],
-              ["remaining", "Remaining"],
-              ["unknown", "Unknown"],
-            ] as const).map(([value, label]) => (
-              <button
-                key={value}
-                onClick={() => setBucketFilter(value)}
-                className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider transition-colors ${bucketFilter === value ? "border-indigo-200 bg-white text-indigo-700 shadow-sm" : "border-slate-200 text-slate-500 hover:bg-white hover:text-slate-800"}`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
+      <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50/80 p-3 shadow-sm">
+        {([
+          ["needs_action", `Needs action ${stats.needsAction}`],
+          ["pick", `Pick groups ${stats.pick}`],
+          ["complete", `Complete ${stats.complete}`],
+          ["all", `All ${requirements.length}`],
+        ] as const).map(([value, label]) => (
+          <button key={value} onClick={() => setFilter(value)} className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${filter === value ? "border-indigo-200 bg-white text-indigo-700 shadow-sm" : "border-slate-200 bg-transparent text-slate-500 hover:bg-white hover:text-slate-800"}`}>{label}</button>
+        ))}
       </div>
 
       {Array.from(byCategory.entries()).map(([category, categoryViews]) => {
