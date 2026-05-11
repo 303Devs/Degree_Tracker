@@ -3,18 +3,46 @@
 @tailwind utilities;
 
 :root {
-  --bg: #0f1117;
-  --surface: #1a1d27;
-  --border: #2a2d3a;
-  --text: #e2e8f0;
-  --muted: #8892a4;
-  --accent: #6366f1;
-  --green: #22c55e;
-  --yellow: #eab308;
-  --red: #ef4444;
+  --app-bg: #f5f9fc;
+  --app-bg-soft: #eef6fb;
+  --surface: #ffffff;
+  --surface-subtle: #f8fbfd;
+  --surface-tinted: #e8f4fb;
+  --border: #dbe8f0;
+  --border-strong: #bdd3e2;
+  --text: #102033;
+  --text-secondary: #52677a;
+  --text-muted: #7b8da0;
+  --accent: #1686c7;
+  --accent-strong: #0f6fa8;
+  --accent-soft: #e3f4ff;
+  --success: #059669;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --radius-card: 1.25rem;
+  --radius-control: 0.875rem;
+  --shadow-soft: 0 18px 45px rgba(37, 99, 135, 0.10);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--app-bg);
 }
 
 body {
-  background-color: var(--bg);
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(125, 211, 252, 0.24), transparent 34rem),
+    linear-gradient(135deg, var(--app-bg) 0%, #ffffff 46%, var(--app-bg-soft) 100%);
+  color: var(--text);
+  font-family: ui-rounded, "SF Pro Rounded", "Avenir Next", Avenir, "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-feature-settings: "ss01" on, "cv01" on;
+}
+
+::selection {
+  background: rgba(22, 134, 199, 0.18);
   color: var(--text);
 }

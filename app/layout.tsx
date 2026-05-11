@@ -14,9 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="flex min-h-screen bg-[#0a0a12] text-[#d0d0e8]">
+      <body className="flex min-h-screen flex-col text-[var(--text)] antialiased md:flex-row">
         <Sidebar />
-        <main className="flex-1 overflow-auto">{children}</main>
+        <main className="min-w-0 flex-1 overflow-auto">{children}</main>
       </body>
     </html>
   );
