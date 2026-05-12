@@ -159,7 +159,7 @@ function PlannerCard({
           <span
             className={`w-1.5 h-1.5 rounded-full ${prereqOk ? "bg-green-500" : "bg-rose-500"}`}
           />
-          <span className={`text-[9px] ${prereqOk ? "text-green-700" : "text-rose-600"}`}>
+          <span className={`text-[10px] ${prereqOk ? "text-green-700" : "text-rose-600"}`}>
             {prereqOk ? "prereqs ok" : "prereqs missing"}
           </span>
         </div>
@@ -348,26 +348,6 @@ function UnplannedPool({
 // Small sub-components
 // ---------------------------------------------------------------------------
 
-function SemesterBadge({ status }: { status: string }) {
-  const styles: Record<string, string> = {
-    completed: "bg-green-500/10 text-green-400 border-green-500/20",
-    in_progress: "bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--border)]",
-    registered: "bg-blue-500/10 text-[var(--accent)] border-blue-500/20",
-    planned: "bg-indigo-500/10 text-[var(--accent)] border-indigo-500/20",
-  };
-  const label: Record<string, string> = {
-    in_progress: "in progress",
-    registered: "registered",
-    completed: "completed",
-    planned: "planned",
-  };
-  return (
-    <span className={`px-1.5 py-0.5 rounded text-[9px] border uppercase tracking-wider ${styles[status] ?? ""}`}>
-      {label[status] ?? status.replace("_", " ")}
-    </span>
-  );
-}
-
 function PlannerMetric({ label, value }: { label: string; value: string }) {
   return (
     <div className="min-w-0 rounded-2xl border border-[var(--border)] bg-[var(--surface-subtle)] p-3">
@@ -409,18 +389,19 @@ function ValidationPanel({
   const unmetCount = validation.unmetRequirements.length;
 
   const statusColor = validation.clean
-    ? "border-green-500/20 bg-green-500/5"
-    : "border-amber-500/20 bg-amber-500/5";
+    ? "border-[var(--border)] bg-[var(--surface)]"
+    : "border-[var(--border)] bg-[var(--surface)]";
   const statusIcon = validation.clean ? "✓" : "⚠";
+  const statusIconClass = validation.clean ? "text-[var(--status-complete)]" : "text-[var(--status-progress)]";
 
   return (
     <div className={`rounded-xl border ${statusColor} overflow-hidden transition-all`}>
       <button
-        className="w-full flex items-center justify-between px-4 py-3 hover:bg-white/3 transition-colors text-left"
+        className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-[var(--surface-subtle)]"
         onClick={onToggle}
       >
         <div className="flex items-center gap-3">
-          <span className={`text-sm ${validation.clean ? "text-green-400" : "text-amber-400"}`}>
+          <span className={`text-sm ${statusIconClass}`}>
             {statusIcon}
           </span>
           <div>
@@ -452,14 +433,14 @@ function ValidationPanel({
           {/* Prereq violations */}
           {validation.prereqViolations.length > 0 && (
             <div>
-              <h4 className="text-xs text-red-400 uppercase tracking-wide mb-2 font-medium">Prerequisite Violations</h4>
+              <h4 className="mb-2 text-xs font-medium uppercase tracking-wide text-[var(--status-blocked)]">Prerequisite Violations</h4>
               <div className="space-y-1">
                 {validation.prereqViolations.map((v) => (
                   <div key={v.courseId} className="flex items-center gap-2 text-sm">
-                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--status-blocked)]" />
                     <span className="font-mono text-[var(--accent)] text-xs">{v.courseNumber}</span>
                     <span className="text-[var(--text-secondary)] text-xs">in {v.semesterLabel} — missing:</span>
-                    <span className="text-xs text-red-300 font-mono">
+                    <span className="font-mono text-xs text-[var(--status-blocked)]">
                       {v.missing.map((id) => id.replace("-", " ")).join(", ")}
                     </span>
                   </div>
@@ -471,14 +452,14 @@ function ValidationPanel({
           {/* Coreq violations */}
           {validation.coreqViolations.length > 0 && (
             <div>
-              <h4 className="text-xs text-amber-400 uppercase tracking-wide mb-2 font-medium">Corequisite Violations</h4>
+              <h4 className="mb-2 text-xs font-medium uppercase tracking-wide text-[var(--status-progress)]">Corequisite Violations</h4>
               <div className="space-y-1">
                 {validation.coreqViolations.map((v) => (
                   <div key={v.courseId} className="flex items-center gap-2 text-sm">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--status-progress)]" />
                     <span className="font-mono text-[var(--accent)] text-xs">{v.courseNumber}</span>
                     <span className="text-[var(--text-secondary)] text-xs">in {v.semesterLabel} — missing:</span>
-                    <span className="text-xs text-amber-300 font-mono">
+                    <span className="font-mono text-xs text-[var(--status-progress)]">
                       {v.missing.map((id) => id.replace("-", " ")).join(", ")}
                     </span>
                   </div>
@@ -494,7 +475,7 @@ function ValidationPanel({
               <div className="space-y-1">
                 {validation.termLoadIssues.map((t) => (
                   <div key={t.semesterId} className="flex items-center gap-2 text-xs">
-                    <span className={`w-1.5 h-1.5 rounded-full ${t.kind === "overloaded" ? "bg-red-500" : "bg-amber-500"} shrink-0`} />
+                    <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${t.kind === "overloaded" ? "bg-[var(--status-blocked)]" : "bg-[var(--status-progress)]"}`} />
                     <span className="text-[var(--text-primary)]">{t.semesterLabel}</span>
                     <span className="text-[var(--text-secondary)]">
                       {t.credits} credits — {t.kind === "overloaded" ? "over 18 limit" : "under 12 minimum"}
@@ -512,7 +493,7 @@ function ValidationPanel({
               <div className="space-y-1">
                 {validation.unplannedRequired.map((u) => (
                   <div key={u.courseId} className="flex items-center gap-2 text-xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
                     <span className="font-mono text-[var(--accent)]">{u.courseNumber}</span>
                     <span className="text-[var(--text-secondary)] truncate">needed for: {u.groups.join(", ")}</span>
                   </div>
@@ -546,7 +527,7 @@ function ValidationPanel({
           )}
 
           {validation.clean && (
-            <p className="text-xs text-green-400/80">No prerequisite violations, corequisite issues, or unplanned required courses.</p>
+            <p className="text-xs text-[var(--status-complete)]">No prerequisite violations, corequisite issues, or unplanned required courses.</p>
           )}
         </div>
       )}
@@ -875,45 +856,6 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
           )}
         </div>
 
-        {/* Validation Panel */}
-        <ValidationPanel
-          validation={validation}
-          open={validationOpen}
-          onToggle={() => setValidationOpen((v) => !v)}
-        />
-
-        {/* Legend */}
-        <div className="flex flex-wrap items-center gap-3 text-[10px] text-[var(--text-muted)]">
-          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-green-500" /> completed</span>
-          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[var(--accent)]" /> in progress</span>
-          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-400" /> registered</span>
-          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-indigo-500" /> planned</span>
-          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[var(--text-muted)]" /> not started</span>
-          <span className="ml-2 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-green-500" /> prereqs ok</span>
-          <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-red-500" /> prereqs missing</span>
-        </div>
-
-        {sortedSems.some((s) => s.status === "completed") && (
-          <div className="flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3">
-            <div>
-              <div className="text-sm font-semibold text-[var(--text-primary)]">Completed semesters</div>
-              <div className="text-xs text-[var(--text-secondary)]">
-                Showing {Math.min(completedVisibleCount, sortedSems.filter((s) => s.status === "completed").length)} of {sortedSems.filter((s) => s.status === "completed").length} in the planner.
-              </div>
-            </div>
-            <select
-              value={completedVisibleCount}
-              onChange={(e) => setCompletedVisibleCount(Number(e.target.value))}
-              className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
-            >
-              <option value={0}>Hide all</option>
-              <option value={1}>Most recent</option>
-              <option value={2}>Last 2</option>
-              <option value={999}>Show all</option>
-            </select>
-          </div>
-        )}
-
         {/* Unplanned pool */}
         <UnplannedPool
           groups={boardView.courseGroups}
@@ -941,13 +883,40 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
             ))}
 
             {sortedSems.length === 0 && (
-              <div className="flex items-center justify-center h-32 text-[var(--text-muted)] text-sm">
+              <div className="flex h-32 items-center justify-center text-sm text-[var(--text-muted)]">
                 No semesters yet. Add one to start planning.
               </div>
             )}
           </div>
         </div>
-      </div>
+
+        {sortedSems.some((s) => s.status === "completed") && (
+          <div className="flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3">
+            <div>
+              <div className="text-sm font-semibold text-[var(--text-primary)]">Completed semesters</div>
+              <div className="text-xs text-[var(--text-secondary)]">
+                Showing {Math.min(completedVisibleCount, sortedSems.filter((s) => s.status === "completed").length)} of {sortedSems.filter((s) => s.status === "completed").length} in the planner.
+              </div>
+            </div>
+            <select
+              value={completedVisibleCount}
+              onChange={(e) => setCompletedVisibleCount(Number(e.target.value))}
+              className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
+            >
+              <option value={0}>Hide all</option>
+              <option value={1}>Most recent</option>
+              <option value={2}>Last 2</option>
+              <option value={999}>Show all</option>
+            </select>
+          </div>
+        )}
+
+        {/* Validation Panel */}
+        <ValidationPanel
+          validation={validation}
+          open={validationOpen}
+          onToggle={() => setValidationOpen((v) => !v)}
+        />      </div>
 
       {/* Drag overlay (ghost card) */}
       <DragOverlay dropAnimation={null}>
@@ -1120,7 +1089,7 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
             <button
               onClick={handleCreateSemester}
               disabled={newSemLoading}
-              className="flex-1 py-2.5 bg-[var(--accent)] hover:bg-[var(--accent)] disabled:opacity-50 text-[#0a0a12] rounded-xl text-sm font-semibold transition-colors"
+              className="flex-1 rounded-xl bg-[var(--accent)] py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--accent)] disabled:opacity-50"
             >
               {newSemLoading ? "Creating…" : "Create Semester"}
             </button>
