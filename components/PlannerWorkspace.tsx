@@ -28,6 +28,11 @@ import {
   validatePlan,
   type PlannerValidationSummary,
 } from "@/lib/planner-validation";
+import {
+  buildPlannerBoardViewModel,
+  type PlannerBoardViewModel,
+  type PlannerCoursePlacement,
+} from "@/lib/planner-board-view";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -76,6 +81,7 @@ function PlannerCard({
   allCourses,
   sortedSems,
   assignments,
+  placement,
   overlay = false,
 }: {
   course: Course;
@@ -83,6 +89,7 @@ function PlannerCard({
   allCourses: Course[];
   sortedSems: Semester[];
   assignments: Map<string, string>;
+  placement?: PlannerCoursePlacement;
   overlay?: boolean;
 }) {
   const draggable = !overlay && course.status !== "completed" && course.status !== "in_progress" && course.status !== "registered";
@@ -116,11 +123,11 @@ function PlannerCard({
   }, [course, semId, sortedSems, allCourses, assignments]);
 
   const statusDot: Record<string, string> = {
-    completed: "bg-green-500",
-    in_progress: "bg-[#d4a843]",
-    registered: "bg-blue-400",
-    planned: "bg-indigo-500",
-    not_started: "bg-[#2a2a3a]",
+    completed: "bg-[var(--status-complete)]",
+    in_progress: "bg-[var(--status-progress)]",
+    registered: "bg-[var(--accent)]",
+    planned: "bg-[var(--accent)]",
+    not_started: "bg-[var(--text-muted)]",
   };
 
   return (
@@ -129,35 +136,40 @@ function PlannerCard({
       style={style}
       {...(draggable ? { ...listeners, ...attributes } : {})}
       className={[
-        "bg-[#16162a] border rounded-xl p-3 select-none transition-all duration-150",
+        "rounded-xl border border-[var(--border)] bg-[var(--surface)] p-3 shadow-[var(--shadow-card)] select-none transition-all duration-150",
         isDragging ? "opacity-30 scale-95" : "",
-        overlay ? "shadow-2xl shadow-black/50 rotate-1 scale-105 border-[#d4a843]/40 bg-[#1e1e32]" : "",
-        !overlay && draggable ? "cursor-grab active:cursor-grabbing hover:border-[#d4a843]/25 hover:bg-[#1a1a2e]" : "",
+        overlay ? "rotate-1 scale-105 border-[var(--accent)] bg-[var(--surface)] shadow-[var(--shadow-elevated)]" : "",
+        !overlay && draggable ? "cursor-grab active:cursor-grabbing hover:border-[var(--accent)] hover:bg-[var(--accent-soft)]" : "",
         !overlay && !draggable ? "cursor-default opacity-80" : "",
-        !overlay && !isDragging ? "border-[#1e1e34]" : "",
       ].join(" ")}
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <span className="text-xs font-mono text-indigo-300 font-medium">{course.number}</span>
-          <p className="text-[11px] text-[#9090b0] mt-0.5 leading-snug line-clamp-2">{course.name}</p>
+          <span className="text-xs font-mono font-semibold text-[var(--accent)]">{course.number}</span>
+          <p className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-[var(--text-secondary)]">{course.name}</p>
         </div>
         <div className="shrink-0 flex flex-col items-end gap-1">
-          <span className="text-[10px] text-[#4a4a6a]">{course.credits}cr</span>
-          <span className={`w-2 h-2 rounded-full ${statusDot[course.status] ?? "bg-[#2a2a3a]"}`} />
+          <span className="text-[10px] text-[var(--text-muted)]">{course.credits}cr</span>
+          <span className={`w-2 h-2 rounded-full ${statusDot[course.status] ?? "bg-[var(--text-muted)]"}`} />
         </div>
       </div>
       {/* Prereq indicator */}
       {course.prereqs && semId !== "unplanned" && (
         <div className="mt-2 flex items-center gap-1">
           <span
-            className={`w-1.5 h-1.5 rounded-full ${prereqOk ? "bg-green-500" : "bg-red-500"}`}
+            className={`w-1.5 h-1.5 rounded-full ${prereqOk ? "bg-green-500" : "bg-rose-500"}`}
           />
-          <span className={`text-[9px] ${prereqOk ? "text-green-500/60" : "text-red-400"}`}>
+          <span className={`text-[10px] ${prereqOk ? "text-green-700" : "text-rose-600"}`}>
             {prereqOk ? "prereqs ok" : "prereqs missing"}
           </span>
         </div>
       )}
+      {placement?.requirementLabels.length ? (
+        <p className="mt-2 truncate text-[10px] text-[var(--text-muted)]">For: {placement.requirementLabels[0]}</p>
+      ) : null}
+      {placement?.blockedReasons.length ? (
+        <p className="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-2 py-1 text-[10px] text-amber-700">{placement.blockedReasons[0]}</p>
+      ) : null}
     </div>
   );
 }
@@ -172,6 +184,7 @@ function SemesterColumn({
   allCourses,
   sortedSems,
   assignments,
+  summary,
   onStatusChange,
 }: {
   semester: Semester;
@@ -179,6 +192,7 @@ function SemesterColumn({
   allCourses: Course[];
   sortedSems: Semester[];
   assignments: Map<string, string>;
+  summary?: PlannerBoardViewModel["semesterSummaries"][number];
   onStatusChange: (semesterId: string, status: Semester["status"]) => void;
 }) {
   const { isOver, setNodeRef } = useDroppable({ id: semester.id });
@@ -187,26 +201,26 @@ function SemesterColumn({
   const creditWarn = totalCredits > 18 || (totalCredits > 0 && totalCredits < 12 && (semester.status === "planned"));
 
   const headerBg: Record<string, string> = {
-    completed: "border-green-500/20 bg-green-500/5",
-    in_progress: "border-[#d4a843]/30 bg-[#d4a843]/5",
-    registered: "border-blue-500/20 bg-blue-500/5",
-    planned: "border-[#1e1e34]",
+    completed: "border-green-200 bg-green-50",
+    in_progress: "border-amber-200 bg-amber-50",
+    registered: "border-blue-200 bg-blue-50",
+    planned: "border-[var(--border)] bg-[var(--surface-subtle)]",
   };
 
-  const ringColor = isOver ? "ring-1 ring-[#d4a843]/40 border-[#d4a843]/30" : "";
+  const ringColor = isOver ? "ring-2 ring-[var(--accent)]/20 border-[var(--accent)]" : "";
 
   return (
     <div
-      className={`flex-shrink-0 w-60 flex flex-col rounded-xl border bg-[#0e0e1c] transition-all duration-150 ${headerBg[semester.status] ?? "border-[#1e1e34]"} ${ringColor}`}
+      className={`w-full flex-shrink-0 rounded-2xl border bg-[var(--surface)] shadow-[var(--shadow-card)] transition-all duration-150 sm:w-72 ${headerBg[semester.status] ?? "border-[var(--border)]"} ${ringColor}`}
     >
       {/* Column header */}
-      <div className={`px-3 py-2.5 border-b ${headerBg[semester.status] ?? "border-[#1e1e34]"}`}>
+      <div className={`border-b border-[var(--border)] px-3 py-3 ${headerBg[semester.status] ?? ""}`}>
         <div className="flex items-start justify-between gap-2">
-          <span className="text-sm font-semibold text-[#d0d0e8] leading-none">{semester.label}</span>
+          <span className="text-sm font-semibold leading-none text-[var(--text-primary)]">{semester.label}</span>
           <select
             value={semester.status}
             onChange={(e) => onStatusChange(semester.id, e.target.value as Semester["status"])}
-            className="max-w-[7.5rem] rounded border border-[#2a2a3e] bg-[#0d0d1a] px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-[#d0d0e8] focus:outline-none focus:border-[#d4a843]/50"
+            className="max-w-[7.5rem] rounded-lg border border-[var(--border)] bg-[var(--surface)] px-2 py-1 text-[10px] uppercase tracking-wider text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)]"
             aria-label={`Set ${semester.label} status`}
           >
             <option value="completed">completed</option>
@@ -215,13 +229,13 @@ function SemesterColumn({
             <option value="planned">planned</option>
           </select>
         </div>
-        <div className={`text-[11px] mt-1 ${creditWarn ? "text-amber-400" : "text-[#4a4a6a]"}`}>
-          {totalCredits} credits{creditWarn ? (totalCredits > 18 ? " — overloaded" : " — underloaded") : ""}
+        <div className={`mt-2 text-[11px] ${creditWarn ? "text-amber-700" : "text-[var(--text-muted)]"}`}>
+          {totalCredits} credits{creditWarn ? (totalCredits > 18 ? " — overloaded" : " — underloaded") : ""}{summary && summary.conflicts > 0 ? ` · ${summary.conflicts} issue${summary.conflicts === 1 ? "" : "s"}` : ""}
         </div>
       </div>
 
       {/* Droppable body */}
-      <div ref={setNodeRef} className="flex-1 p-2 space-y-2 min-h-[100px]">
+      <div ref={setNodeRef} className="min-h-[120px] flex-1 space-y-2 p-2">
         {courses.map((course) => (
           <PlannerCard
             key={course.id}
@@ -235,10 +249,10 @@ function SemesterColumn({
         {courses.length === 0 && (
           <div
             className={`h-16 rounded-lg border border-dashed flex items-center justify-center transition-colors ${
-              isOver ? "border-[#d4a843]/50 bg-[#d4a843]/5" : "border-[#1e1e34]"
+              isOver ? "border-[var(--accent)] bg-[var(--accent-soft)]" : "border-[var(--border)]"
             }`}
           >
-            <span className="text-[10px] text-[#3a3a5a]">drop here</span>
+            <span className="text-[10px] text-[var(--text-muted)]">drop here</span>
           </div>
         )}
       </div>
@@ -251,14 +265,14 @@ function SemesterColumn({
 // ---------------------------------------------------------------------------
 
 function UnplannedPool({
-  courses,
+  groups,
   allCourses,
   sortedSems,
   assignments,
   collapsed,
   onToggle,
 }: {
-  courses: Course[];
+  groups: PlannerBoardViewModel["courseGroups"];
   allCourses: Course[];
   sortedSems: Semester[];
   assignments: Map<string, string>;
@@ -269,22 +283,22 @@ function UnplannedPool({
 
   return (
     <div
-      className={`bg-[#0e0e1c] border rounded-xl overflow-hidden transition-all ${
-        isOver ? "border-[#d4a843]/40 ring-1 ring-[#d4a843]/20" : "border-[#1e1e34]"
+      className={`overflow-hidden rounded-2xl border bg-[var(--surface)] shadow-[var(--shadow-card)] transition-all ${
+        isOver ? "border-[var(--accent)] ring-2 ring-[var(--accent)]/20" : "border-[var(--border)]"
       }`}
     >
       <button
-        className="w-full flex items-center justify-between px-4 py-3 hover:bg-white/3 transition-colors"
+        className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-[var(--surface-subtle)]"
         onClick={onToggle}
       >
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-[#d0d0e8]">Unplanned Courses</span>
-          <span className="px-2 py-0.5 bg-[#1e1e34] text-[#6a6a8a] rounded text-xs tabular-nums">
-            {courses.length}
+          <span className="text-sm font-semibold text-[var(--text-primary)]">Courses to place</span>
+          <span className="rounded-full bg-[var(--accent-soft)] px-2 py-0.5 text-xs tabular-nums text-[var(--accent)]">
+            {groups.reduce((sum, group) => sum + group.courses.length, 0)}
           </span>
         </div>
         <svg
-          className={`w-4 h-4 text-[#6a6a8a] transition-transform ${collapsed ? "" : "rotate-180"}`}
+          className={`h-4 w-4 text-[var(--text-muted)] transition-transform ${collapsed ? "" : "rotate-180"}`}
           fill="none" stroke="currentColor" viewBox="0 0 24 24"
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -292,28 +306,37 @@ function UnplannedPool({
       </button>
 
       {!collapsed && (
-        <div ref={setNodeRef} className="border-t border-[#1e1e34] p-3">
-          {courses.length === 0 ? (
+        <div ref={setNodeRef} className="space-y-4 border-t border-[var(--border)] p-3 sm:p-4">
+          {groups.length === 0 ? (
             <div
-              className={`h-16 rounded-lg border border-dashed flex items-center justify-center transition-colors ${
-                isOver ? "border-[#d4a843]/50 bg-[#d4a843]/5" : "border-[#1e1e34]"
+              className={`flex h-16 items-center justify-center rounded-lg border border-dashed transition-colors ${
+                isOver ? "border-[var(--accent)] bg-[var(--accent-soft)]" : "border-[var(--border)]"
               }`}
             >
-              <span className="text-xs text-[#3a3a5a]">All courses are planned</span>
+              <span className="text-xs text-[var(--text-muted)]">All courses are planned</span>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
-              {courses.map((course) => (
-                <PlannerCard
-                  key={course.id}
-                  course={course}
-                  semId="unplanned"
-                  allCourses={allCourses}
-                  sortedSems={sortedSems}
-                  assignments={assignments}
-                />
-              ))}
-            </div>
+            groups.map((group) => (
+              <section key={group.id} className="space-y-2">
+                <div>
+                  <h3 className="text-sm font-semibold text-[var(--text-primary)]">{group.title}</h3>
+                  <p className="text-xs text-[var(--text-secondary)]">{group.detail}</p>
+                </div>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {group.courses.map((placement) => (
+                    <PlannerCard
+                      key={placement.course.id}
+                      course={placement.course}
+                      semId="unplanned"
+                      allCourses={allCourses}
+                      sortedSems={sortedSems}
+                      assignments={assignments}
+                      placement={placement}
+                    />
+                  ))}
+                </div>
+              </section>
+            ))
           )}
         </div>
       )}
@@ -325,31 +348,20 @@ function UnplannedPool({
 // Small sub-components
 // ---------------------------------------------------------------------------
 
-function SemesterBadge({ status }: { status: string }) {
-  const styles: Record<string, string> = {
-    completed: "bg-green-500/10 text-green-400 border-green-500/20",
-    in_progress: "bg-[#d4a843]/10 text-[#d4a843] border-[#d4a843]/20",
-    registered: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-    planned: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
-  };
-  const label: Record<string, string> = {
-    in_progress: "in progress",
-    registered: "registered",
-    completed: "completed",
-    planned: "planned",
-  };
+function PlannerMetric({ label, value }: { label: string; value: string }) {
   return (
-    <span className={`px-1.5 py-0.5 rounded text-[9px] border uppercase tracking-wider ${styles[status] ?? ""}`}>
-      {label[status] ?? status.replace("_", " ")}
-    </span>
+    <div className="min-w-0 rounded-2xl border border-[var(--border)] bg-[var(--surface-subtle)] p-3">
+      <div className="truncate text-lg font-semibold text-[var(--text-primary)]">{value}</div>
+      <div className="mt-1 text-[11px] font-medium text-[var(--text-secondary)]">{label}</div>
+    </div>
   );
 }
 
 function Modal({ onClose, children }: { onClose: () => void; children: React.ReactNode }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-[#111120] border border-[#2a2a3e] rounded-2xl shadow-2xl max-w-lg w-full p-6 space-y-4">
+      <div className="absolute inset-0 bg-slate-950/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-lg space-y-4 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-2xl">
         {children}
       </div>
     </div>
@@ -377,23 +389,24 @@ function ValidationPanel({
   const unmetCount = validation.unmetRequirements.length;
 
   const statusColor = validation.clean
-    ? "border-green-500/20 bg-green-500/5"
-    : "border-amber-500/20 bg-amber-500/5";
+    ? "border-[var(--border)] bg-[var(--surface)]"
+    : "border-[var(--border)] bg-[var(--surface)]";
   const statusIcon = validation.clean ? "✓" : "⚠";
+  const statusIconClass = validation.clean ? "text-[var(--status-complete)]" : "text-[var(--status-progress)]";
 
   return (
     <div className={`rounded-xl border ${statusColor} overflow-hidden transition-all`}>
       <button
-        className="w-full flex items-center justify-between px-4 py-3 hover:bg-white/3 transition-colors text-left"
+        className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-[var(--surface-subtle)]"
         onClick={onToggle}
       >
         <div className="flex items-center gap-3">
-          <span className={`text-sm ${validation.clean ? "text-green-400" : "text-amber-400"}`}>
+          <span className={`text-sm ${statusIconClass}`}>
             {statusIcon}
           </span>
           <div>
-            <span className="text-sm font-semibold text-[#d0d0e8]">Plan Validation</span>
-            <span className="text-xs text-[#6a6a8a] ml-2">
+            <span className="text-sm font-semibold text-[var(--text-primary)]">Plan Validation</span>
+            <span className="text-xs text-[var(--text-secondary)] ml-2">
               {validation.clean
                 ? "All clear"
                 : `${issueCount} issue${issueCount !== 1 ? "s" : ""}${unmetCount > 0 ? `, ${unmetCount} unmet req${unmetCount !== 1 ? "s" : ""}` : ""}`}
@@ -402,12 +415,12 @@ function ValidationPanel({
         </div>
         <div className="flex items-center gap-3">
           {validation.projectedCompletionTerm && (
-            <span className="text-[10px] text-[#6a6a8a]">
-              Est. completion: <span className="text-[#d4a843]">{validation.projectedCompletionTerm.semesterLabel}</span>
+            <span className="text-[10px] text-[var(--text-secondary)]">
+              Est. completion: <span className="text-[var(--accent)]">{validation.projectedCompletionTerm.semesterLabel}</span>
             </span>
           )}
           <svg
-            className={`w-4 h-4 text-[#6a6a8a] transition-transform ${open ? "rotate-180" : ""}`}
+            className={`w-4 h-4 text-[var(--text-secondary)] transition-transform ${open ? "rotate-180" : ""}`}
             fill="none" stroke="currentColor" viewBox="0 0 24 24"
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -416,18 +429,18 @@ function ValidationPanel({
       </button>
 
       {open && (
-        <div className="border-t border-[#1e1e34] p-4 space-y-4">
+        <div className="border-t border-[var(--border)] p-4 space-y-4">
           {/* Prereq violations */}
           {validation.prereqViolations.length > 0 && (
             <div>
-              <h4 className="text-xs text-red-400 uppercase tracking-wide mb-2 font-medium">Prerequisite Violations</h4>
+              <h4 className="mb-2 text-xs font-medium uppercase tracking-wide text-[var(--status-blocked)]">Prerequisite Violations</h4>
               <div className="space-y-1">
                 {validation.prereqViolations.map((v) => (
                   <div key={v.courseId} className="flex items-center gap-2 text-sm">
-                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
-                    <span className="font-mono text-indigo-300 text-xs">{v.courseNumber}</span>
-                    <span className="text-[#6a6a8a] text-xs">in {v.semesterLabel} — missing:</span>
-                    <span className="text-xs text-red-300 font-mono">
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--status-blocked)]" />
+                    <span className="font-mono text-[var(--accent)] text-xs">{v.courseNumber}</span>
+                    <span className="text-[var(--text-secondary)] text-xs">in {v.semesterLabel} — missing:</span>
+                    <span className="font-mono text-xs text-[var(--status-blocked)]">
                       {v.missing.map((id) => id.replace("-", " ")).join(", ")}
                     </span>
                   </div>
@@ -439,14 +452,14 @@ function ValidationPanel({
           {/* Coreq violations */}
           {validation.coreqViolations.length > 0 && (
             <div>
-              <h4 className="text-xs text-amber-400 uppercase tracking-wide mb-2 font-medium">Corequisite Violations</h4>
+              <h4 className="mb-2 text-xs font-medium uppercase tracking-wide text-[var(--status-progress)]">Corequisite Violations</h4>
               <div className="space-y-1">
                 {validation.coreqViolations.map((v) => (
                   <div key={v.courseId} className="flex items-center gap-2 text-sm">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
-                    <span className="font-mono text-indigo-300 text-xs">{v.courseNumber}</span>
-                    <span className="text-[#6a6a8a] text-xs">in {v.semesterLabel} — missing:</span>
-                    <span className="text-xs text-amber-300 font-mono">
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--status-progress)]" />
+                    <span className="font-mono text-[var(--accent)] text-xs">{v.courseNumber}</span>
+                    <span className="text-[var(--text-secondary)] text-xs">in {v.semesterLabel} — missing:</span>
+                    <span className="font-mono text-xs text-[var(--status-progress)]">
                       {v.missing.map((id) => id.replace("-", " ")).join(", ")}
                     </span>
                   </div>
@@ -458,13 +471,13 @@ function ValidationPanel({
           {/* Term load issues */}
           {validation.termLoadIssues.length > 0 && (
             <div>
-              <h4 className="text-xs text-[#d4a843] uppercase tracking-wide mb-2 font-medium">Term Load Warnings</h4>
+              <h4 className="text-xs text-[var(--accent)] uppercase tracking-wide mb-2 font-medium">Term Load Warnings</h4>
               <div className="space-y-1">
                 {validation.termLoadIssues.map((t) => (
                   <div key={t.semesterId} className="flex items-center gap-2 text-xs">
-                    <span className={`w-1.5 h-1.5 rounded-full ${t.kind === "overloaded" ? "bg-red-500" : "bg-amber-500"} shrink-0`} />
-                    <span className="text-[#d0d0e8]">{t.semesterLabel}</span>
-                    <span className="text-[#6a6a8a]">
+                    <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${t.kind === "overloaded" ? "bg-[var(--status-blocked)]" : "bg-[var(--status-progress)]"}`} />
+                    <span className="text-[var(--text-primary)]">{t.semesterLabel}</span>
+                    <span className="text-[var(--text-secondary)]">
                       {t.credits} credits — {t.kind === "overloaded" ? "over 18 limit" : "under 12 minimum"}
                     </span>
                   </div>
@@ -476,13 +489,13 @@ function ValidationPanel({
           {/* Unplanned required courses */}
           {validation.unplannedRequired.length > 0 && (
             <div>
-              <h4 className="text-xs text-indigo-400 uppercase tracking-wide mb-2 font-medium">Unplanned Required Courses</h4>
+              <h4 className="text-xs text-[var(--accent)] uppercase tracking-wide mb-2 font-medium">Unplanned Required Courses</h4>
               <div className="space-y-1">
                 {validation.unplannedRequired.map((u) => (
                   <div key={u.courseId} className="flex items-center gap-2 text-xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
-                    <span className="font-mono text-indigo-300">{u.courseNumber}</span>
-                    <span className="text-[#6a6a8a] truncate">needed for: {u.groups.join(", ")}</span>
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
+                    <span className="font-mono text-[var(--accent)]">{u.courseNumber}</span>
+                    <span className="text-[var(--text-secondary)] truncate">needed for: {u.groups.join(", ")}</span>
                   </div>
                 ))}
               </div>
@@ -492,20 +505,20 @@ function ValidationPanel({
           {/* Unmet requirements summary */}
           {validation.unmetRequirements.length > 0 && (
             <div>
-              <h4 className="text-xs text-[#6a6a8a] uppercase tracking-wide mb-2 font-medium">Unmet Requirements ({validation.unmetRequirements.length})</h4>
+              <h4 className="text-xs text-[var(--text-secondary)] uppercase tracking-wide mb-2 font-medium">Unmet Requirements ({validation.unmetRequirements.length})</h4>
               <div className="space-y-1">
                 {validation.unmetRequirements.slice(0, 10).map((r) => (
                   <div key={r.groupId} className="flex items-center gap-2 text-xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#2a2a3a] shrink-0" />
-                    <span className="text-[#8888a8] flex-1 truncate">{r.groupName}</span>
-                    <span className="text-[#4a4a6a] font-mono shrink-0">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-muted)] shrink-0" />
+                    <span className="text-[var(--text-secondary)] flex-1 truncate">{r.groupName}</span>
+                    <span className="text-[var(--text-muted)] font-mono shrink-0">
                       {r.completed}/{r.total}
-                      {r.inProgress > 0 && <span className="text-[#d4a843]"> +{r.inProgress}</span>}
+                      {r.inProgress > 0 && <span className="text-[var(--accent)]"> +{r.inProgress}</span>}
                     </span>
                   </div>
                 ))}
                 {validation.unmetRequirements.length > 10 && (
-                  <span className="text-[10px] text-[#4a4a6a]">
+                  <span className="text-[10px] text-[var(--text-muted)]">
                     …and {validation.unmetRequirements.length - 10} more
                   </span>
                 )}
@@ -514,7 +527,7 @@ function ValidationPanel({
           )}
 
           {validation.clean && (
-            <p className="text-xs text-green-400/80">No prerequisite violations, corequisite issues, or unplanned required courses.</p>
+            <p className="text-xs text-[var(--status-complete)]">No prerequisite violations, corequisite issues, or unplanned required courses.</p>
           )}
         </div>
       )}
@@ -594,6 +607,11 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
   const validation = useMemo(
     () => validatePlan(courses, semesters, requirements, assignments),
     [courses, semesters, requirements, assignments]
+  );
+
+  const boardView = useMemo(
+    () => buildPlannerBoardViewModel({ courses, semesters, requirements, assignments, validation }),
+    [courses, semesters, requirements, assignments, validation]
   );
 
   // Derive which courses are in each container
@@ -774,7 +792,7 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
 
   if (loading) {
     return (
-      <div className={`flex items-center justify-center ${embedded ? "min-h-40" : "min-h-screen"} text-[#6a6a8a]`}>Loading…</div>
+      <div className={`flex items-center justify-center ${embedded ? "min-h-40" : "min-h-screen"} text-[var(--text-secondary)]`}>Loading…</div>
     );
   }
 
@@ -789,8 +807,8 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
   if (courses.length === 0) {
     return (
       <div className={`flex flex-col items-center justify-center ${embedded ? "min-h-40" : "min-h-screen"} gap-4 p-8 text-center`}>
-        <p className="text-[#6a6a8a]">No course data yet.</p>
-        <a href="/upload" className="text-[#d4a843] hover:text-[#e8c068] text-sm">
+        <p className="text-[var(--text-secondary)]">No course data yet.</p>
+        <a href="/upload" className="text-[var(--accent)] hover:text-[var(--accent)] text-sm">
           Upload an audit PDF →
         </a>
       </div>
@@ -799,64 +817,91 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <div className={`${embedded ? "space-y-4" : "p-6 space-y-5 min-h-screen"}`}>
+      <div className={`${embedded ? "space-y-4" : "min-h-screen space-y-5 bg-[var(--page-bg)] px-3 py-5 pb-8 text-[var(--text-primary)] sm:px-6 lg:px-8"}`}>
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-card)]">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           {!embedded && (
-            <div>
-              <h2 className="text-2xl font-bold text-[#d0d0e8]">Semester Planner</h2>
-              <p className="text-[#6a6a8a] text-sm mt-0.5">
-                Drag courses between semesters. Prereqs are validated on drop.
+            <div className="max-w-3xl">
+              <p className="text-xs font-semibold text-[var(--accent)]">Semester Planner</p>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--text-primary)] sm:text-3xl">Build a plan you can register from</h2>
+              <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+                Place courses into terms, see what is blocked, and catch timing issues before registration.
               </p>
             </div>
           )}
           {embedded && (
             <div>
-              <h3 className="text-sm font-semibold text-[#d0d0e8]">Semester timeline</h3>
-              <p className="text-xs text-[#6a6a8a] mt-0.5">Attach remaining requirements to terms. Drops still validate prereqs/coreqs.</p>
+              <h3 className="text-sm font-semibold text-[var(--text-primary)]">Semester timeline</h3>
+              <p className="mt-0.5 text-xs text-[var(--text-secondary)]">Attach remaining requirements to terms. Drops still validate prereqs/coreqs.</p>
             </div>
           )}
           <button
             onClick={() => setNewSemModal(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-[#d4a843]/10 border border-[#d4a843]/20 text-[#d4a843] rounded-xl text-sm font-medium hover:bg-[#d4a843]/20 transition-colors"
+            className="flex w-fit items-center gap-2 rounded-xl border border-[var(--accent)] bg-[var(--accent-soft)] px-4 py-2 text-sm font-semibold text-[var(--accent)] transition-colors hover:bg-[var(--surface-subtle)]"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
             Add Semester
           </button>
+          </div>
+          {!embedded && (
+            <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <PlannerMetric label="still unplanned" value={String(boardView.summary.unplannedCount)} />
+              <PlannerMetric label="blocked" value={String(boardView.summary.blockedCount)} />
+              <PlannerMetric label="plan issues" value={String(boardView.summary.conflictCount)} />
+              <PlannerMetric label="projected finish" value={boardView.summary.projectedCompletionLabel ?? "TBD"} />
+            </div>
+          )}
         </div>
 
-        {/* Validation Panel */}
-        <ValidationPanel
-          validation={validation}
-          open={validationOpen}
-          onToggle={() => setValidationOpen((v) => !v)}
+        {/* Unplanned pool */}
+        <UnplannedPool
+          groups={boardView.courseGroups}
+          allCourses={courses}
+          sortedSems={sortedSems}
+          assignments={assignments}
+          collapsed={unplannedCollapsed}
+          onToggle={() => setUnplannedCollapsed((v) => !v)}
         />
 
-        {/* Legend */}
-        <div className="flex items-center gap-4 text-[10px] text-[#4a4a6a]">
-          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-green-500" /> completed</span>
-          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#d4a843]" /> in progress</span>
-          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-400" /> registered</span>
-          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-indigo-500" /> planned</span>
-          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#2a2a3a]" /> not started</span>
-          <span className="ml-2 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-green-500" /> prereqs ok</span>
-          <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-red-500" /> prereqs missing</span>
+        {/* Semester timeline */}
+        <div className="pb-4 sm:overflow-x-auto">
+          <div className="grid min-w-0 gap-3 sm:flex sm:min-w-max">
+            {visibleSems.map((sem) => (
+              <SemesterColumn
+                key={sem.id}
+                semester={sem}
+                courses={semCourses.get(sem.id) ?? []}
+                allCourses={courses}
+                sortedSems={sortedSems}
+                assignments={assignments}
+                summary={boardView.semesterSummaries.find((item) => item.semester.id === sem.id)}
+                onStatusChange={handleSemesterStatusChange}
+              />
+            ))}
+
+            {sortedSems.length === 0 && (
+              <div className="flex h-32 items-center justify-center text-sm text-[var(--text-muted)]">
+                No semesters yet. Add one to start planning.
+              </div>
+            )}
+          </div>
         </div>
 
         {sortedSems.some((s) => s.status === "completed") && (
-          <div className="flex items-center justify-between rounded-xl border border-[#1e1e34] bg-[#111120] px-4 py-3">
+          <div className="flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3">
             <div>
-              <div className="text-sm font-semibold text-[#d0d0e8]">Completed semesters</div>
-              <div className="text-xs text-[#6a6a8a]">
+              <div className="text-sm font-semibold text-[var(--text-primary)]">Completed semesters</div>
+              <div className="text-xs text-[var(--text-secondary)]">
                 Showing {Math.min(completedVisibleCount, sortedSems.filter((s) => s.status === "completed").length)} of {sortedSems.filter((s) => s.status === "completed").length} in the planner.
               </div>
             </div>
             <select
               value={completedVisibleCount}
               onChange={(e) => setCompletedVisibleCount(Number(e.target.value))}
-              className="rounded-lg border border-[#2a2a3e] bg-[#0d0d1a] px-3 py-2 text-xs text-[#d0d0e8] focus:outline-none focus:border-[#d4a843]/50"
+              className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
             >
               <option value={0}>Hide all</option>
               <option value={1}>Most recent</option>
@@ -866,39 +911,12 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
           </div>
         )}
 
-        {/* Unplanned pool */}
-        <UnplannedPool
-          courses={unplannedCourses}
-          allCourses={courses}
-          sortedSems={sortedSems}
-          assignments={assignments}
-          collapsed={unplannedCollapsed}
-          onToggle={() => setUnplannedCollapsed((v) => !v)}
-        />
-
-        {/* Semester timeline */}
-        <div className="overflow-x-auto pb-4">
-          <div className="flex gap-3" style={{ minWidth: "max-content" }}>
-            {visibleSems.map((sem) => (
-              <SemesterColumn
-                key={sem.id}
-                semester={sem}
-                courses={semCourses.get(sem.id) ?? []}
-                allCourses={courses}
-                sortedSems={sortedSems}
-                assignments={assignments}
-                onStatusChange={handleSemesterStatusChange}
-              />
-            ))}
-
-            {sortedSems.length === 0 && (
-              <div className="flex items-center justify-center h-32 text-[#4a4a6a] text-sm">
-                No semesters yet. Add one to start planning.
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+        {/* Validation Panel */}
+        <ValidationPanel
+          validation={validation}
+          open={validationOpen}
+          onToggle={() => setValidationOpen((v) => !v)}
+        />      </div>
 
       {/* Drag overlay (ghost card) */}
       <DragOverlay dropAnimation={null}>
@@ -925,24 +943,24 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
               </svg>
             </div>
             <div>
-              <h3 className="font-semibold text-[#d0d0e8] text-base">Prerequisite conflict</h3>
-              <p className="text-[#6a6a8a] text-sm mt-1">
+              <h3 className="font-semibold text-[var(--text-primary)] text-base">Prerequisite conflict</h3>
+              <p className="text-[var(--text-secondary)] text-sm mt-1">
                 Can&apos;t place{" "}
-                <span className="text-indigo-300 font-mono">{prereqModal.course.number}</span> in{" "}
-                <span className="text-[#d4a843]">{prereqModal.toSemLabel}</span>.
+                <span className="text-[var(--accent)] font-mono">{prereqModal.course.number}</span> in{" "}
+                <span className="text-[var(--accent)]">{prereqModal.toSemLabel}</span>.
               </p>
             </div>
           </div>
 
           {prereqModal.validation.missingPrereqs.length > 0 && (
             <div>
-              <p className="text-xs text-[#6a6a8a] uppercase tracking-wide mb-2">Missing prerequisites</p>
+              <p className="text-xs text-[var(--text-secondary)] uppercase tracking-wide mb-2">Missing prerequisites</p>
               <div className="space-y-1">
                 {prereqModal.validation.missingPrereqs.map((id) => (
                   <div key={id} className="flex items-center gap-2 text-sm">
                     <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
-                    <span className="font-mono text-indigo-300">{formatCourseId(id)}</span>
-                    <span className="text-[#6a6a8a]">required in an earlier semester</span>
+                    <span className="font-mono text-[var(--accent)]">{formatCourseId(id)}</span>
+                    <span className="text-[var(--text-secondary)]">required in an earlier semester</span>
                   </div>
                 ))}
               </div>
@@ -951,13 +969,13 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
 
           {prereqModal.validation.missingCoreqs.length > 0 && (
             <div>
-              <p className="text-xs text-[#6a6a8a] uppercase tracking-wide mb-2">Missing corequisites</p>
+              <p className="text-xs text-[var(--text-secondary)] uppercase tracking-wide mb-2">Missing corequisites</p>
               <div className="space-y-1">
                 {prereqModal.validation.missingCoreqs.map((id) => (
                   <div key={id} className="flex items-center gap-2 text-sm">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
-                    <span className="font-mono text-indigo-300">{formatCourseId(id)}</span>
-                    <span className="text-[#6a6a8a]">required in the same or earlier semester</span>
+                    <span className="font-mono text-[var(--accent)]">{formatCourseId(id)}</span>
+                    <span className="text-[var(--text-secondary)]">required in the same or earlier semester</span>
                   </div>
                 ))}
               </div>
@@ -966,7 +984,7 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
 
           <button
             onClick={() => setPrereqModal(null)}
-            className="w-full py-2.5 bg-[#1e1e34] hover:bg-[#2a2a40] border border-[#2a2a3e] rounded-xl text-sm transition-colors"
+            className="w-full py-2.5 bg-[var(--surface-subtle)] hover:bg-[var(--surface-subtle)] border border-[var(--border)] rounded-xl text-sm transition-colors"
           >
             Got it
           </button>
@@ -984,23 +1002,23 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
               </svg>
             </div>
             <div>
-              <h3 className="font-semibold text-[#d0d0e8] text-base">Cascade warning</h3>
-              <p className="text-[#6a6a8a] text-sm mt-1">
+              <h3 className="font-semibold text-[var(--text-primary)] text-base">Cascade warning</h3>
+              <p className="text-[var(--text-secondary)] text-sm mt-1">
                 Moving{" "}
-                <span className="text-indigo-300 font-mono">{cascadeModal.course.number}</span> to{" "}
-                <span className="text-[#d4a843]">{cascadeModal.toSemLabel}</span> would break
+                <span className="text-[var(--accent)] font-mono">{cascadeModal.course.number}</span> to{" "}
+                <span className="text-[var(--accent)]">{cascadeModal.toSemLabel}</span> would break
                 prerequisites for:
               </p>
             </div>
           </div>
 
-          <div className="bg-[#0e0e1c] border border-[#1e1e34] rounded-xl p-3 space-y-1.5">
+          <div className="bg-[var(--surface-subtle)] border border-[var(--border)] rounded-xl p-3 space-y-1.5">
             {cascadeModal.affected.map((item, i) => (
               <div key={i} className="flex items-center gap-2 text-sm">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
-                <span className="font-mono text-indigo-300">{item.number}</span>
-                <span className="text-[#6a6a8a] flex-1 truncate">{item.name}</span>
-                <span className="text-[10px] text-[#4a4a6a]">{item.semLabel}</span>
+                <span className="font-mono text-[var(--accent)]">{item.number}</span>
+                <span className="text-[var(--text-secondary)] flex-1 truncate">{item.name}</span>
+                <span className="text-[10px] text-[var(--text-muted)]">{item.semLabel}</span>
               </div>
             ))}
           </div>
@@ -1014,7 +1032,7 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
             </button>
             <button
               onClick={() => setCascadeModal(null)}
-              className="flex-1 py-2.5 bg-[#1e1e34] hover:bg-[#2a2a40] border border-[#2a2a3e] rounded-xl text-sm transition-colors"
+              className="flex-1 py-2.5 bg-[var(--surface-subtle)] hover:bg-[var(--surface-subtle)] border border-[var(--border)] rounded-xl text-sm transition-colors"
             >
               Cancel
             </button>
@@ -1025,11 +1043,11 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
       {/* New semester modal */}
       {newSemModal && (
         <Modal onClose={() => setNewSemModal(false)}>
-          <h3 className="font-semibold text-[#d0d0e8] text-base">Add Planned Semester</h3>
+          <h3 className="font-semibold text-[var(--text-primary)] text-base">Add Planned Semester</h3>
 
           <div className="space-y-3">
             <div>
-              <label className="text-xs text-[#6a6a8a] uppercase tracking-wide mb-1.5 block">Term</label>
+              <label className="text-xs text-[var(--text-secondary)] uppercase tracking-wide mb-1.5 block">Term</label>
               <div className="flex gap-2">
                 {(["fall", "spring", "summer"] as const).map((t) => (
                   <button
@@ -1037,8 +1055,8 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
                     onClick={() => setNewSemForm((f) => ({ ...f, type: t }))}
                     className={`flex-1 py-2 rounded-lg text-sm font-medium border transition-colors ${
                       newSemForm.type === t
-                        ? "bg-[#d4a843]/15 border-[#d4a843]/30 text-[#d4a843]"
-                        : "bg-[#1a1a2e] border-[#2a2a3e] text-[#6a6a8a] hover:text-[#8888a8]"
+                        ? "bg-[var(--accent-soft)] border-[var(--accent)] text-[var(--accent)]"
+                        : "bg-[var(--surface-subtle)] border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-secondary)]"
                     }`}
                   >
                     {t.charAt(0).toUpperCase() + t.slice(1)}
@@ -1048,20 +1066,20 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
             </div>
 
             <div>
-              <label className="text-xs text-[#6a6a8a] uppercase tracking-wide mb-1.5 block">Year</label>
+              <label className="text-xs text-[var(--text-secondary)] uppercase tracking-wide mb-1.5 block">Year</label>
               <input
                 type="number"
                 value={newSemForm.year}
                 min={2024}
                 max={2035}
                 onChange={(e) => setNewSemForm((f) => ({ ...f, year: parseInt(e.target.value) || f.year }))}
-                className="w-full px-3 py-2 bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl text-sm text-[#d0d0e8] focus:outline-none focus:border-[#d4a843]/50"
+                className="w-full px-3 py-2 bg-[var(--surface-subtle)] border border-[var(--border)] rounded-xl text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
               />
             </div>
 
-            <div className="text-xs text-[#6a6a8a] bg-[#0e0e1c] border border-[#1e1e34] rounded-lg px-3 py-2">
+            <div className="text-xs text-[var(--text-secondary)] bg-[var(--surface-subtle)] border border-[var(--border)] rounded-lg px-3 py-2">
               Will create:{" "}
-              <span className="text-[#d4a843] font-medium">
+              <span className="text-[var(--accent)] font-medium">
                 {newSemForm.type.charAt(0).toUpperCase() + newSemForm.type.slice(1)} {newSemForm.year}
               </span>
             </div>
@@ -1071,13 +1089,13 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
             <button
               onClick={handleCreateSemester}
               disabled={newSemLoading}
-              className="flex-1 py-2.5 bg-[#d4a843] hover:bg-[#e8c068] disabled:opacity-50 text-[#0a0a12] rounded-xl text-sm font-semibold transition-colors"
+              className="flex-1 rounded-xl bg-[var(--accent)] py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--accent)] disabled:opacity-50"
             >
               {newSemLoading ? "Creating…" : "Create Semester"}
             </button>
             <button
               onClick={() => setNewSemModal(false)}
-              className="flex-1 py-2.5 bg-[#1e1e34] hover:bg-[#2a2a40] border border-[#2a2a3e] rounded-xl text-sm transition-colors"
+              className="flex-1 py-2.5 bg-[var(--surface-subtle)] hover:bg-[var(--surface-subtle)] border border-[var(--border)] rounded-xl text-sm transition-colors"
             >
               Cancel
             </button>
