@@ -17,11 +17,11 @@ import { computeProgressSemantics, type ProgressSemanticsSummary } from "@/lib/p
 
 function gradeColor(grade: string): string {
   const p = GRADE_SCALE[grade] ?? -1;
-  if (p < 0) return "text-[#6a6a8a]";
-  if (p >= 3.7) return "text-green-400";
-  if (p >= 2.7) return "text-indigo-400";
-  if (p >= 1.7) return "text-yellow-400";
-  return "text-red-400";
+  if (p < 0) return "text-[var(--text-secondary)]";
+  if (p >= 3.7) return "text-green-700";
+  if (p >= 2.7) return "text-[var(--accent)]";
+  if (p >= 1.7) return "text-amber-700";
+  return "text-rose-600";
 }
 
 // ---------------------------------------------------------------------------
@@ -130,13 +130,13 @@ export default function GPAPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen text-[#6a6a8a]">Loading…</div>
+      <div className="flex items-center justify-center min-h-screen text-[var(--text-secondary)]">Loading…</div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen text-red-400 text-sm p-8">
+      <div className="flex items-center justify-center min-h-screen text-rose-600 text-sm p-8">
         Failed to load GPA data: {error}
       </div>
     );
@@ -145,8 +145,8 @@ export default function GPAPage() {
   if (courses.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-4 p-8 text-center">
-        <p className="text-[#6a6a8a]">No course data yet.</p>
-        <a href="/upload" className="text-[#d4a843] hover:text-[#e8c068] text-sm">
+        <p className="text-[var(--text-secondary)]">No course data yet.</p>
+        <a href="/upload" className="text-[var(--accent)] hover:text-[var(--accent)] text-sm">
           Upload an audit PDF →
         </a>
       </div>
@@ -154,16 +154,22 @@ export default function GPAPage() {
   }
 
   return (
-    <div className="p-8 space-y-8 max-w-4xl">
-      <div>
-        <h2 className="text-2xl font-bold text-[#d0d0e8]">GPA Calculator</h2>
-        <p className="text-[#6a6a8a] text-sm mt-1">
-          Actual GPA from completed courses + what-if projections for planned courses.
+    <div className="min-h-screen bg-[var(--page-bg)] p-6 sm:p-8 space-y-6 max-w-5xl">
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[var(--shadow-card)]">
+        <p className="text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] font-semibold">GPA summary</p>
+        <h2 className="text-2xl font-bold text-[var(--text-primary)] mt-2">Understand your GPA</h2>
+        <p className="text-[var(--text-secondary)] text-sm mt-2 max-w-3xl leading-relaxed">
+          Review official and calculated GPA, test what-if grades, and see how courses count toward progress.
         </p>
       </div>
 
       {/* GPA Summary Cards */}
-      <div className="grid grid-cols-2 gap-4">
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-semibold text-[var(--text-primary)]">GPA summary</h3>
+          <p className="text-xs text-[var(--text-secondary)]">Current standing from completed and audit-backed coursework.</p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {officialGPA > 0 && (
           <GPACard
             label="Official GPA"
@@ -202,55 +208,56 @@ export default function GPAPage() {
           credits={majorGraded.filter((c) => c.status === "completed").reduce((a, c) => a + c.credits, 0)}
           sub="Stats & DS major courses only"
         />
-      </div>
+        </div>
+      </section>
 
       {/* Counting Semantics Summary */}
-      <section className="bg-[#111120] border border-[#1e1e34] rounded-xl overflow-hidden">
-        <div className="px-5 py-3 border-b border-[#1e1e34]">
-          <h3 className="text-sm font-semibold text-[#d0d0e8]">How Courses Count</h3>
-          <p className="text-xs text-[#6a6a8a] mt-0.5">
+      <section className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-[var(--shadow-card)] overflow-hidden">
+        <div className="px-5 py-3 border-b border-[var(--border)]">
+          <h3 className="text-sm font-semibold text-[var(--text-primary)]">How Courses Count</h3>
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
             Not every course counts the same way. Some affect your GPA but not degree progress, or vice versa.
           </p>
         </div>
-        <div className="grid grid-cols-3 gap-px bg-[#1a1a2e]">
+        <div className="grid grid-cols-3 gap-px bg-[var(--surface-subtle)]">
           <CountingBucketCard
             label="Degree Progress"
             courses={progressSemantics.degreeCountedCourses}
             credits={progressSemantics.degreeCountedCredits}
-            color="text-green-400"
+            color="text-green-700"
           />
           <CountingBucketCard
             label="GPA Calculation"
             courses={progressSemantics.gpaCountedCourses}
             credits={progressSemantics.gpaCountedCredits}
-            color="text-[#d4a843]"
+            color="text-[var(--accent)]"
           />
           <CountingBucketCard
             label="Earned Hours"
             courses={progressSemantics.earnedHoursCountedCourses}
             credits={progressSemantics.earnedHoursCountedCredits}
-            color="text-indigo-400"
+            color="text-[var(--accent)]"
           />
         </div>
         {progressSemantics.exclusions.length > 0 && (
-          <div className="border-t border-[#1e1e34] px-5 py-3">
-            <p className="text-xs text-[#6a6a8a] mb-2">
+          <div className="border-t border-[var(--border)] px-5 py-3">
+            <p className="text-xs text-[var(--text-secondary)] mb-2">
               {progressSemantics.exclusions.length} course{progressSemantics.exclusions.length !== 1 ? "s" : ""} excluded from at least one category:
             </p>
             <div className="space-y-1">
               {progressSemantics.exclusions.slice(0, 8).map((ex) => (
                 <div key={ex.courseId} className="flex items-center gap-2 text-xs">
-                  <span className="font-mono text-indigo-300/60 w-20 shrink-0">{ex.courseNumber}</span>
+                  <span className="font-mono text-[var(--accent)]/60 w-20 shrink-0">{ex.courseNumber}</span>
                   <div className="flex gap-1.5 shrink-0">
                     <CountingDot active={ex.countsTowardDegree} label="deg" />
                     <CountingDot active={ex.countsTowardGPA} label="gpa" />
                     <CountingDot active={ex.countsTowardEarnedHours} label="hrs" />
                   </div>
-                  <span className="text-[#6a6a8a] truncate">{ex.excludeReason}</span>
+                  <span className="text-[var(--text-secondary)] truncate">{ex.excludeReason}</span>
                 </div>
               ))}
               {progressSemantics.exclusions.length > 8 && (
-                <a href="/courses" className="text-[10px] text-[#d4a843] hover:text-[#e8c068]">
+                <a href="/courses" className="text-[10px] text-[var(--accent)] hover:text-[var(--accent)]">
                   See all {progressSemantics.exclusions.length} in Courses →
                 </a>
               )}
@@ -260,14 +267,14 @@ export default function GPAPage() {
       </section>
 
       {/* Grade breakdown table (completed) */}
-      <section className="bg-[#111120] border border-[#1e1e34] rounded-xl overflow-hidden">
-        <div className="px-5 py-3 border-b border-[#1e1e34] flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-[#d0d0e8]">Completed Courses</h3>
-          <span className="text-xs text-[#6a6a8a]">{completedGraded.length} graded courses</span>
+      <section className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-[var(--shadow-card)] overflow-hidden">
+        <div className="px-5 py-3 border-b border-[var(--border)] flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-[var(--text-primary)]">Completed Courses</h3>
+          <span className="text-xs text-[var(--text-secondary)]">{completedGraded.length} graded courses</span>
         </div>
         <div className="max-h-72 overflow-y-auto">
           <table className="w-full text-xs">
-            <thead className="sticky top-0 bg-[#0f0f1e] text-[#6a6a8a] uppercase tracking-wide">
+            <thead className="sticky top-0 bg-[var(--surface-subtle)] text-[var(--text-secondary)] uppercase tracking-wide">
               <tr>
                 <th className="px-4 py-2.5 text-left">Course</th>
                 <th className="px-4 py-2.5 text-left">Name</th>
@@ -277,25 +284,25 @@ export default function GPAPage() {
                 <th className="px-4 py-2.5 text-right">Quality Pts</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#1a1a2e]">
+            <tbody className="divide-y divide-[var(--border)]">
               {completedGraded.map((c) => {
                 const pts = gradeToPoints(c.grade!);
                 const isMajor = majorGroupIds.has(c.id);
                 return (
-                  <tr key={c.id} className={`hover:bg-white/3 ${isMajor ? "bg-[#d4a843]/3" : ""}`}>
-                    <td className="px-4 py-2 font-mono text-indigo-300">
+                  <tr key={c.id} className={`hover:bg-[var(--surface-subtle)] ${isMajor ? "bg-[var(--accent-soft)]" : ""}`}>
+                    <td className="px-4 py-2 font-mono text-[var(--accent)]">
                       {c.number}
                       {isMajor && (
-                        <span className="ml-1.5 text-[#d4a843] text-[9px] uppercase tracking-wider">major</span>
+                        <span className="ml-1.5 text-[var(--accent)] text-[9px] uppercase tracking-wider">major</span>
                       )}
                     </td>
-                    <td className="px-4 py-2 text-[#8888a8] max-w-[220px] truncate">{c.name}</td>
-                    <td className="px-4 py-2 text-right text-[#6a6a8a]">{c.credits}</td>
+                    <td className="px-4 py-2 text-[var(--text-secondary)] max-w-[220px] truncate">{c.name}</td>
+                    <td className="px-4 py-2 text-right text-[var(--text-secondary)]">{c.credits}</td>
                     <td className="px-4 py-2 text-center">
                       <span className={`font-mono font-bold ${gradeColor(c.grade!)}`}>{c.grade}</span>
                     </td>
-                    <td className="px-4 py-2 text-right text-[#8888a8]">{pts < 0 ? "N/A" : pts.toFixed(1)}</td>
-                    <td className="px-4 py-2 text-right text-[#8888a8]">
+                    <td className="px-4 py-2 text-right text-[var(--text-secondary)]">{pts < 0 ? "N/A" : pts.toFixed(1)}</td>
+                    <td className="px-4 py-2 text-right text-[var(--text-secondary)]">
                       {pts < 0 ? "N/A" : (pts * c.credits).toFixed(1)}
                     </td>
                   </tr>
@@ -307,18 +314,18 @@ export default function GPAPage() {
       </section>
 
       {/* What-If mode */}
-      <section className="bg-[#111120] border border-[#1e1e34] rounded-xl overflow-hidden">
-        <div className="px-5 py-3 border-b border-[#1e1e34] flex items-center justify-between">
+      <section className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-[var(--shadow-card)] overflow-hidden">
+        <div className="px-5 py-3 border-b border-[var(--border)] flex items-center justify-between">
           <div>
-            <h3 className="text-sm font-semibold text-[#d0d0e8]">What-If Mode</h3>
-            <p className="text-xs text-[#6a6a8a] mt-0.5">
+            <h3 className="text-sm font-semibold text-[var(--text-primary)]">What-if grades</h3>
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5">
               Enter hypothetical grades for planned courses to project GPA
             </p>
           </div>
           <button
             onClick={() => setWhatIfEnabled((v) => !v)}
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-              whatIfEnabled ? "bg-[#d4a843]" : "bg-[#2a2a3a]"
+              whatIfEnabled ? "bg-[var(--accent)]" : "bg-[var(--text-muted)]"
             }`}
           >
             <span
@@ -330,11 +337,11 @@ export default function GPAPage() {
         </div>
 
         {activeCourses.length === 0 ? (
-          <div className="px-5 py-6 text-center text-[#6a6a8a] text-sm">
+          <div className="px-5 py-6 text-center text-[var(--text-secondary)] text-sm">
             No planned or in-progress courses to project.
           </div>
         ) : (
-          <div className="divide-y divide-[#1a1a2e]">
+          <div className="divide-y divide-[var(--border)]">
             {activeCourses.map((c) => {
               const hypotheticalGrade = whatIf.get(c.id);
               const pts = hypotheticalGrade ? gradeToPoints(hypotheticalGrade) : null;
@@ -346,9 +353,9 @@ export default function GPAPage() {
                   }`}
                 >
                   <div className="flex-1 min-w-0">
-                    <span className="font-mono text-xs text-indigo-300">{c.number}</span>
-                    <span className="text-xs text-[#8888a8] ml-2">{c.name}</span>
-                    <span className="text-xs text-[#4a4a6a] ml-2">{c.credits}cr</span>
+                    <span className="font-mono text-xs text-[var(--accent)]">{c.number}</span>
+                    <span className="text-xs text-[var(--text-secondary)] ml-2">{c.name}</span>
+                    <span className="text-xs text-[var(--text-muted)] ml-2">{c.credits}cr</span>
                   </div>
                   <StatusPill status={c.status} />
                   <select
@@ -362,7 +369,7 @@ export default function GPAPage() {
                       }
                       setWhatIf(newMap);
                     }}
-                    className="w-full px-2.5 py-1.5 bg-[#1a1a2e] border border-[#2a2a3e] rounded-lg text-xs text-[#d0d0e8] focus:outline-none focus:border-[#d4a843]/50"
+                    className="w-full px-2.5 py-1.5 bg-[var(--surface-subtle)] border border-[var(--border)] rounded-lg text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
                   >
                     <option value="">— pick grade —</option>
                     {GRADE_OPTIONS.map((g) => (
@@ -371,7 +378,7 @@ export default function GPAPage() {
                       </option>
                     ))}
                   </select>
-                  <span className={`text-xs font-mono font-bold text-right ${pts !== null ? gradeColor(hypotheticalGrade!) : "text-[#2f2f48]"}`}>
+                  <span className={`text-xs font-mono font-bold text-right ${pts !== null ? gradeColor(hypotheticalGrade!) : "text-[var(--text-muted)]"}`}>
                     {pts !== null ? pts.toFixed(1) : "—"}
                   </span>
                 </div>
@@ -382,17 +389,17 @@ export default function GPAPage() {
       </section>
 
       {/* Target grade solver */}
-      <section className="bg-[#111120] border border-[#1e1e34] rounded-xl overflow-hidden">
-        <div className="px-5 py-3 border-b border-[#1e1e34]">
-          <h3 className="text-sm font-semibold text-[#d0d0e8]">Target Grade Solver</h3>
-          <p className="text-xs text-[#6a6a8a] mt-0.5">
+      <section className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-[var(--shadow-card)] overflow-hidden">
+        <div className="px-5 py-3 border-b border-[var(--border)]">
+          <h3 className="text-sm font-semibold text-[var(--text-primary)]">Target Grade Solver</h3>
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
             What grade do I need in course X to achieve target GPA Y?
           </p>
         </div>
         <div className="p-5 space-y-4">
           {/* GPA mode toggle */}
           <div className="flex items-center gap-2">
-            <span className="text-xs text-[#6a6a8a] uppercase tracking-wide">Target:</span>
+            <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wide">Target:</span>
             <div className="flex gap-1">
               {(["cumulative", "major"] as const).map((mode) => (
                 <button
@@ -400,8 +407,8 @@ export default function GPAPage() {
                   onClick={() => setSolverMode(mode)}
                   className={`px-3 py-1 rounded-lg text-xs font-medium border transition-colors ${
                     solverMode === mode
-                      ? "bg-[#d4a843]/15 border-[#d4a843]/30 text-[#d4a843]"
-                      : "bg-[#1a1a2e] border-[#2a2a3e] text-[#6a6a8a] hover:text-[#8888a8]"
+                      ? "bg-[var(--accent)]/15 border-[var(--accent)] text-[var(--accent)]"
+                      : "bg-[var(--surface-subtle)] border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-secondary)]"
                   }`}
                 >
                   {mode === "cumulative" ? "Cumulative GPA" : "Major GPA"}
@@ -411,11 +418,11 @@ export default function GPAPage() {
           </div>
           <div className="flex gap-3 items-end flex-wrap">
             <div className="flex-1 min-w-48">
-              <label className="text-xs text-[#6a6a8a] mb-1.5 block uppercase tracking-wide">Course</label>
+              <label className="text-xs text-[var(--text-secondary)] mb-1.5 block uppercase tracking-wide">Course</label>
               <select
                 value={solverCourse}
                 onChange={(e) => setSolverCourse(e.target.value)}
-                className="w-full px-3 py-2 bg-[#1a1a2e] border border-[#2a2a3e] rounded-lg text-sm text-[#d0d0e8] focus:outline-none focus:border-[#d4a843]/50"
+                className="w-full px-3 py-2 bg-[var(--surface-subtle)] border border-[var(--border)] rounded-lg text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
               >
                 <option value="">Select a course…</option>
                 {activeCourses.map((c) => (
@@ -426,7 +433,7 @@ export default function GPAPage() {
               </select>
             </div>
             <div className="w-40">
-              <label className="text-xs text-[#6a6a8a] mb-1.5 block uppercase tracking-wide">Target GPA</label>
+              <label className="text-xs text-[var(--text-secondary)] mb-1.5 block uppercase tracking-wide">Target GPA</label>
               <input
                 type="number"
                 min="0"
@@ -434,7 +441,7 @@ export default function GPAPage() {
                 step="0.01"
                 value={solverTargetGPA}
                 onChange={(e) => setSolverTargetGPA(e.target.value)}
-                className="w-full px-3 py-2 bg-[#1a1a2e] border border-[#2a2a3e] rounded-lg text-sm text-[#d0d0e8] focus:outline-none focus:border-[#d4a843]/50"
+                className="w-full px-3 py-2 bg-[var(--surface-subtle)] border border-[var(--border)] rounded-lg text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
                 placeholder="3.00"
               />
             </div>
@@ -444,12 +451,12 @@ export default function GPAPage() {
             <div
               className={`rounded-xl p-4 border ${
                 solverResult.grade === null
-                  ? "bg-red-500/10 border-red-500/20"
-                  : "bg-[#d4a843]/10 border-[#d4a843]/20"
+                  ? "bg-rose-50 border-rose-200"
+                  : "bg-[var(--accent-soft)] border-[var(--border)]"
               }`}
             >
               {solverResult.grade === null ? (
-                <p className="text-sm text-red-300">
+                <p className="text-sm text-rose-700">
                   Impossible — even an A (4.0) won&apos;t reach {solverTargetGPA} GPA given your
                   current grades. You&apos;d need {solverResult.needed.toFixed(2)} grade points in
                   that course.
@@ -460,15 +467,15 @@ export default function GPAPage() {
                     <div className={`text-3xl font-bold ${gradeColor(solverResult.grade)}`}>
                       {solverResult.grade}
                     </div>
-                    <div className="text-[10px] text-[#6a6a8a] mt-0.5">minimum grade</div>
+                    <div className="text-[10px] text-[var(--text-secondary)] mt-0.5">minimum grade</div>
                   </div>
-                  <div className="text-sm text-[#8888a8]">
+                  <div className="text-sm text-[var(--text-secondary)]">
                     You need at least a{" "}
                     <span className={`font-bold ${gradeColor(solverResult.grade)}`}>
                       {solverResult.grade}
                     </span>{" "}
                     in {courses.find((c) => c.id === solverCourse)?.number} to reach a{" "}
-                    <span className="text-[#d4a843] font-bold">{parseFloat(solverTargetGPA).toFixed(2)}</span>{" "}
+                    <span className="text-[var(--accent)] font-bold">{parseFloat(solverTargetGPA).toFixed(2)}</span>{" "}
                     {solverMode === "major" ? "major" : "cumulative"} GPA.
                   </div>
                 </div>
@@ -504,25 +511,25 @@ function GPACard({
 }) {
   const delta = gpa - base;
   return (
-    <div className="bg-[#111120] border border-[#1e1e34] rounded-xl p-5">
-      <div className="text-xs text-[#6a6a8a] uppercase tracking-wider mb-2">{label}</div>
+    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-5">
+      <div className="text-xs text-[var(--text-secondary)] uppercase tracking-wider mb-2">{label}</div>
       <div className="flex items-end gap-3">
-        <div className={`text-4xl font-bold ${gpa >= 3.5 ? "text-[#d4a843]" : gpa >= 3.0 ? "text-green-400" : gpa >= 2.0 ? "text-indigo-400" : "text-red-400"}`}>
+        <div className={`text-4xl font-bold ${gpa >= 3.5 ? "text-[var(--accent)]" : gpa >= 3.0 ? "text-green-700" : gpa >= 2.0 ? "text-[var(--accent)]" : "text-rose-600"}`}>
           {gpa > 0 ? gpa.toFixed(3) : "—"}
         </div>
         {changed && (
-          <div className={`text-sm font-medium mb-1 ${delta > 0 ? "text-green-400" : "text-red-400"}`}>
+          <div className={`text-sm font-medium mb-1 ${delta > 0 ? "text-green-700" : "text-rose-600"}`}>
             {delta > 0 ? "+" : ""}{delta.toFixed(3)}
           </div>
         )}
       </div>
-      <div className="text-xs text-[#4a4a6a] mt-1">
+      <div className="text-xs text-[var(--text-muted)] mt-1">
         {credits} graded credits{sub ? ` · ${sub}` : ""}
       </div>
       {officialDiff != null && (
-        <div className="text-[10px] text-[#6a6a8a] mt-1.5">
+        <div className="text-[10px] text-[var(--text-secondary)] mt-1.5">
           Differs from official by{" "}
-          <span className={officialDiff > 0 ? "text-green-400" : "text-red-400"}>
+          <span className={officialDiff > 0 ? "text-green-700" : "text-rose-600"}>
             {officialDiff > 0 ? "+" : ""}{officialDiff.toFixed(3)}
           </span>
           {" "}(repeats/exclusions not counted)
@@ -544,10 +551,10 @@ function CountingBucketCard({
   color: string;
 }) {
   return (
-    <div className="bg-[#111120] px-4 py-3">
-      <div className="text-[10px] text-[#6a6a8a] uppercase tracking-wider mb-1">{label}</div>
-      <div className={`text-xl font-bold ${color}`}>{credits}<span className="text-xs font-normal text-[#6a6a8a] ml-1">cr</span></div>
-      <div className="text-[10px] text-[#4a4a6a]">{courses} courses</div>
+    <div className="bg-[var(--surface)] px-4 py-3">
+      <div className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider mb-1">{label}</div>
+      <div className={`text-xl font-bold ${color}`}>{credits}<span className="text-xs font-normal text-[var(--text-secondary)] ml-1">cr</span></div>
+      <div className="text-[10px] text-[var(--text-muted)]">{courses} courses</div>
     </div>
   );
 }
@@ -557,8 +564,8 @@ function CountingDot({ active, label }: { active: boolean; label: string }) {
     <span
       className={`inline-flex items-center gap-0.5 text-[9px] px-1 py-0.5 rounded border ${
         active
-          ? "bg-green-500/10 text-green-400 border-green-500/20"
-          : "bg-red-500/10 text-red-400/60 border-red-500/20 line-through"
+          ? "bg-green-50 text-green-700 border-green-200"
+          : "bg-rose-50 text-rose-600/60 border-rose-200 line-through"
       }`}
     >
       {label}
@@ -568,9 +575,9 @@ function CountingDot({ active, label }: { active: boolean; label: string }) {
 
 function StatusPill({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    in_progress: "bg-[#d4a843]/15 text-[#d4a843] border-[#d4a843]/20",
-    registered: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-    planned: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
+    in_progress: "bg-[var(--accent)]/15 text-[var(--accent)] border-[var(--border)]",
+    registered: "bg-blue-500/10 text-[var(--accent)] border-blue-500/20",
+    planned: "bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--border)]",
   };
   return (
     <span className={`px-2 py-0.5 rounded text-[10px] border ${styles[status] ?? ""} uppercase tracking-wider shrink-0`}>

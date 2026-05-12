@@ -171,38 +171,39 @@ export default function SettingsPage() {
   }
 
   if (loading) {
-    return <div className="flex items-center justify-center min-h-screen text-[#6a6a8a]">Loading…</div>;
+    return <div className="flex items-center justify-center min-h-screen text-[var(--text-secondary)]">Loading…</div>;
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen text-red-400 text-sm p-8">
+      <div className="flex items-center justify-center min-h-screen text-rose-600 text-sm p-8">
         Failed to load settings: {error}
       </div>
     );
   }
 
   return (
-    <div className="p-8 max-w-3xl space-y-8">
-      <div>
-        <h2 className="text-2xl font-bold text-[#d0d0e8]">Settings</h2>
-        <p className="text-[#6a6a8a] text-sm mt-1">Manage semesters, courses, and audit imports.</p>
+    <div className="min-h-screen bg-[var(--page-bg)] p-6 sm:p-8 max-w-4xl space-y-6">
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[var(--shadow-card)]">
+        <p className="text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] font-semibold">Settings</p>
+        <h2 className="text-2xl font-bold text-[var(--text-primary)] mt-2">Manage import tools and planning setup</h2>
+        <p className="text-[var(--text-secondary)] text-sm mt-2 max-w-3xl leading-relaxed">Configure audit parsing, prerequisite imports, and planned-semester support tools.</p>
       </div>
 
       {/* LLM Provider */}
-      <section className="bg-[#111120] border border-[#1e1e34] rounded-xl overflow-hidden">
-        <div className="px-5 py-3 border-b border-[#1e1e34]">
-          <h3 className="text-sm font-semibold text-[#d0d0e8]">LLM Provider</h3>
-          <p className="text-xs text-[#6a6a8a] mt-0.5">Configure the AI model used to parse degree audits.</p>
+      <section className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-[var(--shadow-card)] overflow-hidden">
+        <div className="px-5 py-3 border-b border-[var(--border)]">
+          <h3 className="text-sm font-semibold text-[var(--text-primary)]">LLM Provider</h3>
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">Configure the AI model used to parse degree audits.</p>
         </div>
         <div className="px-5 py-4 space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs text-[#6a6a8a] mb-1.5">Provider</label>
+              <label className="block text-xs text-[var(--text-secondary)] mb-1.5">Provider</label>
               <select
                 value={llmProvider}
                 onChange={(e) => handleProviderChange(e.target.value)}
-                className="w-full px-3 py-2 bg-[#0d0d1a] border border-[#1e1e34] rounded-lg text-sm text-[#d0d0e8] focus:outline-none focus:border-[#d4a843]/50"
+                className="w-full px-3 py-2 bg-[var(--surface-subtle)] border border-[var(--border)] rounded-lg text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
               >
                 {Object.entries(PROVIDER_MODELS).map(([key, { label }]) => (
                   <option key={key} value={key}>{label}</option>
@@ -210,11 +211,11 @@ export default function SettingsPage() {
               </select>
             </div>
             <div>
-              <label className="block text-xs text-[#6a6a8a] mb-1.5">Model</label>
+              <label className="block text-xs text-[var(--text-secondary)] mb-1.5">Model</label>
               <select
                 value={llmModel}
                 onChange={(e) => setLlmModel(e.target.value)}
-                className="w-full px-3 py-2 bg-[#0d0d1a] border border-[#1e1e34] rounded-lg text-sm text-[#d0d0e8] focus:outline-none focus:border-[#d4a843]/50"
+                className="w-full px-3 py-2 bg-[var(--surface-subtle)] border border-[var(--border)] rounded-lg text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
               >
                 {(PROVIDER_MODELS[llmProvider]?.models ?? []).map((m) => (
                   <option key={m.id} value={m.id}>{m.name} ({m.id})</option>
@@ -224,8 +225,8 @@ export default function SettingsPage() {
           </div>
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs text-[#6a6a8a]">API Key</label>
-              <span className={`text-xs ${llmHasKey ? "text-green-400" : "text-[#4a4a6a]"}`}>
+              <label className="block text-xs text-[var(--text-secondary)]">API Key</label>
+              <span className={`text-xs ${llmHasKey ? "text-green-700" : "text-[var(--text-muted)]"}`}>
                 {llmHasKey ? "Key configured ✓" : "No key set"}
               </span>
             </div>
@@ -234,11 +235,11 @@ export default function SettingsPage() {
               value={llmApiKey}
               onChange={(e) => setLlmApiKey(e.target.value)}
               placeholder="Enter new API key…"
-              className="w-full px-3 py-2 bg-[#0d0d1a] border border-[#1e1e34] rounded-lg text-sm text-[#d0d0e8] focus:outline-none focus:border-[#d4a843]/50 placeholder:text-[#3a3a5a]"
+              className="w-full px-3 py-2 bg-[var(--surface-subtle)] border border-[var(--border)] rounded-lg text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] placeholder:text-[var(--text-muted)]"
             />
           </div>
           {llmStatus && (
-            <p className={`text-xs ${llmStatus.ok ? "text-green-400" : "text-red-400"}`}>
+            <p className={`text-xs ${llmStatus.ok ? "text-green-700" : "text-rose-600"}`}>
               {llmStatus.msg}
             </p>
           )}
@@ -246,14 +247,14 @@ export default function SettingsPage() {
             <button
               onClick={handleLlmTest}
               disabled={llmTesting || llmSaving}
-              className="px-4 py-2 bg-[#1e1e34] border border-[#2a2a3e] text-[#8888a8] rounded-xl text-sm hover:bg-[#2a2a40] hover:text-[#d0d0e8] transition-colors disabled:opacity-50"
+              className="px-4 py-2 bg-[var(--surface-subtle)] border border-[var(--border)] text-[var(--text-secondary)] rounded-xl text-sm hover:bg-[var(--surface-subtle)] hover:text-[var(--text-primary)] transition-colors disabled:opacity-50"
             >
               {llmTesting ? "Testing…" : "Test Connection"}
             </button>
             <button
               onClick={handleLlmSave}
               disabled={llmSaving || llmTesting}
-              className="px-4 py-2 bg-[#d4a843]/10 border border-[#d4a843]/20 text-[#d4a843] rounded-xl text-sm font-medium hover:bg-[#d4a843]/20 transition-colors disabled:opacity-50"
+              className="px-4 py-2 bg-[var(--accent-soft)] border border-[var(--border)] text-[var(--accent)] rounded-xl text-sm font-medium hover:bg-[var(--accent-soft)] transition-colors disabled:opacity-50"
             >
               {llmSaving ? "Saving…" : "Save"}
             </button>
@@ -262,30 +263,30 @@ export default function SettingsPage() {
       </section>
 
       {/* Prerequisite Data */}
-      <section className="bg-[#111120] border border-[#1e1e34] rounded-xl overflow-hidden">
-        <div className="px-5 py-3 border-b border-[#1e1e34]">
-          <h3 className="text-sm font-semibold text-[#d0d0e8]">Prerequisite Data</h3>
-          <p className="text-xs text-[#6a6a8a] mt-0.5">Import prerequisite data from the cu-prereq-scraper to enrich course details.</p>
+      <section className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-[var(--shadow-card)] overflow-hidden">
+        <div className="px-5 py-3 border-b border-[var(--border)]">
+          <h3 className="text-sm font-semibold text-[var(--text-primary)]">Prerequisite Data</h3>
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">Import prerequisite data from the cu-prereq-scraper to enrich course details.</p>
         </div>
         <div className="px-5 py-4 space-y-3">
           <div>
-            <label className="block text-xs text-[#6a6a8a] mb-1.5">Scraper JSON file</label>
+            <label className="block text-xs text-[var(--text-secondary)] mb-1.5">Scraper JSON file</label>
             <input
               type="file"
               accept=".json"
               onChange={(e) => { setPrereqFile(e.target.files?.[0] ?? null); setPrereqResult(null); }}
-              className="w-full text-xs text-[#8888a8] file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border file:border-[#2a2a3e] file:bg-[#1e1e34] file:text-[#8888a8] file:text-xs hover:file:bg-[#2a2a40] file:cursor-pointer cursor-pointer"
+              className="w-full text-xs text-[var(--text-secondary)] file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border file:border-[var(--border)] file:bg-[var(--surface-subtle)] file:text-[var(--text-secondary)] file:text-xs hover:file:bg-[var(--surface-subtle)] file:cursor-pointer cursor-pointer"
             />
           </div>
           {prereqResult && (
-            <p className={`text-xs ${prereqResult.ok ? "text-green-400" : "text-red-400"}`}>
+            <p className={`text-xs ${prereqResult.ok ? "text-green-700" : "text-rose-600"}`}>
               {prereqResult.msg}
             </p>
           )}
           <button
             onClick={handlePrereqImport}
             disabled={!prereqFile || prereqImporting}
-            className="px-4 py-2 bg-[#d4a843]/10 border border-[#d4a843]/20 text-[#d4a843] rounded-xl text-sm font-medium hover:bg-[#d4a843]/20 transition-colors disabled:opacity-50"
+            className="px-4 py-2 bg-[var(--accent-soft)] border border-[var(--border)] text-[var(--accent)] rounded-xl text-sm font-medium hover:bg-[var(--accent-soft)] transition-colors disabled:opacity-50"
           >
             {prereqImporting ? "Importing…" : "Import"}
           </button>
@@ -293,15 +294,15 @@ export default function SettingsPage() {
       </section>
 
       {/* Audit Import */}
-      <section className="bg-[#111120] border border-[#1e1e34] rounded-xl overflow-hidden">
-        <div className="px-5 py-3 border-b border-[#1e1e34]">
-          <h3 className="text-sm font-semibold text-[#d0d0e8]">Audit Import</h3>
-          <p className="text-xs text-[#6a6a8a] mt-0.5">Upload a new degree audit PDF to refresh your data.</p>
+      <section className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-[var(--shadow-card)] overflow-hidden">
+        <div className="px-5 py-3 border-b border-[var(--border)]">
+          <h3 className="text-sm font-semibold text-[var(--text-primary)]">Audit Import</h3>
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">Upload a new degree audit PDF to refresh your data.</p>
         </div>
         <div className="px-5 py-4">
           <Link
             href="/upload"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#d4a843]/10 border border-[#d4a843]/20 text-[#d4a843] rounded-xl text-sm font-medium hover:bg-[#d4a843]/20 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent-soft)] border border-[var(--border)] text-[var(--accent)] rounded-xl text-sm font-medium hover:bg-[var(--accent-soft)] transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -313,43 +314,43 @@ export default function SettingsPage() {
       </section>
 
       {/* Manage Semesters */}
-      <section className="bg-[#111120] border border-[#1e1e34] rounded-xl overflow-hidden">
-        <div className="px-5 py-3 border-b border-[#1e1e34]">
-          <h3 className="text-sm font-semibold text-[#d0d0e8]">Semesters</h3>
-          <p className="text-xs text-[#6a6a8a] mt-0.5">
+      <section className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-[var(--shadow-card)] overflow-hidden">
+        <div className="px-5 py-3 border-b border-[var(--border)]">
+          <h3 className="text-sm font-semibold text-[var(--text-primary)]">Semesters</h3>
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
             Add semesters from the{" "}
-            <Link href="/" className="text-[#d4a843] hover:underline">Audit Plan</Link>.
+            <Link href="/" className="text-[var(--accent)] hover:underline">Audit Plan</Link>.
             Delete planned semesters here.
           </p>
         </div>
         {semesters.length === 0 ? (
-          <div className="px-5 py-6 text-sm text-[#4a4a6a] text-center">No semesters yet.</div>
+          <div className="px-5 py-6 text-sm text-[var(--text-muted)] text-center">No semesters yet.</div>
         ) : (
-          <div className="divide-y divide-[#1a1a2e]">
+          <div className="divide-y divide-[var(--border)]">
             {semesters.map((sem) => (
               <div key={sem.id} className="flex items-center gap-3 px-5 py-3">
                 <div className="flex-1">
-                  <span className="text-sm text-[#d0d0e8]">{sem.label}</span>
+                  <span className="text-sm text-[var(--text-primary)]">{sem.label}</span>
                   <span className={`ml-2 text-[10px] px-1.5 py-0.5 rounded border uppercase tracking-wider ${
-                    sem.status === "completed" ? "bg-green-500/10 text-green-400 border-green-500/20" :
-                    sem.status === "in_progress" ? "bg-[#d4a843]/10 text-[#d4a843] border-[#d4a843]/20" :
-                    "bg-indigo-500/10 text-indigo-400 border-indigo-500/20"
+                    sem.status === "completed" ? "bg-green-50 text-green-700 border-green-200" :
+                    sem.status === "in_progress" ? "bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--border)]" :
+                    "bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--border)]"
                   }`}>{sem.status.replace("_", " ")}</span>
                 </div>
-                <span className="text-xs text-[#4a4a6a]">{sem.courses.length} courses</span>
+                <span className="text-xs text-[var(--text-muted)]">{sem.courses.length} courses</span>
                 {sem.status === "planned" && (
                   deleteConfirm === sem.id ? (
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleDeleteSemester(sem.id)}
                         disabled={saving}
-                        className="text-xs px-2 py-1 bg-red-500/15 border border-red-500/20 text-red-400 rounded-lg hover:bg-red-500/25 transition-colors"
+                        className="text-xs px-2 py-1 bg-red-500/15 border border-rose-200 text-rose-600 rounded-lg hover:bg-red-500/25 transition-colors"
                       >
                         Confirm
                       </button>
                       <button
                         onClick={() => setDeleteConfirm(null)}
-                        className="text-xs px-2 py-1 bg-[#1e1e34] border border-[#2a2a3e] text-[#6a6a8a] rounded-lg hover:bg-[#2a2a40] transition-colors"
+                        className="text-xs px-2 py-1 bg-[var(--surface-subtle)] border border-[var(--border)] text-[var(--text-secondary)] rounded-lg hover:bg-[var(--surface-subtle)] transition-colors"
                       >
                         Cancel
                       </button>
@@ -357,7 +358,7 @@ export default function SettingsPage() {
                   ) : (
                     <button
                       onClick={() => setDeleteConfirm(sem.id)}
-                      className="text-xs text-[#4a4a6a] hover:text-red-400 transition-colors"
+                      className="text-xs text-[var(--text-muted)] hover:text-rose-600 transition-colors"
                     >
                       Delete
                     </button>
@@ -370,17 +371,17 @@ export default function SettingsPage() {
       </section>
 
       {/* Course Management */}
-      <section className="bg-[#111120] border border-[#1e1e34] rounded-xl overflow-hidden">
-        <div className="px-5 py-3 border-b border-[#1e1e34]">
-          <h3 className="text-sm font-semibold text-[#d0d0e8]">Course Management</h3>
-          <p className="text-xs text-[#6a6a8a] mt-0.5">
-            Add, edit, or delete courses with full field control.
+      <section className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-[var(--shadow-card)] overflow-hidden">
+        <div className="px-5 py-3 border-b border-[var(--border)]">
+          <h3 className="text-sm font-semibold text-[var(--text-primary)]">Course tools</h3>
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+            Open the searchable course workspace for audit, catalog, and planned course details.
           </p>
         </div>
         <div className="px-5 py-4">
           <Link
             href="/courses"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#d4a843]/10 border border-[#d4a843]/20 text-[#d4a843] rounded-xl text-sm font-medium hover:bg-[#d4a843]/20 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent-soft)] border border-[var(--border)] text-[var(--accent)] rounded-xl text-sm font-medium hover:bg-[var(--accent-soft)] transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}

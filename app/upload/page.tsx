@@ -70,22 +70,22 @@ export default function UploadPage() {
   }
 
   return (
-    <div className="p-8 max-w-3xl space-y-8">
-      <div>
-        <h2 className="text-2xl font-bold text-[#e2e8f0]">Audit Upload</h2>
-        <p className="text-[#8892a4] text-sm mt-1">
-          Upload your CU degree audit PDF. The parser extracts requirements, courses,
-          grades, and hours automatically.
+    <div className="min-h-screen bg-[var(--page-bg)] p-6 sm:p-8 max-w-4xl space-y-6">
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[var(--shadow-card)]">
+        <p className="text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] font-semibold">Upload · Review · Save</p>
+        <h2 className="text-2xl font-bold text-[var(--text-primary)] mt-2">Upload a degree audit</h2>
+        <p className="text-[var(--text-secondary)] text-sm mt-2 max-w-3xl leading-relaxed">
+          Start with a CU degree audit PDF, review what the parser finds, then save the updated courses and requirements.
         </p>
       </div>
 
       {/* Upload zone */}
       {(state === "idle" || state === "error") && (
         <div
-          className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-colors ${
+          className={`border-2 border-dashed rounded-2xl bg-[var(--surface)] p-12 text-center cursor-pointer shadow-[var(--shadow-card)] transition-colors ${
             dragOver
               ? "border-indigo-500 bg-indigo-500/10"
-              : "border-[#2a2d3a] hover:border-[#4a4d5a] hover:bg-white/5"
+              : "border-[var(--border)] hover:border-[var(--border-strong)] hover:bg-[var(--surface-subtle)]"
           }`}
           onClick={() => fileRef.current?.click()}
           onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
@@ -93,9 +93,9 @@ export default function UploadPage() {
           onDrop={handleDrop}
         >
           <div className="text-4xl mb-3">📄</div>
-          <p className="font-medium text-[#e2e8f0]">Drop your audit PDF here</p>
-          <p className="text-sm text-[#8892a4] mt-1">or click to browse</p>
-          <p className="text-xs text-[#8892a4] mt-3">
+          <p className="font-medium text-[var(--text-primary)]">Drop your audit PDF here</p>
+          <p className="text-sm text-[var(--text-secondary)] mt-1">or click to browse</p>
+          <p className="text-xs text-[var(--text-secondary)] mt-3">
             Get your audit from{" "}
             <span className="text-indigo-400">MyCUInfo → Student → Degree Audit</span>
           </p>
@@ -110,25 +110,25 @@ export default function UploadPage() {
       )}
 
       {error && (
-        <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4 text-red-300 text-sm">
+        <div className="bg-rose-50 border border-rose-200 rounded-lg p-4 text-rose-700 text-sm">
           {error}
         </div>
       )}
 
       {/* Uploading */}
       {state === "uploading" && (
-        <div className="bg-[#1a1d27] border border-[#2a2d3a] rounded-xl p-8 text-center space-y-3">
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-8 text-center space-y-3 shadow-[var(--shadow-card)]">
           <div className="text-2xl animate-pulse">⚙</div>
           <p className="font-medium">Parsing {fileName}…</p>
-          <p className="text-sm text-[#8892a4]">Extracting requirements and courses from audit</p>
+          <p className="text-sm text-[var(--text-secondary)]">Extracting requirements and courses from audit</p>
         </div>
       )}
 
       {/* Review */}
       {state === "review" && parsed && (
         <div className="space-y-6">
-          <div className="bg-[#1a1d27] border border-[#2a2d3a] rounded-xl p-6 space-y-4">
-            <h3 className="font-semibold text-[#e2e8f0]">Parsed: {fileName}</h3>
+          <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-6 space-y-4">
+            <h3 className="font-semibold text-[var(--text-primary)]">Parsed: {fileName}</h3>
 
             {/* Program info */}
             <div className="grid grid-cols-2 gap-3 text-sm">
@@ -141,45 +141,45 @@ export default function UploadPage() {
             </div>
 
             {/* Stats */}
-            <div className="flex gap-6 pt-2 border-t border-[#2a2d3a] text-sm">
+            <div className="flex gap-6 pt-2 border-t border-[var(--border)] text-sm">
               <div>
-                <span className="text-[#8892a4]">Courses extracted: </span>
-                <span className="font-semibold text-indigo-300">{parsed.courses.length}</span>
+                <span className="text-[var(--text-secondary)]">Courses extracted: </span>
+                <span className="font-semibold text-[var(--accent)]">{parsed.courses.length}</span>
               </div>
               <div>
-                <span className="text-[#8892a4]">Requirement groups: </span>
-                <span className="font-semibold text-indigo-300">{parsed.requirementGroups.length}</span>
+                <span className="text-[var(--text-secondary)]">Requirement groups: </span>
+                <span className="font-semibold text-[var(--accent)]">{parsed.requirementGroups.length}</span>
               </div>
               <div>
-                <span className="text-[#8892a4]">Semesters: </span>
-                <span className="font-semibold text-indigo-300">{parsed.semesters.length}</span>
+                <span className="text-[var(--text-secondary)]">Semesters: </span>
+                <span className="font-semibold text-[var(--accent)]">{parsed.semesters.length}</span>
               </div>
             </div>
           </div>
 
           {/* Warnings */}
           {parsed.warnings.length > 0 && (
-            <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4 space-y-1">
-              <p className="text-yellow-300 text-sm font-medium">Parser warnings</p>
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 space-y-1">
+              <p className="text-amber-700 text-sm font-medium">Parser warnings</p>
               {parsed.warnings.map((w, i) => (
-                <p key={i} className="text-yellow-200/70 text-xs">{w}</p>
+                <p key={i} className="text-amber-700 text-xs">{w}</p>
               ))}
             </div>
           )}
 
           {/* Requirement groups preview */}
-          <details className="bg-[#1a1d27] border border-[#2a2d3a] rounded-lg">
-            <summary className="px-4 py-3 cursor-pointer text-sm font-medium text-[#e2e8f0] hover:text-indigo-300">
+          <details className="bg-[var(--surface)] border border-[var(--border)] rounded-lg">
+            <summary className="px-4 py-3 cursor-pointer text-sm font-medium text-[var(--text-primary)] hover:text-[var(--accent)]">
               Requirement groups ({parsed.requirementGroups.length})
             </summary>
-            <div className="border-t border-[#2a2d3a] divide-y divide-[#2a2d3a] max-h-64 overflow-y-auto">
+            <div className="border-t border-[var(--border)] divide-y divide-[var(--border)] max-h-64 overflow-y-auto">
               {parsed.requirementGroups.map((g) => (
                 <div key={g.id} className="px-4 py-2 text-xs">
-                  <span className="text-[#8892a4]">{g.category} → </span>
-                  <span className="text-[#e2e8f0]">{g.name}</span>
+                  <span className="text-[var(--text-secondary)]">{g.category} → </span>
+                  <span className="text-[var(--text-primary)]">{g.name}</span>
                   <span className="ml-2 text-indigo-400 font-mono">[{g.type}]</span>
                   {g.coursePool.length > 0 && (
-                    <span className="ml-2 text-[#8892a4]">{g.coursePool.length} courses</span>
+                    <span className="ml-2 text-[var(--text-secondary)]">{g.coursePool.length} courses</span>
                   )}
                 </div>
               ))}
@@ -187,13 +187,13 @@ export default function UploadPage() {
           </details>
 
           {/* Courses preview */}
-          <details className="bg-[#1a1d27] border border-[#2a2d3a] rounded-lg">
-            <summary className="px-4 py-3 cursor-pointer text-sm font-medium text-[#e2e8f0] hover:text-indigo-300">
+          <details className="bg-[var(--surface)] border border-[var(--border)] rounded-lg">
+            <summary className="px-4 py-3 cursor-pointer text-sm font-medium text-[var(--text-primary)] hover:text-[var(--accent)]">
               Courses ({parsed.courses.length})
             </summary>
-            <div className="border-t border-[#2a2d3a] max-h-64 overflow-y-auto">
+            <div className="border-t border-[var(--border)] max-h-64 overflow-y-auto">
               <table className="w-full text-xs">
-                <thead className="text-[#8892a4] border-b border-[#2a2d3a]">
+                <thead className="text-[var(--text-secondary)] border-b border-[var(--border)]">
                   <tr>
                     <th className="px-4 py-2 text-left">Course</th>
                     <th className="px-4 py-2 text-left">Name</th>
@@ -202,13 +202,13 @@ export default function UploadPage() {
                     <th className="px-4 py-2 text-left">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#2a2d3a]">
+                <tbody className="divide-y divide-[var(--border)]">
                   {parsed.courses.map((c) => (
-                    <tr key={c.id} className="hover:bg-white/5">
-                      <td className="px-4 py-1.5 font-mono text-indigo-300">{c.number}</td>
-                      <td className="px-4 py-1.5 text-[#e2e8f0]">{c.name}</td>
-                      <td className="px-4 py-1.5 text-right text-[#8892a4]">{c.credits}</td>
-                      <td className="px-4 py-1.5 text-[#8892a4]">{c.grade ?? "—"}</td>
+                    <tr key={c.id} className="hover:bg-[var(--surface-subtle)]">
+                      <td className="px-4 py-1.5 font-mono text-[var(--accent)]">{c.number}</td>
+                      <td className="px-4 py-1.5 text-[var(--text-primary)]">{c.name}</td>
+                      <td className="px-4 py-1.5 text-right text-[var(--text-secondary)]">{c.credits}</td>
+                      <td className="px-4 py-1.5 text-[var(--text-secondary)]">{c.grade ?? "—"}</td>
                       <td className="px-4 py-1.5">
                         <StatusBadge status={c.status} />
                       </td>
@@ -228,7 +228,7 @@ export default function UploadPage() {
             </button>
             <button
               onClick={() => { setState("idle"); setParsed(null); }}
-              className="px-6 py-2.5 bg-[#1a1d27] hover:bg-[#2a2d3a] border border-[#2a2d3a] rounded-lg text-sm transition-colors"
+              className="px-6 py-2.5 bg-[var(--surface)] hover:bg-[var(--surface-subtle)] border border-[var(--border)] rounded-lg text-sm transition-colors"
             >
               Cancel
             </button>
@@ -238,7 +238,7 @@ export default function UploadPage() {
 
       {/* Saving */}
       {state === "saving" && (
-        <div className="bg-[#1a1d27] border border-[#2a2d3a] rounded-xl p-8 text-center">
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-8 text-center shadow-[var(--shadow-card)]">
           <div className="text-2xl animate-pulse">💾</div>
           <p className="font-medium mt-3">Saving…</p>
         </div>
@@ -246,10 +246,10 @@ export default function UploadPage() {
 
       {/* Done */}
       {state === "done" && (
-        <div className="bg-green-900/20 border border-green-500/30 rounded-xl p-8 text-center space-y-4">
+        <div className="bg-green-50 border border-green-200 rounded-2xl p-8 text-center shadow-[var(--shadow-card)] space-y-4">
           <div className="text-3xl">✓</div>
-          <p className="font-medium text-green-300">Audit imported successfully</p>
-          <p className="text-sm text-[#8892a4]">
+          <p className="font-medium text-green-700">Audit imported successfully</p>
+          <p className="text-sm text-[var(--text-secondary)]">
             Your courses and requirements have been saved.
           </p>
           <div className="flex gap-3 justify-center pt-2">
@@ -261,7 +261,7 @@ export default function UploadPage() {
             </a>
             <button
               onClick={() => setState("idle")}
-              className="px-5 py-2 bg-[#1a1d27] border border-[#2a2d3a] hover:bg-[#2a2d3a] rounded-lg text-sm transition-colors"
+              className="px-5 py-2 bg-[var(--surface)] border border-[var(--border)] hover:bg-[var(--surface-subtle)] rounded-lg text-sm transition-colors"
             >
               Upload Another
             </button>
@@ -275,8 +275,8 @@ export default function UploadPage() {
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <span className="text-[#8892a4]">{label}: </span>
-      <span className="text-[#e2e8f0]">{value || "—"}</span>
+      <span className="text-[var(--text-secondary)]">{label}: </span>
+      <span className="text-[var(--text-primary)]">{value || "—"}</span>
     </div>
   );
 }
@@ -286,10 +286,10 @@ function StatusBadge({ status }: { status: string }) {
     completed: "text-green-400",
     in_progress: "text-yellow-400",
     planned: "text-blue-400",
-    not_started: "text-[#8892a4]",
+    not_started: "text-[var(--text-secondary)]",
   };
   return (
-    <span className={`${colors[status] ?? "text-[#8892a4]"} text-xs`}>
+    <span className={`${colors[status] ?? "text-[var(--text-secondary)]"} text-xs`}>
       {status.replace("_", " ")}
     </span>
   );
