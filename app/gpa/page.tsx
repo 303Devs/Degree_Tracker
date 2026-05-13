@@ -178,6 +178,7 @@ export default function GPAPage() {
             changed={false}
             credits={completedGraded.reduce((a, c) => a + c.credits, 0)}
             sub="From degree audit"
+            variant="official"
           />
         )}
         {whatIfEnabled ? (
@@ -188,6 +189,7 @@ export default function GPAPage() {
             changed={Math.abs(projectedGPA - baseCumGPA) > 0.001}
             credits={completedGraded.reduce((a, c) => a + c.credits, 0)}
             sub={`From calculated baseline ${baseCumGPA > 0 ? baseCumGPA.toFixed(3) : "—"}`}
+            variant="calculated"
           />
         ) : (
           <GPACard
@@ -198,6 +200,7 @@ export default function GPAPage() {
             credits={completedGraded.reduce((a, c) => a + c.credits, 0)}
             sub="From graded courses"
             officialDiff={officialGPA > 0 && Math.abs(baseCumGPA - officialGPA) > 0.001 ? officialGPA - baseCumGPA : null}
+            variant="calculated"
           />
         )}
         <GPACard
@@ -207,6 +210,7 @@ export default function GPAPage() {
           changed={whatIfEnabled && Math.abs(majorGPA - baseMajorGPA) > 0.001}
           credits={majorGraded.filter((c) => c.status === "completed").reduce((a, c) => a + c.credits, 0)}
           sub="Stats & DS major courses only"
+          variant="major"
         />
         </div>
       </section>
@@ -505,6 +509,7 @@ function GPACard({
   credits,
   sub,
   officialDiff,
+  variant = "neutral",
 }: {
   label: string;
   gpa: number;
@@ -513,13 +518,27 @@ function GPACard({
   credits: number;
   sub?: string;
   officialDiff?: number | null;
+  variant?: "official" | "calculated" | "major" | "neutral";
 }) {
   const delta = gpa - base;
+
+  const containerClass =
+    variant === "official"    ? "bg-[var(--accent-soft)] border-[var(--accent)]/30" :
+    variant === "major"       ? "bg-purple-50 border-purple-200" :
+    variant === "calculated"  ? `bg-[var(--surface)] border-l-4 ${gpa >= 3.0 ? "border-l-green-500" : gpa >= 2.0 ? "border-l-amber-500" : "border-l-rose-500"} border-[var(--border)]` :
+    "bg-[var(--surface)] border-[var(--border)]";
+
+  const gpaColor =
+    gpa >= 3.5 ? "text-green-700" :
+    gpa >= 3.0 ? "text-[var(--accent)]" :
+    gpa >= 2.0 ? "text-amber-700" :
+    "text-rose-600";
+
   return (
-    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-5">
+    <div className={`rounded-xl border p-5 ${containerClass}`}>
       <div className="text-xs text-[var(--text-secondary)] uppercase tracking-wider mb-2">{label}</div>
       <div className="flex items-end gap-3">
-        <div className={`text-4xl font-bold ${gpa >= 3.5 ? "text-[var(--accent)]" : gpa >= 3.0 ? "text-green-700" : gpa >= 2.0 ? "text-[var(--accent)]" : "text-rose-600"}`}>
+        <div className={`text-4xl font-bold ${gpaColor}`}>
           {gpa > 0 ? gpa.toFixed(3) : "—"}
         </div>
         {changed && (
@@ -555,8 +574,13 @@ function CountingBucketCard({
   credits: number;
   color: string;
 }) {
+  const bgClass =
+    label === "Degree Progress" ? "bg-green-50" :
+    label === "GPA Calculation" ? "bg-[var(--accent-soft)]" :
+    "bg-violet-50";
+
   return (
-    <div className="bg-[var(--surface)] px-4 py-3">
+    <div className={`${bgClass} px-4 py-3`}>
       <div className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider mb-1">{label}</div>
       <div className={`text-xl font-bold ${color}`}>{credits}<span className="text-xs font-normal text-[var(--text-secondary)] ml-1">cr</span></div>
       <div className="text-[10px] text-[var(--text-muted)]">{courses} courses</div>
@@ -581,8 +605,8 @@ function CountingDot({ active, label }: { active: boolean; label: string }) {
 function StatusPill({ status }: { status: string }) {
   const styles: Record<string, string> = {
     in_progress: "bg-[var(--accent)]/15 text-[var(--accent)] border-[var(--border)]",
-    registered: "bg-amber-50 text-[var(--status-progress)] border-amber-200",
-    planned: "bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--border)]",
+    registered:  "bg-[var(--badge-registered-bg)] text-[var(--badge-registered-text)] border-[var(--badge-registered-border)]",
+    planned:     "bg-[var(--badge-planned-bg)] text-[var(--badge-planned-text)] border-[var(--badge-planned-border)]",
   };
   return (
     <span className={`px-2 py-0.5 rounded text-[10px] border ${styles[status] ?? ""} uppercase tracking-wider shrink-0`}>

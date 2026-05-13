@@ -21,6 +21,8 @@ const sectionCopy: Record<DashboardRequirementStatus, { title: string; detail: s
   complete: { title: "Complete", detail: "Finished areas are quieter by default." },
 };
 
+// Used for the small dot in RequirementSection summary header (kept for reference)
+// Section accent bars now handled inline via CSS variables
 const statusTone: Record<DashboardRequirementStatus, string> = {
   attention: "bg-rose-500",
   in_progress: "bg-amber-500",
@@ -28,11 +30,27 @@ const statusTone: Record<DashboardRequirementStatus, string> = {
   complete: "bg-green-600",
 };
 
+// Count badge tints per section status
+const sectionBadgeTone: Record<DashboardRequirementStatus, string> = {
+  attention: "border-rose-200 bg-rose-50 text-rose-700",
+  in_progress: "border-amber-200 bg-amber-50 text-amber-700",
+  remaining: "border-slate-200 bg-slate-50 text-slate-600",
+  complete: "border-green-200 bg-green-50 text-green-700",
+};
+
+// Top-border accent color class per section
+const sectionTopBar: Record<DashboardRequirementStatus, string> = {
+  attention: "border-t-rose-400",
+  in_progress: "border-t-amber-400",
+  remaining: "border-t-slate-300",
+  complete: "border-t-green-500",
+};
+
 const progressTone: Record<DashboardRequirementStatus, string> = {
-  attention: "bg-rose-500",
-  in_progress: "bg-amber-500",
-  remaining: "bg-[var(--text-muted)]",
-  complete: "bg-green-600",
+  attention: "bg-gradient-to-r from-rose-500 to-rose-400",
+  in_progress: "bg-gradient-to-r from-amber-500 to-amber-400",
+  remaining: "bg-gradient-to-r from-slate-400 to-slate-300",
+  complete: "bg-gradient-to-r from-green-600 to-green-500",
 };
 
 const nextActionLabels = ["Review first", "Confirm timing", "Choose next course"];
@@ -122,19 +140,30 @@ function Hero({ dashboard }: { dashboard: AuditDashboardViewModel }) {
       </div>
 
       <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-4">
-        <Metric label="requirements complete" value={`${summary.percentComplete}%`} detail={`${summary.completeRequirements} of ${summary.totalRequirements}`} emphasis />
-        <Metric label="needs attention" value={String(summary.attentionRequirements)} detail="review first" />
-        <Metric label="in progress" value={String(summary.inProgressRequirements)} detail={`${summary.creditsInProgress} credits active`} />
-        <Metric label="planned credits" value={String(summary.creditsPlanned)} detail={`${summary.creditsCompleted} credits complete`} />
+        <Metric label="requirements complete" value={`${summary.percentComplete}%`} detail={`${summary.completeRequirements} of ${summary.totalRequirements}`} tone="complete" />
+        <Metric label="needs attention" value={String(summary.attentionRequirements)} detail="review first" tone={summary.attentionRequirements > 0 ? "attention" : "neutral"} />
+        <Metric label="in progress" value={String(summary.inProgressRequirements)} detail={`${summary.creditsInProgress} credits active`} tone="progress" />
+        <Metric label="planned credits" value={String(summary.creditsPlanned)} detail={`${summary.creditsCompleted} credits complete`} tone="accent" />
       </div>
     </Surface>
   );
 }
 
-function Metric({ label, value, detail, emphasis = false }: { label: string; value: string; detail: string; emphasis?: boolean }) {
+type MetricTone = "complete" | "attention" | "progress" | "accent" | "neutral";
+
+const metricToneClasses: Record<MetricTone, { container: string; value: string }> = {
+  complete:  { container: "border-[var(--tile-complete-border)]  bg-[var(--tile-complete-bg)]",  value: "text-[var(--tile-complete-text)]"  },
+  attention: { container: "border-[var(--tile-attention-border)] bg-[var(--tile-attention-bg)]", value: "text-[var(--tile-attention-text)]" },
+  progress:  { container: "border-[var(--tile-progress-border)]  bg-[var(--tile-progress-bg)]",  value: "text-[var(--tile-progress-text)]"  },
+  accent:    { container: "border-[var(--accent)] bg-[var(--accent-soft)]",                      value: "text-[var(--accent)]"              },
+  neutral:   { container: "border-[var(--border)] bg-[var(--surface)]",                          value: "text-[var(--text-primary)]"        },
+};
+
+function Metric({ label, value, detail, tone = "neutral" }: { label: string; value: string; detail: string; tone?: MetricTone }) {
+  const styles = metricToneClasses[tone];
   return (
-    <div className={`min-w-0 rounded-2xl border p-3 sm:p-4 ${emphasis ? "border-[var(--accent)] bg-[var(--accent-soft)]" : "border-[var(--border)] bg-[var(--surface)]"}`}>
-      <div className="break-words text-xl font-semibold text-[var(--text-primary)] sm:text-2xl">{value}</div>
+    <div className={`min-w-0 rounded-2xl border p-3 sm:p-4 ${styles.container}`}>
+      <div className={`break-words text-xl font-semibold sm:text-2xl ${styles.value}`}>{value}</div>
       <div className="mt-1 break-words text-[11px] font-medium text-[var(--text-secondary)] sm:text-xs">{label}</div>
       <div className="mt-2 break-words text-[11px] text-[var(--text-muted)] sm:text-xs">{detail}</div>
     </div>
@@ -151,13 +180,24 @@ function NextActions({ dashboard }: { dashboard: AuditDashboardViewModel }) {
         </div>
       </div>
       <div className="mt-3 grid min-w-0 gap-3 lg:grid-cols-3">
-        {dashboard.nextActions.map((action, index) => (
-          <div key={action.id} className="min-w-0 rounded-2xl border border-[var(--border)] bg-[var(--surface-subtle)] p-3 sm:p-4">
-            <div className="flex items-center gap-2 text-xs font-semibold text-[var(--accent)]"><span>{index + 1}</span><span>{nextActionLabels[index] ?? "Next action"}</span></div>
-            <h3 className="mt-2 break-words text-sm font-semibold text-[var(--text-primary)]">{action.title}</h3>
-            <p className="mt-2 break-words text-sm leading-6 text-[var(--text-secondary)]">{action.detail}</p>
-          </div>
-        ))}
+        {dashboard.nextActions.map((action, index) => {
+          const actionTone = index === 0
+            ? { border: "border-l-rose-400",  label: "text-rose-600"  }
+            : index === 1
+            ? { border: "border-l-amber-400", label: "text-amber-700" }
+            : { border: "border-l-[var(--accent)]", label: "text-[var(--accent)]" };
+
+          return (
+            <div key={action.id} className={`min-w-0 rounded-2xl border border-[var(--border)] border-l-4 ${actionTone.border} bg-[var(--surface)] p-3 sm:p-4`}>
+              <div className={`flex items-center gap-2 text-xs font-semibold ${actionTone.label}`}>
+                <span>{index + 1}</span>
+                <span>{nextActionLabels[index] ?? "Next action"}</span>
+              </div>
+              <h3 className="mt-2 break-words text-sm font-semibold text-[var(--text-primary)]">{action.title}</h3>
+              <p className="mt-2 break-words text-sm leading-6 text-[var(--text-secondary)]">{action.detail}</p>
+            </div>
+          );
+        })}
       </div>
     </Surface>
   );
@@ -179,17 +219,14 @@ function RequirementSection({ status, items }: { status: DashboardRequirementSta
   const copy = sectionCopy[status];
   const initiallyOpen = status !== "complete";
   return (
-    <details open={initiallyOpen} className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-[var(--shadow-card)]">
+    <details open={initiallyOpen} className={`rounded-2xl border border-t-4 border-[var(--border)] ${sectionTopBar[status]} bg-[var(--surface)] shadow-[var(--shadow-card)]`}>
       <summary className="cursor-pointer list-none px-5 py-4">
         <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <span className={`h-2.5 w-2.5 rounded-full ${statusTone[status]}`} />
-            <div>
-              <h2 className="text-base font-semibold text-[var(--text-primary)]">{copy.title}</h2>
-              <p className="text-sm text-[var(--text-secondary)]">{copy.detail}</p>
-            </div>
+          <div>
+            <h2 className="text-base font-semibold text-[var(--text-primary)]">{copy.title}</h2>
+            <p className="text-sm text-[var(--text-secondary)]">{copy.detail}</p>
           </div>
-          <span className="rounded-full border border-[var(--border)] px-3 py-1 text-xs font-semibold text-[var(--text-muted)]">{items.length}</span>
+          <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${sectionBadgeTone[status]}`}>{items.length}</span>
         </div>
       </summary>
       <div className="grid min-w-0 gap-3 border-t border-[var(--border)] p-3 sm:p-4 lg:grid-cols-2">
@@ -201,7 +238,11 @@ function RequirementSection({ status, items }: { status: DashboardRequirementSta
 
 function RequirementCard({ item }: { item: DashboardRequirement }) {
   return (
-    <article className="min-w-0 rounded-2xl border border-[var(--border)] bg-[var(--surface-subtle)] p-3 sm:p-4">
+    <article className={`min-w-0 rounded-2xl border border-[var(--border)] p-3 sm:p-4 ${
+      item.status === "attention" ? "bg-rose-50/40" :
+      item.status === "complete"  ? "bg-green-50/30" :
+      "bg-[var(--surface-subtle)]"
+    }`}>
       <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <p className="text-xs text-[var(--text-muted)]">{item.category}</p>
@@ -209,7 +250,7 @@ function RequirementCard({ item }: { item: DashboardRequirement }) {
         </div>
         <span className="text-xs font-semibold text-[var(--text-secondary)] sm:shrink-0">{item.progressLabel}</span>
       </div>
-      <div className="mt-4 h-2 overflow-hidden rounded-full bg-[var(--progress-track)]">
+      <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-[var(--progress-track)]">
         <div className={`h-full rounded-full ${progressTone[item.status]}`} style={{ width: `${item.percent}%` }} />
       </div>
       <p className="mt-3 break-words text-sm leading-6 text-[var(--text-secondary)]">{item.helperText}</p>

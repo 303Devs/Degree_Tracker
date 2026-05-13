@@ -283,10 +283,10 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
-    completed: "rounded border border-green-200 bg-green-50 px-1.5 py-0.5 text-green-700",
-    in_progress: "rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-amber-700",
-    registered: "rounded border border-[var(--border)] bg-[var(--accent-soft)] px-1.5 py-0.5 text-[var(--accent)]",
-    planned: "rounded border border-[var(--border)] bg-[var(--accent-soft)] px-1.5 py-0.5 text-[var(--accent)]",
+    completed:   "rounded border border-green-200   bg-green-50   px-1.5 py-0.5 text-green-700",
+    in_progress: "rounded border border-amber-200   bg-amber-50   px-1.5 py-0.5 text-amber-700",
+    registered:  "rounded border border-[var(--badge-registered-border)] bg-[var(--badge-registered-bg)] px-1.5 py-0.5 text-[var(--badge-registered-text)]",
+    planned:     "rounded border border-[var(--badge-planned-border)]    bg-[var(--badge-planned-bg)]    px-1.5 py-0.5 text-[var(--badge-planned-text)]",
     not_started: "text-[var(--text-secondary)]",
   };
   return (
