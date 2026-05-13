@@ -254,14 +254,14 @@ function CourseDetail({
 // Main page
 // ---------------------------------------------------------------------------
 
-type Filters = { search: string; status: string; category: string; source: string; counting: string };
+type Filters = { search: string; status: string; category: string; source: string; counting: string; sort: "status" | "number" | "title" | "credits" };
 
 export default function CourseLibraryWorkspace() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [requirements, setRequirements] = useState<RequirementGroup[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filters, setFilters] = useState<Filters>({ search: "", status: "", category: "", source: "", counting: "" });
+  const [filters, setFilters] = useState<Filters>({ search: "", status: "", category: "", source: "", counting: "", sort: "status" });
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -327,7 +327,12 @@ export default function CourseLibraryWorkspace() {
           }
           return true;
         })
-        .sort((a, b) => (STATUS_ORDER[a.status] ?? 99) - (STATUS_ORDER[b.status] ?? 99)),
+        .sort((a, b) => {
+          if (filters.sort === "number") return a.number.localeCompare(b.number, undefined, { numeric: true });
+          if (filters.sort === "title") return a.name.localeCompare(b.name);
+          if (filters.sort === "credits") return b.credits - a.credits || a.number.localeCompare(b.number, undefined, { numeric: true });
+          return (STATUS_ORDER[a.status] ?? 99) - (STATUS_ORDER[b.status] ?? 99) || a.number.localeCompare(b.number, undefined, { numeric: true });
+        }),
     [courses, requirements, filters]
   );
 
@@ -357,11 +362,11 @@ export default function CourseLibraryWorkspace() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--page-bg)] p-6 sm:p-8 space-y-5 max-w-[1200px] mx-auto">
-      <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[var(--shadow-card)]">
+    <div className="min-h-screen w-full overflow-x-hidden bg-[var(--page-bg)] px-3 py-5 pb-32 sm:p-8 space-y-5 max-w-[1200px] mx-auto">
+      <div className="min-w-0 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-card)] sm:p-6">
         <p className="text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] font-semibold">Courses</p>
-        <h2 className="text-2xl font-bold text-[var(--text-primary)] mt-2">Find the courses in your plan</h2>
-        <p className="text-[var(--text-secondary)] text-sm mt-2 max-w-3xl leading-relaxed">
+        <h2 className="mt-2 max-w-full break-words text-2xl font-bold text-[var(--text-primary)]">Find the courses in your plan</h2>
+        <p className="mt-2 max-w-full break-words text-sm leading-relaxed text-[var(--text-secondary)] sm:max-w-3xl">
           Search audit rows, catalog rows, manual additions, uncounted attempts, planned courses, prereqs/coreqs, semester, grade,
           and counting flags from the same workspace.
         </p>
@@ -383,18 +388,18 @@ export default function CourseLibraryWorkspace() {
 
       {/* Filters */}
       <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-card)]">
-      <div className="flex gap-3 flex-wrap">
+      <div className="grid min-w-0 gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3 xl:grid-cols-6">
         <input
           type="text"
           placeholder="Search number, title, description, or notes..."
           value={filters.search}
           onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value }))}
-          className="flex-1 min-w-48 px-3 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)]"
+          className="w-full min-w-0 px-3 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] sm:col-span-2 xl:col-span-2"
         />
         <select
           value={filters.status}
           onChange={(e) => setFilters((f) => ({ ...f, status: e.target.value }))}
-          className="px-3 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
+          className="w-full min-w-0 px-3 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
         >
           <option value="">All statuses</option>
           <option value="in_progress">In Progress</option>
@@ -406,7 +411,7 @@ export default function CourseLibraryWorkspace() {
         <select
           value={filters.category}
           onChange={(e) => setFilters((f) => ({ ...f, category: e.target.value }))}
-          className="px-3 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] max-w-64"
+          className="w-full min-w-0 px-3 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
         >
           <option value="">All categories</option>
           {categories.map((cat) => (
@@ -418,7 +423,7 @@ export default function CourseLibraryWorkspace() {
         <select
           value={filters.source}
           onChange={(e) => setFilters((f) => ({ ...f, source: e.target.value }))}
-          className="px-3 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
+          className="w-full min-w-0 px-3 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
         >
           <option value="">All sources</option>
           <option value="Audit">Audit</option>
@@ -428,7 +433,7 @@ export default function CourseLibraryWorkspace() {
         <select
           value={filters.counting}
           onChange={(e) => setFilters((f) => ({ ...f, counting: e.target.value }))}
-          className="px-3 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
+          className="w-full min-w-0 px-3 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
         >
           <option value="">All counting states</option>
           <option value="Counts">Counts</option>
@@ -436,12 +441,22 @@ export default function CourseLibraryWorkspace() {
           <option value="Not counting">Not counting</option>
           <option value="Not planned">Not planned</option>
         </select>
+        <select
+          value={filters.sort}
+          onChange={(e) => setFilters((f) => ({ ...f, sort: e.target.value as Filters["sort"] }))}
+          className="w-full min-w-0 px-3 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
+        >
+          <option value="status">Sort: status/default</option>
+          <option value="number">Sort: course number</option>
+          <option value="title">Sort: title</option>
+          <option value="credits">Sort: credits</option>
+        </select>
       </div>
-      <div className="mt-3 flex flex-wrap gap-2 text-[10px] uppercase tracking-wider">
-        <span className="rounded-lg border border-green-200 bg-green-50 px-2 py-1 text-green-700">counts {libraryStats.Counts}</span>
-        <span className="rounded-lg border border-[var(--border)] bg-[var(--accent-soft)] px-2 py-1 text-[var(--accent)]">planned {libraryStats.Planned}</span>
-        <span className="rounded-lg border border-[var(--border)] bg-[var(--surface-subtle)] px-2 py-1 text-[var(--text-secondary)]">not planned {libraryStats["Not planned"]}</span>
-        <span className="rounded-lg border border-amber-200 bg-amber-50 px-2 py-1 text-amber-700">uncounted visible {libraryStats["Not counting"]}</span>
+      <div className="mt-3 grid min-w-0 grid-cols-2 gap-2 text-[10px] uppercase tracking-wide sm:flex sm:flex-wrap">
+        <span className="min-w-0 rounded-lg border border-green-200 bg-green-50 px-2 py-1 text-green-700">counts {libraryStats.Counts}</span>
+        <span className="min-w-0 rounded-lg border border-[var(--border)] bg-[var(--accent-soft)] px-2 py-1 text-[var(--accent)]">planned {libraryStats.Planned}</span>
+        <span className="min-w-0 rounded-lg border border-[var(--border)] bg-[var(--surface-subtle)] px-2 py-1 text-[var(--text-secondary)]">not planned {libraryStats["Not planned"]}</span>
+        <span className="min-w-0 rounded-lg border border-amber-200 bg-amber-50 px-2 py-1 text-amber-700">uncounted visible {libraryStats["Not counting"]}</span>
       </div>
       </div>
 

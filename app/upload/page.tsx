@@ -70,8 +70,8 @@ export default function UploadPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--page-bg)] p-6 sm:p-8 max-w-4xl mx-auto space-y-6">
-      <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[var(--shadow-card)]">
+    <div className="min-h-screen w-full overflow-x-hidden bg-[var(--page-bg)] px-3 py-5 pb-32 sm:p-8 max-w-4xl mx-auto space-y-6">
+      <div className="min-w-0 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 sm:p-6 shadow-[var(--shadow-card)]">
         <p className="text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] font-semibold">Upload · Review · Save</p>
         <h2 className="text-2xl font-bold text-[var(--text-primary)] mt-2">Upload a degree audit</h2>
         <p className="text-[var(--text-secondary)] text-sm mt-2 max-w-3xl leading-relaxed">
@@ -95,9 +95,11 @@ export default function UploadPage() {
           <div className="text-4xl mb-3">📄</div>
           <p className="font-medium text-[var(--text-primary)]">Drop your audit PDF here</p>
           <p className="text-sm text-[var(--text-secondary)] mt-1">or click to browse</p>
-          <p className="text-xs text-[var(--text-secondary)] mt-3">
-            Get your audit from{" "}
-            <span className="text-[var(--accent)]">MyCUInfo → Student → Degree Audit</span>
+          <p className="mt-3 text-xs text-[var(--text-secondary)]">
+            Get your audit from
+            <span className="mt-1 block break-words text-[var(--accent)] sm:inline sm:mt-0">
+              {" "}MyCUInfo → Student → Degree Audit
+            </span>
           </p>
           <input
             ref={fileRef}
@@ -131,7 +133,7 @@ export default function UploadPage() {
             <h3 className="font-semibold text-[var(--text-primary)]">Parsed: {fileName}</h3>
 
             {/* Program info */}
-            <div className="grid grid-cols-2 gap-3 text-sm">
+            <div className="grid gap-3 sm:grid-cols-2 text-sm">
               <InfoRow label="Degree" value={parsed.programInfo.degreeName} />
               <InfoRow label="Student" value={parsed.programInfo.studentName} />
               <InfoRow label="Catalog Year" value={parsed.programInfo.catalogYear} />
@@ -141,7 +143,7 @@ export default function UploadPage() {
             </div>
 
             {/* Stats */}
-            <div className="flex gap-6 pt-2 border-t border-[var(--border)] text-sm">
+            <div className="flex flex-wrap gap-3 sm:gap-6 pt-2 border-t border-[var(--border)] text-sm">
               <div>
                 <span className="text-[var(--text-secondary)]">Courses extracted: </span>
                 <span className="font-semibold text-[var(--accent)]">{parsed.courses.length}</span>

@@ -71,6 +71,13 @@ function formatCourseId(id: string): string {
   return id.replaceAll("-", " ");
 }
 
+function formatRequirementContext(label: string): string {
+  return label
+    .replace(/\s+FA\d{4}\b/g, "")
+    .replace(/^Complete\s+/i, "")
+    .trim();
+}
+
 // ---------------------------------------------------------------------------
 // Course card (draggable)
 // ---------------------------------------------------------------------------
@@ -136,7 +143,7 @@ function PlannerCard({
       style={style}
       {...(draggable ? { ...listeners, ...attributes } : {})}
       className={[
-        "rounded-xl border border-[var(--border)] bg-[var(--surface)] p-3 shadow-[var(--shadow-card)] select-none transition-all duration-150",
+        "min-w-0 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-3 shadow-[var(--shadow-card)] select-none transition-all duration-150",
         isDragging ? "opacity-30 scale-95" : "",
         overlay ? "rotate-1 scale-105 border-[var(--accent)] bg-[var(--surface)] shadow-[var(--shadow-elevated)]" : "",
         !overlay && draggable ? "cursor-grab active:cursor-grabbing hover:border-[var(--accent)] hover:bg-[var(--accent-soft)]" : "",
@@ -165,10 +172,15 @@ function PlannerCard({
         </div>
       )}
       {placement?.requirementLabels.length ? (
-        <p className="mt-2 truncate text-[10px] text-[var(--text-muted)]">For: {placement.requirementLabels[0]}</p>
+        <div className="mt-2 min-w-0 rounded-lg border border-[var(--border)] bg-[var(--accent-soft)] px-2.5 py-2">
+          <p className="text-[9px] font-semibold uppercase tracking-normal text-[var(--accent)]">Requirement</p>
+          <p className="mt-1 break-words text-[11px] leading-snug text-[var(--text-primary)]">
+            {formatRequirementContext(placement.requirementLabels[0])}
+          </p>
+        </div>
       ) : null}
       {placement?.blockedReasons.length ? (
-        <p className="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-2 py-1 text-[10px] text-amber-700">{placement.blockedReasons[0]}</p>
+        <p className="mt-2 max-w-full overflow-hidden break-words rounded-lg border border-amber-200 bg-amber-50 px-2 py-1 text-[10px] text-amber-700">{placement.blockedReasons[0]}</p>
       ) : null}
     </div>
   );
@@ -351,8 +363,8 @@ function UnplannedPool({
 function PlannerMetric({ label, value }: { label: string; value: string }) {
   return (
     <div className="min-w-0 rounded-2xl border border-[var(--border)] bg-[var(--surface-subtle)] p-3">
-      <div className="truncate text-lg font-semibold text-[var(--text-primary)]">{value}</div>
-      <div className="mt-1 text-[11px] font-medium text-[var(--text-secondary)]">{label}</div>
+      <div className="break-words text-lg font-semibold leading-tight text-[var(--text-primary)]">{value}</div>
+      <div className="mt-1 break-words text-[11px] font-medium leading-snug text-[var(--text-secondary)]">{label}</div>
     </div>
   );
 }
@@ -817,15 +829,15 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <div className={`${embedded ? "space-y-4" : "min-h-screen space-y-5 bg-[var(--page-bg)] px-3 py-5 pb-8 text-[var(--text-primary)] sm:px-6 lg:px-8"}`}>
+      <div className={`${embedded ? "space-y-4" : "min-h-screen w-full space-y-5 overflow-x-hidden bg-[var(--page-bg)] px-3 py-5 pb-32 text-[var(--text-primary)] sm:px-6 lg:px-8"}`}>
         {/* Header */}
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-card)]">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           {!embedded && (
-            <div className="max-w-3xl">
+            <div className="min-w-0 max-w-full sm:max-w-3xl">
               <p className="text-xs font-semibold text-[var(--accent)]">Semester Planner</p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--text-primary)] sm:text-3xl">Build a plan you can register from</h2>
-              <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+              <h2 className="mt-2 max-w-full break-words text-2xl font-semibold tracking-tight text-[var(--text-primary)] sm:text-3xl">Build a plan you can register from</h2>
+              <p className="mt-2 max-w-full break-words text-sm leading-6 text-[var(--text-secondary)]">
                 Place courses into terms, see what is blocked, and catch timing issues before registration.
               </p>
             </div>
@@ -847,7 +859,7 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
           </button>
           </div>
           {!embedded && (
-            <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <div className="mt-4 grid min-w-0 gap-2 sm:grid-cols-2 lg:grid-cols-4">
               <PlannerMetric label="still unplanned" value={String(boardView.summary.unplannedCount)} />
               <PlannerMetric label="blocked" value={String(boardView.summary.blockedCount)} />
               <PlannerMetric label="plan issues" value={String(boardView.summary.conflictCount)} />
