@@ -140,7 +140,7 @@ function Hero({ dashboard }: { dashboard: AuditDashboardViewModel }) {
       </div>
 
       <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-4">
-        <Metric label="requirements complete" value={`${summary.percentComplete}%`} detail={`${summary.completeRequirements} of ${summary.totalRequirements}`} tone="complete" />
+        <Metric label="requirements complete" value={`${summary.percentComplete}%`} detail={`${summary.completeRequirements} of ${summary.totalRequirements}`} tone={summary.percentComplete > 0 ? "complete" : "neutral"} />
         <Metric label="needs attention" value={String(summary.attentionRequirements)} detail="review first" tone={summary.attentionRequirements > 0 ? "attention" : "neutral"} />
         <Metric label="in progress" value={String(summary.inProgressRequirements)} detail={`${summary.creditsInProgress} credits active`} tone="progress" />
         <Metric label="planned credits" value={String(summary.creditsPlanned)} detail={`${summary.creditsCompleted} credits complete`} tone="accent" />
@@ -180,7 +180,7 @@ function NextActions({ dashboard }: { dashboard: AuditDashboardViewModel }) {
         </div>
       </div>
       <div className="mt-3 grid min-w-0 gap-3 lg:grid-cols-3">
-        {dashboard.nextActions.map((action, index) => {
+        {dashboard.nextActions.slice(0, 3).map((action, index) => {
           const actionTone = index === 0
             ? { border: "border-l-rose-400",  label: "text-rose-600"  }
             : index === 1
@@ -251,8 +251,11 @@ function RequirementCard({ item }: { item: DashboardRequirement }) {
         <span className="text-xs font-semibold text-[var(--text-secondary)] sm:shrink-0">{item.progressLabel}</span>
       </div>
       <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-[var(--progress-track)]">
-        <div className={`h-full rounded-full ${progressTone[item.status]}`} style={{ width: `${item.percent}%` }} />
+        {item.percent > 0 && (
+          <div className={`h-full rounded-full ${progressTone[item.status]}`} style={{ width: `${Math.max(item.percent, 5)}%` }} />
+        )}
       </div>
+      {item.percent === 0 && <p className="mt-1 text-[10px] font-medium uppercase tracking-wider text-[var(--text-muted)]">Not started</p>}
       <p className="mt-3 break-words text-sm leading-6 text-[var(--text-secondary)]">{item.helperText}</p>
       {item.sampleCourses.length > 0 && (
         <p className="mt-3 break-words text-xs text-[var(--text-muted)]">Examples: {item.sampleCourses.join(", ")}</p>
