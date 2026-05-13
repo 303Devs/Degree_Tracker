@@ -60,8 +60,8 @@ function PrereqNode({
     const statusDot: Record<string, string> = {
       completed: "bg-green-500",
       in_progress: "bg-[var(--accent)]",
-      registered: "bg-blue-400",
-      planned: "bg-indigo-500",
+      registered: "bg-[var(--status-progress)]",
+      planned: "bg-[var(--accent)]",
       not_started: "bg-[var(--text-muted)]",
     };
     return (
@@ -136,7 +136,7 @@ function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
     completed: "bg-green-50 text-green-700 border-green-200",
     in_progress: "bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--border)]",
-    registered: "bg-blue-500/10 text-[var(--accent)] border-blue-500/20",
+    registered: "bg-amber-50 text-[var(--status-progress)] border-amber-200",
     planned: "bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--border)]",
     not_started: "bg-[var(--surface-subtle)] text-[var(--text-secondary)] border-[var(--border)]",
   };
@@ -357,7 +357,7 @@ export default function CourseLibraryWorkspace() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--page-bg)] p-6 sm:p-8 space-y-5 max-w-[1200px]">
+    <div className="min-h-screen bg-[var(--page-bg)] p-6 sm:p-8 space-y-5 max-w-[1200px] mx-auto">
       <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[var(--shadow-card)]">
         <p className="text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] font-semibold">Courses</p>
         <h2 className="text-2xl font-bold text-[var(--text-primary)] mt-2">Find the courses in your plan</h2>

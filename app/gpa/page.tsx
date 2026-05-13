@@ -154,7 +154,7 @@ export default function GPAPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--page-bg)] p-6 sm:p-8 space-y-6 max-w-5xl">
+    <div className="min-h-screen bg-[var(--page-bg)] p-6 sm:p-8 space-y-6 max-w-5xl mx-auto">
       <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[var(--shadow-card)]">
         <p className="text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] font-semibold">GPA summary</p>
         <h2 className="text-2xl font-bold text-[var(--text-primary)] mt-2">Understand your GPA</h2>
@@ -348,16 +348,21 @@ export default function GPAPage() {
               return (
                 <div
                   key={c.id}
-                  className={`grid grid-cols-[minmax(0,1fr)_8.5rem_12rem_3rem] items-center gap-4 px-5 py-3 transition-opacity ${
+                  className={`grid gap-3 px-5 py-3 transition-opacity sm:grid-cols-[minmax(0,1fr)_8.5rem_12rem_3rem] sm:items-center sm:gap-4 ${
                     whatIfEnabled ? "" : "opacity-40 pointer-events-none"
                   }`}
                 >
-                  <div className="flex-1 min-w-0">
+                  <div className="min-w-0">
                     <span className="font-mono text-xs text-[var(--accent)]">{c.number}</span>
-                    <span className="text-xs text-[var(--text-secondary)] ml-2">{c.name}</span>
-                    <span className="text-xs text-[var(--text-muted)] ml-2">{c.credits}cr</span>
+                    <span className="block truncate text-xs text-[var(--text-secondary)] sm:ml-2 sm:inline">{c.name}</span>
+                    <span className="ml-0 block text-xs text-[var(--text-muted)] sm:ml-2 sm:inline">{c.credits}cr</span>
                   </div>
-                  <StatusPill status={c.status} />
+                  <div className="flex items-center justify-between gap-3 sm:block">
+                    <StatusPill status={c.status} />
+                    <span className={`text-xs font-mono font-bold sm:hidden ${pts !== null ? gradeColor(hypotheticalGrade!) : "text-[var(--text-muted)]"}`}>
+                      {pts !== null ? pts.toFixed(1) : "—"}
+                    </span>
+                  </div>
                   <select
                     value={hypotheticalGrade ?? ""}
                     onChange={(e) => {
@@ -378,7 +383,7 @@ export default function GPAPage() {
                       </option>
                     ))}
                   </select>
-                  <span className={`text-xs font-mono font-bold text-right ${pts !== null ? gradeColor(hypotheticalGrade!) : "text-[var(--text-muted)]"}`}>
+                  <span className={`hidden text-right text-xs font-mono font-bold sm:block ${pts !== null ? gradeColor(hypotheticalGrade!) : "text-[var(--text-muted)]"}`}>
                     {pts !== null ? pts.toFixed(1) : "—"}
                   </span>
                 </div>
@@ -576,7 +581,7 @@ function CountingDot({ active, label }: { active: boolean; label: string }) {
 function StatusPill({ status }: { status: string }) {
   const styles: Record<string, string> = {
     in_progress: "bg-[var(--accent)]/15 text-[var(--accent)] border-[var(--border)]",
-    registered: "bg-blue-500/10 text-[var(--accent)] border-blue-500/20",
+    registered: "bg-amber-50 text-[var(--status-progress)] border-amber-200",
     planned: "bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--border)]",
   };
   return (

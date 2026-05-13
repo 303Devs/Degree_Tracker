@@ -70,7 +70,7 @@ export default function UploadPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--page-bg)] p-6 sm:p-8 max-w-4xl space-y-6">
+    <div className="min-h-screen bg-[var(--page-bg)] p-6 sm:p-8 max-w-4xl mx-auto space-y-6">
       <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[var(--shadow-card)]">
         <p className="text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] font-semibold">Upload · Review · Save</p>
         <h2 className="text-2xl font-bold text-[var(--text-primary)] mt-2">Upload a degree audit</h2>
@@ -84,7 +84,7 @@ export default function UploadPage() {
         <div
           className={`border-2 border-dashed rounded-2xl bg-[var(--surface)] p-12 text-center cursor-pointer shadow-[var(--shadow-card)] transition-colors ${
             dragOver
-              ? "border-indigo-500 bg-indigo-500/10"
+              ? "border-[var(--accent)] bg-[var(--accent-soft)]"
               : "border-[var(--border)] hover:border-[var(--border-strong)] hover:bg-[var(--surface-subtle)]"
           }`}
           onClick={() => fileRef.current?.click()}
@@ -97,7 +97,7 @@ export default function UploadPage() {
           <p className="text-sm text-[var(--text-secondary)] mt-1">or click to browse</p>
           <p className="text-xs text-[var(--text-secondary)] mt-3">
             Get your audit from{" "}
-            <span className="text-indigo-400">MyCUInfo → Student → Degree Audit</span>
+            <span className="text-[var(--accent)]">MyCUInfo → Student → Degree Audit</span>
           </p>
           <input
             ref={fileRef}
@@ -177,7 +177,7 @@ export default function UploadPage() {
                 <div key={g.id} className="px-4 py-2 text-xs">
                   <span className="text-[var(--text-secondary)]">{g.category} → </span>
                   <span className="text-[var(--text-primary)]">{g.name}</span>
-                  <span className="ml-2 text-indigo-400 font-mono">[{g.type}]</span>
+                  <span className="ml-2 rounded border border-[var(--border)] bg-[var(--accent-soft)] px-1.5 py-0.5 font-mono text-[var(--accent)]">[{g.type}]</span>
                   {g.coursePool.length > 0 && (
                     <span className="ml-2 text-[var(--text-secondary)]">{g.coursePool.length} courses</span>
                   )}
@@ -222,7 +222,7 @@ export default function UploadPage() {
           <div className="flex gap-3">
             <button
               onClick={handleConfirm}
-              className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium text-sm transition-colors"
+              className="px-6 py-2.5 bg-[var(--accent)] hover:opacity-90 text-white rounded-lg font-medium text-sm transition-colors"
             >
               Confirm &amp; Save
             </button>
@@ -255,7 +255,7 @@ export default function UploadPage() {
           <div className="flex gap-3 justify-center pt-2">
             <a
               href="/"
-              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-sm font-medium transition-colors"
+              className="px-5 py-2 bg-[var(--accent)] hover:opacity-90 text-white rounded-lg text-sm font-medium transition-colors"
             >
               Go to Dashboard
             </a>
@@ -283,9 +283,10 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
-    completed: "text-green-400",
-    in_progress: "text-yellow-400",
-    planned: "text-blue-400",
+    completed: "rounded border border-green-200 bg-green-50 px-1.5 py-0.5 text-green-700",
+    in_progress: "rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-amber-700",
+    registered: "rounded border border-[var(--border)] bg-[var(--accent-soft)] px-1.5 py-0.5 text-[var(--accent)]",
+    planned: "rounded border border-[var(--border)] bg-[var(--accent-soft)] px-1.5 py-0.5 text-[var(--accent)]",
     not_started: "text-[var(--text-secondary)]",
   };
   return (
