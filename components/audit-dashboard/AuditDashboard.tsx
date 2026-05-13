@@ -55,14 +55,27 @@ const progressTone: Record<DashboardRequirementStatus, string> = {
 
 const nextActionLabels = ["Review first", "Confirm timing", "Choose next course"];
 
+async function fetchDashboardJson<T>(label: string, url: string): Promise<T> {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`${label} request failed (${response.status})`);
+  }
+
+  try {
+    return await response.json() as T;
+  } catch {
+    throw new Error(`${label} response was not valid JSON`);
+  }
+}
+
 export default function AuditDashboard() {
   const [state, setState] = useState<LoadState>({ status: "loading" });
 
   useEffect(() => {
     Promise.all([
-      fetch("/api/courses").then((response) => response.json()),
-      fetch("/api/requirements").then((response) => response.json()),
-      fetch("/api/semesters").then((response) => response.json()),
+      fetchDashboardJson<Course[]>("courses", "/api/courses"),
+      fetchDashboardJson<RequirementGroup[]>("requirements", "/api/requirements"),
+      fetchDashboardJson<Semester[]>("semesters", "/api/semesters"),
     ])
       .then(([courseData, requirementData, semesterData]) => {
         setState({
@@ -72,7 +85,7 @@ export default function AuditDashboard() {
           semesters: Array.isArray(semesterData) ? semesterData : [],
         });
       })
-      .catch((error) => setState({ status: "error", message: String(error) }));
+      .catch((error) => setState({ status: "error", message: error instanceof Error ? error.message : String(error) }));
   }, []);
 
   if (state.status === "loading") {
@@ -80,7 +93,7 @@ export default function AuditDashboard() {
   }
 
   if (state.status === "error") {
-    return <PageShell><Surface className="text-sm text-rose-600">Failed to load audit dashboard: {state.message}</Surface></PageShell>;
+    return <PageShell><Surface className="break-words text-sm text-rose-600">Dashboard data did not load: {state.message}</Surface></PageShell>;
   }
 
   if (state.requirements.length === 0) {
@@ -113,11 +126,11 @@ function DashboardContent({ courses, requirements, semesters }: { courses: Cours
 }
 
 function PageShell({ children }: { children: React.ReactNode }) {
-  return <div className="min-h-screen w-full overflow-x-hidden bg-[var(--page-bg)] px-2 py-4 pb-8 text-[var(--text-primary)] sm:px-6 sm:py-5 lg:px-8"><div className="mx-auto w-full max-w-7xl space-y-4 sm:space-y-5">{children}</div></div>;
+  return <div className="min-h-screen w-full overflow-x-hidden bg-[var(--page-bg)] px-3 py-4 pb-32 text-[var(--text-primary)] sm:px-6 sm:py-5 lg:px-8"><div className="mx-auto w-full max-w-7xl space-y-4 sm:space-y-5">{children}</div></div>;
 }
 
 function Surface({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <section className={`rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-card)] ${className}`}>{children}</section>;
+  return <section className={`min-w-0 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-card)] sm:p-5 ${className}`}>{children}</section>;
 }
 
 function Hero({ dashboard }: { dashboard: AuditDashboardViewModel }) {
@@ -139,7 +152,7 @@ function Hero({ dashboard }: { dashboard: AuditDashboardViewModel }) {
         <div className="w-fit rounded-full border border-[var(--border)] bg-[var(--accent-soft)] px-3 py-1.5 text-xs font-semibold text-[var(--accent)] sm:text-sm">{statusText}</div>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-4">
+      <div className="grid gap-2 sm:grid-cols-2 sm:gap-3 md:grid-cols-4">
         <Metric label="requirements complete" value={`${summary.percentComplete}%`} detail={`${summary.completeRequirements} of ${summary.totalRequirements}`} tone={summary.percentComplete > 0 ? "complete" : "neutral"} />
         <Metric label="needs attention" value={String(summary.attentionRequirements)} detail="review first" tone={summary.attentionRequirements > 0 ? "attention" : "neutral"} />
         <Metric label="in progress" value={String(summary.inProgressRequirements)} detail={`${summary.creditsInProgress} credits active`} tone="progress" />

@@ -154,8 +154,8 @@ export default function GPAPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--page-bg)] p-6 sm:p-8 space-y-6 max-w-5xl mx-auto">
-      <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[var(--shadow-card)]">
+    <div className="min-h-screen w-full overflow-x-hidden bg-[var(--page-bg)] px-3 py-5 pb-32 sm:p-8 space-y-6 max-w-5xl mx-auto">
+      <div className="min-w-0 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 sm:p-6 shadow-[var(--shadow-card)]">
         <p className="text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] font-semibold">GPA summary</p>
         <h2 className="text-2xl font-bold text-[var(--text-primary)] mt-2">Understand your GPA</h2>
         <p className="text-[var(--text-secondary)] text-sm mt-2 max-w-3xl leading-relaxed">
@@ -223,7 +223,7 @@ export default function GPAPage() {
             Not every course counts the same way. Some affect your GPA but not degree progress, or vice versa.
           </p>
         </div>
-        <div className="grid grid-cols-3 gap-px bg-[var(--surface-subtle)]">
+        <div className="grid gap-px sm:grid-cols-3 bg-[var(--surface-subtle)]">
           <CountingBucketCard
             label="Degree Progress"
             courses={progressSemantics.degreeCountedCourses}

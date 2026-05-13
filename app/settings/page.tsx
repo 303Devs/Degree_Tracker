@@ -183,8 +183,8 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--page-bg)] p-6 sm:p-8 max-w-4xl mx-auto space-y-6">
-      <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[var(--shadow-card)]">
+    <div className="min-h-screen w-full overflow-x-hidden bg-[var(--page-bg)] px-3 py-5 pb-32 sm:p-8 max-w-4xl mx-auto space-y-6">
+      <div className="min-w-0 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 sm:p-6 shadow-[var(--shadow-card)]">
         <p className="text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] font-semibold">Settings</p>
         <h2 className="text-2xl font-bold text-[var(--text-primary)] mt-2">Manage import tools and planning setup</h2>
         <p className="text-[var(--text-secondary)] text-sm mt-2 max-w-3xl leading-relaxed">Configure audit parsing, prerequisite imports, and planned-semester support tools.</p>
@@ -197,7 +197,7 @@ export default function SettingsPage() {
           <p className="text-xs text-[var(--text-secondary)] mt-0.5">Configure the AI model used to parse degree audits.</p>
         </div>
         <div className="px-5 py-4 space-y-4">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid gap-3 sm:grid-cols-2">
             <div>
               <label className="block text-xs text-[var(--text-secondary)] mb-1.5">Provider</label>
               <select
@@ -243,7 +243,7 @@ export default function SettingsPage() {
               {llmStatus.msg}
             </p>
           )}
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button
               onClick={handleLlmTest}
               disabled={llmTesting || llmSaving}
@@ -341,7 +341,7 @@ export default function SettingsPage() {
                 <span className="text-xs text-[var(--text-muted)]">{sem.courses.length} courses</span>
                 {sem.status === "planned" && (
                   deleteConfirm === sem.id ? (
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <button
                         onClick={() => handleDeleteSemester(sem.id)}
                         disabled={saving}
