@@ -103,6 +103,10 @@ describe("editable data foundation", () => {
       source: "manual",
       auditImportId: undefined,
     });
+    expect(defaultCourseProvenance(course({ id: "LEGACY-MANUAL", manuallyAdded: true, source: undefined }), "import-1")).toEqual({
+      source: "manual",
+      auditImportId: undefined,
+    });
     expect(defaultRequirementProvenance(requirement({ id: "REQ-1" }), "import-1")).toEqual({
       source: "audit",
       auditImportId: "import-1",

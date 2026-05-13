@@ -24,9 +24,11 @@ export type DeleteProtectionResult =
 const AUDIT_DELETE_REASON = "Audit-sourced entities cannot be destructively deleted; hide or exclude them instead.";
 
 export function defaultCourseProvenance(course: Course, auditImportId?: string): EntityProvenance {
+  const source = course.manuallyAdded ? "manual" : course.source ?? "audit";
+
   return {
-    source: course.manuallyAdded ? "manual" : course.source ?? "audit",
-    auditImportId: course.source === "audit" || !course.source ? auditImportId : undefined,
+    source,
+    auditImportId: source === "audit" ? auditImportId : undefined,
   };
 }
 
