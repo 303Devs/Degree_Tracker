@@ -58,10 +58,10 @@ function PrereqNode({
         ? "not_started"
         : c?.status;
     const statusDot: Record<string, string> = {
-      completed: "bg-green-500",
+      completed:   "bg-green-500",
       in_progress: "bg-[var(--accent)]",
-      registered: "bg-[var(--status-progress)]",
-      planned: "bg-[var(--accent)]",
+      registered:  "bg-amber-400",
+      planned:     "bg-purple-400",
       not_started: "bg-[var(--text-muted)]",
     };
     return (
@@ -134,10 +134,10 @@ function UnlockedBy({ courseId, courses }: { courseId: string; courses: Course[]
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    completed: "bg-green-50 text-green-700 border-green-200",
+    completed:   "bg-green-50 text-green-700 border-green-200",
     in_progress: "bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--border)]",
-    registered: "bg-amber-50 text-[var(--status-progress)] border-amber-200",
-    planned: "bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--border)]",
+    registered:  "bg-[var(--badge-registered-bg)] text-[var(--badge-registered-text)] border-[var(--badge-registered-border)]",
+    planned:     "bg-[var(--badge-planned-bg)] text-[var(--badge-planned-text)] border-[var(--badge-planned-border)]",
     not_started: "bg-[var(--surface-subtle)] text-[var(--text-secondary)] border-[var(--border)]",
   };
   return (

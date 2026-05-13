@@ -332,9 +332,10 @@ export default function SettingsPage() {
                 <div className="flex-1">
                   <span className="text-sm text-[var(--text-primary)]">{sem.label}</span>
                   <span className={`ml-2 text-[10px] px-1.5 py-0.5 rounded border uppercase tracking-wider ${
-                    sem.status === "completed" ? "bg-green-50 text-green-700 border-green-200" :
+                    sem.status === "completed"   ? "bg-green-50 text-green-700 border-green-200" :
                     sem.status === "in_progress" ? "bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--border)]" :
-                    "bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--border)]"
+                    sem.status === "planned"     ? "bg-[var(--badge-planned-bg)] text-[var(--badge-planned-text)] border-[var(--badge-planned-border)]" :
+                    "bg-[var(--surface-subtle)] text-[var(--text-secondary)] border-[var(--border)]"
                   }`}>{sem.status.replace("_", " ")}</span>
                 </div>
                 <span className="text-xs text-[var(--text-muted)]">{sem.courses.length} courses</span>

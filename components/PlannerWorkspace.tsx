@@ -123,10 +123,10 @@ function PlannerCard({
   }, [course, semId, sortedSems, allCourses, assignments]);
 
   const statusDot: Record<string, string> = {
-    completed: "bg-[var(--status-complete)]",
-    in_progress: "bg-[var(--status-progress)]",
-    registered: "bg-[var(--accent)]",
-    planned: "bg-[var(--accent)]",
+    completed:   "bg-[var(--status-complete)]",
+    in_progress: "bg-amber-500",
+    registered:  "bg-amber-400",
+    planned:     "bg-purple-400",
     not_started: "bg-[var(--text-muted)]",
   };
 

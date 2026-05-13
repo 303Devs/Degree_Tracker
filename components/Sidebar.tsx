@@ -85,8 +85,8 @@ function DesktopNavItem({ item }: { item: NavItem }) {
       aria-current={active ? "page" : undefined}
       className={`relative flex h-11 w-11 items-center justify-center rounded-lg transition-colors ${
         active
-          ? "bg-[var(--accent-soft)] text-[var(--accent)]"
-          : "text-[var(--text-muted)] hover:bg-[var(--surface-subtle)] hover:text-[var(--text-primary)]"
+          ? "bg-white/10 text-white"
+          : "text-slate-400 hover:bg-white/5 hover:text-slate-200"
       }`}
     >
       {active && <span className="absolute left-0 h-6 w-0.5 rounded-full bg-[var(--accent)]" />}
@@ -121,8 +121,8 @@ export default function Sidebar() {
 
   return (
     <>
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-14 flex-col border-r border-[var(--border)] bg-[var(--surface)] md:flex">
-        <div className="flex h-14 items-center justify-center border-b border-[var(--border)]">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-14 flex-col bg-slate-900 md:flex">
+        <div className="flex h-14 items-center justify-center border-b border-white/10">
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--accent)] text-[11px] font-bold text-white" title="Degree Tracker">
             DT
           </span>
@@ -130,7 +130,7 @@ export default function Sidebar() {
 
         <nav className="flex flex-1 flex-col items-center gap-1 py-3" aria-label="Primary navigation">
           {DESKTOP_PRIMARY_NAV.map((item) => <DesktopNavItem key={item.href} item={item} />)}
-          <div className="my-2 h-px w-7 bg-[var(--border)]" />
+          <div className="my-2 h-px w-7 bg-white/10" />
           {DESKTOP_SECONDARY_NAV.map((item) => <DesktopNavItem key={item.href} item={item} />)}
         </nav>
       </aside>

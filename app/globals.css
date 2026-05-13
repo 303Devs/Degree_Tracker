@@ -3,22 +3,67 @@
 @tailwind utilities;
 
 :root {
-  --page-bg: #f5f7fa;
+  /* ── Base surfaces ─────────────────────────────────────────────── */
+  --page-bg: #e5ebf3;
   --surface: #ffffff;
   --surface-elevated: #ffffff;
   --surface-subtle: #f8fafc;
   --progress-track: #e2e8f0;
   --border: #e2e8f0;
   --border-strong: #cbd5e1;
+
+  /* ── Text ───────────────────────────────────────────────────────── */
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-muted: #64748b;
+
+  /* ── Primary accent (blue) ─────────────────────────────────────── */
   --accent: #1a7fc4;
   --accent-soft: #e8f4fb;
+
+  /* ── Semantic status colors ────────────────────────────────────── */
   --status-complete: #16a34a;
   --status-progress: #d97706;
   --status-remaining: #64748b;
   --status-blocked: #e11d48;
+
+  /* ── Tile tints: complete (green) ──────────────────────────────── */
+  --tile-complete-bg: #f0fdf4;
+  --tile-complete-border: #bbf7d0;
+  --tile-complete-text: #15803d;
+
+  /* ── Tile tints: attention (rose) ──────────────────────────────── */
+  --tile-attention-bg: #fff1f2;
+  --tile-attention-border: #fecdd3;
+  --tile-attention-text: #be123c;
+
+  /* ── Tile tints: in-progress (amber) ───────────────────────────── */
+  --tile-progress-bg: #fffbeb;
+  --tile-progress-border: #fde68a;
+  --tile-progress-text: #b45309;
+
+  /* ── Tile tints: planned (purple) ──────────────────────────────── */
+  --tile-planned-bg: #faf5ff;
+  --tile-planned-border: #e9d5ff;
+  --tile-planned-text: #7e22ce;
+
+  /* ── Status badge: planned (purple) ────────────────────────────── */
+  --badge-planned-bg: #faf5ff;
+  --badge-planned-border: #d8b4fe;
+  --badge-planned-text: #7e22ce;
+
+  /* ── Status badge: registered (amber) ──────────────────────────── */
+  --badge-registered-bg: #fffbeb;
+  --badge-registered-border: #fde68a;
+  --badge-registered-text: #b45309;
+
+  /* ── Section header accent bars ─────────────────────────────────── */
+  --section-attention-bar: #fb7185;
+  --section-progress-bar: #fbbf24;
+  --section-remaining-bar: #94a3b8;
+  --section-complete-bar: #4ade80;
+
+  /* ── Shape + shadow ─────────────────────────────────────────────── */
   --radius-control: 8px;
   --radius-card: 16px;
   --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.07);
