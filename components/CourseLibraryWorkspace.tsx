@@ -26,11 +26,11 @@ function gradeColor(grade: string): string {
     "C+": 2.3, C: 2.0, "C-": 1.7, "D+": 1.3, D: 1.0, "D-": 0.7, F: 0.0,
   };
   const p = pts[grade] ?? -1;
-  if (p >= 3.7) return "text-green-400";
-  if (p >= 2.7) return "text-indigo-400";
-  if (p >= 1.7) return "text-yellow-400";
-  if (p >= 0) return "text-red-400";
-  return "text-[#6a6a8a]";
+  if (p >= 3.7) return "text-green-700";
+  if (p >= 2.7) return "text-[var(--accent)]";
+  if (p >= 1.7) return "text-amber-700";
+  if (p >= 0) return "text-rose-600";
+  return "text-[var(--text-secondary)]";
 }
 
 function formatId(id: string): string {
@@ -59,34 +59,34 @@ function PrereqNode({
         : c?.status;
     const statusDot: Record<string, string> = {
       completed: "bg-green-500",
-      in_progress: "bg-[#d4a843]",
+      in_progress: "bg-[var(--accent)]",
       registered: "bg-blue-400",
       planned: "bg-indigo-500",
-      not_started: "bg-[#2a2a3a]",
+      not_started: "bg-[var(--text-muted)]",
     };
     return (
       <div className="flex items-center gap-2 text-xs">
         <span
           className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-            effectiveStatus ? statusDot[effectiveStatus] : "bg-[#2a2a3a]"
+            effectiveStatus ? statusDot[effectiveStatus] : "bg-[var(--text-muted)]"
           }`}
         />
-        <span className="font-mono text-indigo-300">{formatId(rule.courseId)}</span>
-        {c && <span className="text-[#6a6a8a] truncate">{c.name}</span>}
-        {!c && <span className="text-[#3a3a5a] italic">unknown</span>}
+        <span className="font-mono text-[var(--accent)]">{formatId(rule.courseId)}</span>
+        {c && <span className="text-[var(--text-secondary)] truncate">{c.name}</span>}
+        {!c && <span className="text-[var(--text-muted)] italic">unknown</span>}
       </div>
     );
   }
 
   const label = rule.type === "and" ? "ALL OF" : "ONE OF";
-  const labelColor = rule.type === "and" ? "text-[#d4a843]" : "text-indigo-400";
+  const labelColor = rule.type === "and" ? "text-[var(--accent)]" : "text-[var(--accent)]";
 
   return (
     <div className="space-y-1">
       <span className={`text-[9px] uppercase tracking-widest font-semibold ${labelColor}`}>
         {label}
       </span>
-      <div className="pl-3 border-l border-[#2a2a3a] space-y-1.5">
+      <div className="pl-3 border-l border-[var(--border)] space-y-1.5">
         {rule.rules.map((r, i) => (
           <PrereqNode key={i} rule={r} courses={courses} depth={depth + 1} />
         ))}
@@ -113,12 +113,12 @@ function UnlockedBy({ courseId, courses }: { courseId: string; courses: Course[]
 
   return (
     <div>
-      <p className="text-[10px] text-[#6a6a8a] uppercase tracking-wider mb-1.5">Unlocks</p>
+      <p className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Unlocks</p>
       <div className="flex flex-wrap gap-1.5">
         {unlocked.map((c) => (
           <span
             key={c.id}
-            className="px-2 py-0.5 bg-[#d4a843]/10 text-[#d4a843] border border-[#d4a843]/20 rounded text-[10px] font-mono"
+            className="px-2 py-0.5 bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--border)] rounded text-[10px] font-mono"
           >
             {c.number}
           </span>
@@ -134,11 +134,11 @@ function UnlockedBy({ courseId, courses }: { courseId: string; courses: Course[]
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    completed: "bg-green-500/10 text-green-400 border-green-500/20",
-    in_progress: "bg-[#d4a843]/10 text-[#d4a843] border-[#d4a843]/20",
-    registered: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-    planned: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
-    not_started: "bg-[#1e1e34] text-[#6a6a8a] border-[#2a2a3a]",
+    completed: "bg-green-50 text-green-700 border-green-200",
+    in_progress: "bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--border)]",
+    registered: "bg-blue-500/10 text-[var(--accent)] border-blue-500/20",
+    planned: "bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--border)]",
+    not_started: "bg-[var(--surface-subtle)] text-[var(--text-secondary)] border-[var(--border)]",
   };
   return (
     <span className={`px-2 py-0.5 rounded text-[10px] border ${styles[status] ?? styles.not_started} uppercase tracking-wider`}>
@@ -175,12 +175,12 @@ function CourseDetail({
       <div className="space-y-4">
         {groups.length > 0 && (
           <div>
-            <p className="text-[10px] text-[#6a6a8a] uppercase tracking-wider mb-1.5">Satisfies</p>
+            <p className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Satisfies</p>
             <div className="flex flex-wrap gap-1.5">
               {groups.map((g) => (
                 <span
                   key={g.id}
-                  className="px-2 py-0.5 bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 rounded text-[10px]"
+                  className="px-2 py-0.5 bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--border)] rounded text-[10px]"
                 >
                   {g.name}
                 </span>
@@ -191,19 +191,19 @@ function CourseDetail({
 
         {(course.description || course.notes) && (
           <div>
-            <p className="text-[10px] text-[#6a6a8a] uppercase tracking-wider mb-1">
+            <p className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider mb-1">
               {course.description ? "Catalog Description" : "Notes"}
             </p>
-            <p className="text-xs text-[#8888a8]">{course.description ?? course.notes}</p>
+            <p className="text-xs text-[var(--text-secondary)]">{course.description ?? course.notes}</p>
           </div>
         )}
 
         {course.gradePoints !== undefined && (
-          <div className="text-xs text-[#6a6a8a]">
-            Grade points: <span className="text-[#d0d0e8]">{course.gradePoints?.toFixed(1)}</span>
+          <div className="text-xs text-[var(--text-secondary)]">
+            Grade points: <span className="text-[var(--text-primary)]">{course.gradePoints?.toFixed(1)}</span>
             {" \u00b7 "}
             Quality points:{" "}
-            <span className="text-[#d0d0e8]">
+            <span className="text-[var(--text-primary)]">
               {(course.gradePoints * course.credits).toFixed(1)}
             </span>
           </div>
@@ -218,29 +218,29 @@ function CourseDetail({
         {course.prereqs ? (
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <p className="text-[10px] text-[#6a6a8a] uppercase tracking-wider">Prerequisites</p>
+              <p className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider">Prerequisites</p>
               <span
                 className={`text-[9px] px-1.5 py-0.5 rounded border ${
                   prereqSatisfied
-                    ? "bg-green-500/10 text-green-400 border-green-500/20"
-                    : "bg-red-500/10 text-red-400 border-red-500/20"
+                    ? "bg-green-50 text-green-700 border-green-200"
+                    : "bg-rose-50 text-rose-600 border-rose-200"
                 }`}
               >
                 {prereqSatisfied ? "satisfied" : "not met"}
               </span>
             </div>
-            <div className="bg-[#0e0e1c] border border-[#1e1e2e] rounded-lg p-3 space-y-1.5">
+            <div className="bg-[var(--surface-subtle)] border border-[var(--border)] rounded-lg p-3 space-y-1.5">
               <PrereqNode rule={course.prereqs} courses={allCourses} />
             </div>
           </div>
         ) : (
-          <div className="text-xs text-[#4a4a6a] italic mt-1">No prerequisites</div>
+          <div className="text-xs text-[var(--text-muted)] italic mt-1">No prerequisites</div>
         )}
 
         {course.coreqs && (
           <div className="mt-4">
-            <p className="text-[10px] text-[#6a6a8a] uppercase tracking-wider mb-2">Corequisites</p>
-            <div className="bg-[#0e0e1c] border border-[#1e1e2e] rounded-lg p-3 space-y-1.5">
+            <p className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider mb-2">Corequisites</p>
+            <div className="bg-[var(--surface-subtle)] border border-[var(--border)] rounded-lg p-3 space-y-1.5">
               <PrereqNode rule={course.coreqs} courses={allCourses} />
             </div>
           </div>
@@ -333,13 +333,13 @@ export default function CourseLibraryWorkspace() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen text-[#6a6a8a]">Loading...</div>
+      <div className="flex items-center justify-center min-h-screen text-[var(--text-secondary)]">Loading...</div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen text-red-400 text-sm p-8">
+      <div className="flex items-center justify-center min-h-screen text-rose-600 text-sm p-8">
         Failed to load courses: {error}
       </div>
     );
@@ -348,8 +348,8 @@ export default function CourseLibraryWorkspace() {
   if (courses.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-4 p-8 text-center">
-        <p className="text-[#6a6a8a]">No courses loaded yet.</p>
-        <a href="/upload" className="text-[#d4a843] hover:text-[#e8c068] text-sm">
+        <p className="text-[var(--text-secondary)]">No courses loaded yet.</p>
+        <a href="/upload" className="text-[var(--accent)] hover:text-[var(--accent)] text-sm">
           Upload an audit PDF &rarr;
         </a>
       </div>
@@ -357,13 +357,13 @@ export default function CourseLibraryWorkspace() {
   }
 
   return (
-    <div className="p-8 space-y-5 max-w-[1200px]">
-      <div className="rounded-2xl border border-[#1e1e34] bg-[#111120] p-6">
-        <p className="text-[10px] uppercase tracking-[0.25em] text-[#d4a843] font-semibold">Courses</p>
-        <h2 className="text-2xl font-bold text-[#d0d0e8] mt-2">One editable course data surface</h2>
-        <p className="text-[#6a6a8a] text-sm mt-2 max-w-3xl leading-relaxed">
-          Catalog rows, audit rows, manual additions, uncounted attempts, planned courses, prereqs/coreqs, semester, grade,
-          and counting flags are visible from the same searchable workspace.
+    <div className="min-h-screen bg-[var(--page-bg)] p-6 sm:p-8 space-y-5 max-w-[1200px]">
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[var(--shadow-card)]">
+        <p className="text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] font-semibold">Courses</p>
+        <h2 className="text-2xl font-bold text-[var(--text-primary)] mt-2">Find the courses in your plan</h2>
+        <p className="text-[var(--text-secondary)] text-sm mt-2 max-w-3xl leading-relaxed">
+          Search audit rows, catalog rows, manual additions, uncounted attempts, planned courses, prereqs/coreqs, semester, grade,
+          and counting flags from the same workspace.
         </p>
         <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
           {[
@@ -372,29 +372,29 @@ export default function CourseLibraryWorkspace() {
             ["Manual", libraryStats.Manual, "user-entered"],
             ["Not counting", libraryStats["Not counting"], "still visible"],
           ].map(([label, value, sub]) => (
-            <div key={label} className="rounded-xl border border-[#1e1e34] bg-[#0d0d1a] px-3 py-2">
-              <div className="text-lg font-semibold text-[#d0d0e8]">{value}</div>
-              <div className="text-[10px] uppercase tracking-wider text-[#6a6a8a]">{label}</div>
-              <div className="text-[10px] text-[#4a4a6a]">{sub}</div>
+            <div key={label} className="rounded-xl border border-[var(--border)] bg-[var(--surface-subtle)] px-3 py-2">
+              <div className="text-lg font-semibold text-[var(--text-primary)]">{value}</div>
+              <div className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)]">{label}</div>
+              <div className="text-[10px] text-[var(--text-muted)]">{sub}</div>
             </div>
           ))}
         </div>
       </div>
 
       {/* Filters */}
-      <div className="rounded-2xl border border-[#1e1e34] bg-[#0d0d1a] p-3">
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-card)]">
       <div className="flex gap-3 flex-wrap">
         <input
           type="text"
           placeholder="Search number, title, description, or notes..."
           value={filters.search}
           onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value }))}
-          className="flex-1 min-w-48 px-3 py-2 bg-[#111120] border border-[#1e1e34] rounded-xl text-sm text-[#d0d0e8] placeholder-[#4a4a6a] focus:outline-none focus:border-[#d4a843]/40"
+          className="flex-1 min-w-48 px-3 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)]"
         />
         <select
           value={filters.status}
           onChange={(e) => setFilters((f) => ({ ...f, status: e.target.value }))}
-          className="px-3 py-2 bg-[#111120] border border-[#1e1e34] rounded-xl text-sm text-[#d0d0e8] focus:outline-none focus:border-[#d4a843]/40"
+          className="px-3 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
         >
           <option value="">All statuses</option>
           <option value="in_progress">In Progress</option>
@@ -406,7 +406,7 @@ export default function CourseLibraryWorkspace() {
         <select
           value={filters.category}
           onChange={(e) => setFilters((f) => ({ ...f, category: e.target.value }))}
-          className="px-3 py-2 bg-[#111120] border border-[#1e1e34] rounded-xl text-sm text-[#d0d0e8] focus:outline-none focus:border-[#d4a843]/40 max-w-64"
+          className="px-3 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] max-w-64"
         >
           <option value="">All categories</option>
           {categories.map((cat) => (
@@ -418,7 +418,7 @@ export default function CourseLibraryWorkspace() {
         <select
           value={filters.source}
           onChange={(e) => setFilters((f) => ({ ...f, source: e.target.value }))}
-          className="px-3 py-2 bg-[#111120] border border-[#1e1e34] rounded-xl text-sm text-[#d0d0e8] focus:outline-none focus:border-[#d4a843]/40"
+          className="px-3 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
         >
           <option value="">All sources</option>
           <option value="Audit">Audit</option>
@@ -428,7 +428,7 @@ export default function CourseLibraryWorkspace() {
         <select
           value={filters.counting}
           onChange={(e) => setFilters((f) => ({ ...f, counting: e.target.value }))}
-          className="px-3 py-2 bg-[#111120] border border-[#1e1e34] rounded-xl text-sm text-[#d0d0e8] focus:outline-none focus:border-[#d4a843]/40"
+          className="px-3 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)]"
         >
           <option value="">All counting states</option>
           <option value="Counts">Counts</option>
@@ -438,21 +438,21 @@ export default function CourseLibraryWorkspace() {
         </select>
       </div>
       <div className="mt-3 flex flex-wrap gap-2 text-[10px] uppercase tracking-wider">
-        <span className="rounded-lg border border-green-500/20 bg-green-500/10 px-2 py-1 text-green-400">counts {libraryStats.Counts}</span>
-        <span className="rounded-lg border border-indigo-500/20 bg-indigo-500/10 px-2 py-1 text-indigo-300">planned {libraryStats.Planned}</span>
-        <span className="rounded-lg border border-[#2a2a3a] bg-[#1e1e34] px-2 py-1 text-[#6a6a8a]">not planned {libraryStats["Not planned"]}</span>
-        <span className="rounded-lg border border-amber-500/20 bg-amber-500/10 px-2 py-1 text-amber-300">uncounted visible {libraryStats["Not counting"]}</span>
+        <span className="rounded-lg border border-green-200 bg-green-50 px-2 py-1 text-green-700">counts {libraryStats.Counts}</span>
+        <span className="rounded-lg border border-[var(--border)] bg-[var(--accent-soft)] px-2 py-1 text-[var(--accent)]">planned {libraryStats.Planned}</span>
+        <span className="rounded-lg border border-[var(--border)] bg-[var(--surface-subtle)] px-2 py-1 text-[var(--text-secondary)]">not planned {libraryStats["Not planned"]}</span>
+        <span className="rounded-lg border border-amber-200 bg-amber-50 px-2 py-1 text-amber-700">uncounted visible {libraryStats["Not counting"]}</span>
       </div>
       </div>
 
-      <p className="text-xs text-[#4a4a6a]">
+      <p className="text-xs text-[var(--text-muted)]">
         {filtered.length} of {visibleCourses.length} visible courses ({courses.length} loaded)
       </p>
 
       {/* Course table */}
-      <div className="bg-[#111120] border border-[#1e1e34] rounded-xl overflow-hidden">
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-[var(--shadow-card)] overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="border-b border-[#1e1e34] text-[#6a6a8a] text-[10px] uppercase tracking-wider">
+          <thead className="border-b border-[var(--border)] text-[var(--text-secondary)] text-[10px] uppercase tracking-wider">
             <tr>
               <th className="px-4 py-3 text-left">Course</th>
               <th className="px-4 py-3 text-left">Name</th>
@@ -465,57 +465,57 @@ export default function CourseLibraryWorkspace() {
               <th className="px-4 py-3 text-center">Prereq/Coreq</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#1a1a2e]">
+          <tbody className="divide-y divide-[var(--border)]">
             {filtered.map((course) => {
               const expanded = expandedId === course.id;
               const meta = getCourseLibraryMeta(course);
               return (
                 <React.Fragment key={course.id}>
                   <tr
-                    className={`hover:bg-white/3 cursor-pointer transition-colors ${expanded ? "bg-[#0e0e1c]" : ""}`}
+                    className={`hover:bg-[var(--surface-subtle)] cursor-pointer transition-colors ${expanded ? "bg-[var(--surface-subtle)]" : ""}`}
                     onClick={() => setExpandedId(expanded ? null : course.id)}
                   >
-                    <td className="px-4 py-3 font-mono text-indigo-300 text-xs">{course.number}</td>
-                    <td className="px-4 py-3 text-[#c0c0d8] max-w-[220px] truncate">{course.name}</td>
-                    <td className="px-4 py-3 text-right text-[#6a6a8a] text-xs">{course.credits}</td>
+                    <td className="px-4 py-3 font-mono text-[var(--accent)] text-xs">{course.number}</td>
+                    <td className="px-4 py-3 text-[var(--text-primary)] max-w-[220px] truncate">{course.name}</td>
+                    <td className="px-4 py-3 text-right text-[var(--text-secondary)] text-xs">{course.credits}</td>
                     <td className="px-4 py-3 text-center">
                       {course.grade ? (
                         <span className={`font-mono text-xs font-bold ${gradeColor(course.grade)}`}>
                           {course.grade}
                         </span>
                       ) : (
-                        <span className="text-[#3a3a5a]">—</span>
+                        <span className="text-[var(--text-muted)]">—</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-[#6a6a8a] text-xs font-mono">
+                    <td className="px-4 py-3 text-[var(--text-secondary)] text-xs font-mono">
                       {course.semester ?? "—"}
                     </td>
                     <td className="px-4 py-3">
                       <StatusBadge status={course.status} />
                     </td>
-                    <td className="px-4 py-3 text-[#6a6a8a] text-xs">{meta.source}</td>
+                    <td className="px-4 py-3 text-[var(--text-secondary)] text-xs">{meta.source}</td>
                     <td className="px-4 py-3 text-xs">
                       <span className={`px-2 py-0.5 rounded border ${
                         meta.counting === "Counts"
-                          ? "bg-green-500/10 text-green-400 border-green-500/20"
+                          ? "bg-green-50 text-green-700 border-green-200"
                           : meta.counting === "Planned"
-                          ? "bg-indigo-500/10 text-indigo-300 border-indigo-500/20"
-                          : "bg-[#1e1e34] text-[#6a6a8a] border-[#2a2a3a]"
+                          ? "bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--border)]"
+                          : "bg-[var(--surface-subtle)] text-[var(--text-secondary)] border-[var(--border)]"
                       }`}>
                         {meta.counting}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-center">
                       {course.prereqs || course.coreqs ? (
-                        <span className="text-[10px] text-[#4a4a6a]">▶ tree</span>
+                        <span className="text-[10px] text-[var(--text-muted)]">▶ tree</span>
                       ) : (
-                        <span className="text-[10px] text-[#2a2a3a]">none</span>
+                        <span className="text-[10px] text-[var(--text-muted)]">none</span>
                       )}
                     </td>
                   </tr>
                   {expanded && (
                     <tr key={`${course.id}-exp`}>
-                      <td colSpan={9} className="bg-[#0d0d1e] border-t border-[#1a1a2e] px-6">
+                      <td colSpan={9} className="bg-[var(--surface-subtle)] border-t border-[var(--border)] px-6">
                         <CourseDetail
                           course={course}
                           groups={getCourseGroups(course.id)}
@@ -531,7 +531,7 @@ export default function CourseLibraryWorkspace() {
         </table>
 
         {filtered.length === 0 && (
-          <div className="text-center py-10 text-[#4a4a6a] text-sm">
+          <div className="text-center py-10 text-[var(--text-muted)] text-sm">
             No courses match the current filters.
           </div>
         )}
