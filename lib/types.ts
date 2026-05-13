@@ -73,6 +73,61 @@ export interface AppData {
   programs: ProgramInfo[];
 }
 
+export type EntityType = "course" | "requirement";
+export type EntitySource = CourseSource | "system";
+
+export interface AuditImport {
+  id: string;
+  fileName?: string;
+  importedAt: string;
+  parserVersion?: string;
+  programInfoSnapshot?: ProgramInfo;
+  rawWarnings: string[];
+}
+
+export interface EntityProvenance {
+  source: EntitySource;
+  auditImportId?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface FieldOverride {
+  id: string;
+  entityType: EntityType;
+  entityId: string;
+  field: string;
+  value: unknown;
+  baseValue?: unknown;
+  baseSource: EntitySource;
+  auditImportId?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type ManualEntity =
+  | {
+      id: string;
+      entityType: "course";
+      value: Course;
+      provenance: EntityProvenance & { source: "manual" };
+    }
+  | {
+      id: string;
+      entityType: "requirement";
+      value: RequirementGroup;
+      provenance: EntityProvenance & { source: "manual" };
+    };
+
+export interface EntityLocalState {
+  entityType: EntityType;
+  entityId: string;
+  hidden?: boolean;
+  excluded?: boolean;
+  reason?: string;
+  updatedAt: string;
+}
+
 export interface ParsedAuditResult {
   programInfo: ProgramInfo;
   requirementGroups: RequirementGroup[];
