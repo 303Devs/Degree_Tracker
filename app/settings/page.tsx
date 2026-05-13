@@ -183,7 +183,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--page-bg)] p-6 sm:p-8 max-w-4xl space-y-6">
+    <div className="min-h-screen bg-[var(--page-bg)] p-6 sm:p-8 max-w-4xl mx-auto space-y-6">
       <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[var(--shadow-card)]">
         <p className="text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] font-semibold">Settings</p>
         <h2 className="text-2xl font-bold text-[var(--text-primary)] mt-2">Manage import tools and planning setup</h2>
@@ -319,7 +319,7 @@ export default function SettingsPage() {
           <h3 className="text-sm font-semibold text-[var(--text-primary)]">Semesters</h3>
           <p className="text-xs text-[var(--text-secondary)] mt-0.5">
             Add semesters from the{" "}
-            <Link href="/" className="text-[var(--accent)] hover:underline">Audit Plan</Link>.
+            <Link href="/planner" className="text-[var(--accent)] hover:underline">Semester Planner</Link>.
             Delete planned semesters here.
           </p>
         </div>
