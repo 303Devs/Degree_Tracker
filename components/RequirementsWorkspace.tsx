@@ -9,6 +9,8 @@ import {
   type AuditCourseOption,
   type AuditRequirementViewModel,
 } from "@/lib/audit-plan-view";
+import { RequirementEditSheet } from "./RequirementEditSheet";
+import { RequirementSourceBadge } from "./RequirementSourceBadge";
 
 function gradeColor(grade: string): string {
   const pts = GRADE_SCALE[grade] ?? -1;
@@ -121,7 +123,15 @@ function BucketSection({ title, bucket, options, group, onToggle }: { title: str
   );
 }
 
-function GroupRow({ view, onUpdate }: { view: AuditRequirementViewModel; onUpdate: (groupId: string, selected: string[]) => void }) {
+function GroupRow({
+  view,
+  onUpdate,
+  onEdit,
+}: {
+  view: AuditRequirementViewModel;
+  onUpdate: (groupId: string, selected: string[]) => void;
+  onEdit: (group: RequirementGroup) => void;
+}) {
   const [open, setOpen] = useState(false);
   const { group, progress, counts } = view;
   const done = progress.pct >= 1;
@@ -157,6 +167,7 @@ function GroupRow({ view, onUpdate }: { view: AuditRequirementViewModel; onUpdat
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm text-[#d0d0e8]">{group.name}</span>
+              <RequirementSourceBadge requirement={group} />
               {isPick && <span className="rounded border border-[#d4a843]/20 bg-[#d4a843]/10 px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-[#d4a843]">pick</span>}
               {warningCount > 0 && <span className="rounded border border-amber-500/20 bg-amber-500/10 px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-amber-300">{warningCount} warning{warningCount === 1 ? "" : "s"}</span>}
               {minGradeWarnings.length > 0 && <span className="rounded border border-amber-500/20 bg-amber-500/10 px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-amber-300">grade warn</span>}
@@ -179,6 +190,24 @@ function GroupRow({ view, onUpdate }: { view: AuditRequirementViewModel; onUpdat
           />
           <span className={`w-24 text-right font-mono text-xs tabular-nums ${done ? "text-green-400" : active ? "text-[#d4a843]" : "text-[#6a6a8a]"}`}>
             {progress.completed}/{progress.total} {progress.unit === "hours" ? "hrs" : ""}
+          </span>
+          <span
+            role="button"
+            tabIndex={0}
+            onClick={(event) => {
+              event.stopPropagation();
+              onEdit(group);
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                event.stopPropagation();
+                onEdit(group);
+              }
+            }}
+            className="rounded-lg border border-[#2a2a3e] px-2 py-1 text-[10px] font-medium text-indigo-300 hover:border-indigo-400/40 hover:bg-indigo-500/10"
+          >
+            Edit
           </span>
           <svg className={`h-3.5 w-3.5 shrink-0 text-[#4a4a6a] transition-transform ${open ? "rotate-90" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
         </div>
@@ -219,6 +248,8 @@ export default function RequirementsWorkspace({ embedded = false }: { embedded?:
   const [saving, setSaving] = useState(false);
   const [filter, setFilter] = useState<"needs_action" | "all" | "pick" | "complete">("needs_action");
   const [error, setError] = useState<string | null>(null);
+  const [editingRequirement, setEditingRequirement] = useState<RequirementGroup | null>(null);
+  const [sheetMode, setSheetMode] = useState<"create" | "edit" | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -236,6 +267,34 @@ export default function RequirementsWorkspace({ embedded = false }: { embedded?:
   }, []);
 
   const views = useMemo(() => buildAuditRequirementViewModels({ courses, requirements, semesters }), [courses, requirements, semesters]);
+
+  const openCreateSheet = useCallback(() => {
+    setEditingRequirement(null);
+    setSheetMode("create");
+  }, []);
+
+  const openEditSheet = useCallback((requirement: RequirementGroup) => {
+    setEditingRequirement(requirement);
+    setSheetMode("edit");
+  }, []);
+
+  const closeSheet = useCallback(() => {
+    setSheetMode(null);
+    setEditingRequirement(null);
+  }, []);
+
+  const upsertRequirement = useCallback((requirement: RequirementGroup) => {
+    setRequirements((current) => {
+      const exists = current.some((item) => item.id === requirement.id);
+      return exists ? current.map((item) => (item.id === requirement.id ? requirement : item)) : [...current, requirement];
+    });
+    closeSheet();
+  }, [closeSheet]);
+
+  const removeRequirement = useCallback((id: string) => {
+    setRequirements((current) => current.filter((requirement) => requirement.id !== id));
+    closeSheet();
+  }, [closeSheet]);
 
   const handleUpdateSelected = useCallback(async (groupId: string, selectedCourses: string[]) => {
     setRequirements((prev) => prev.map((group) => (group.id === groupId ? { ...group, selectedCourses } : group)));
@@ -295,10 +354,24 @@ export default function RequirementsWorkspace({ embedded = false }: { embedded?:
             <h2 className="text-2xl font-bold text-[#d0d0e8]">Audit Plan</h2>
             <p className="mt-1 text-sm text-[#6a6a8a]">Requirement groups are the spine; planning context stays attached to each audit row.</p>
           </div>
-          {saving && <span className="animate-pulse text-xs text-[#d4a843]">Saving...</span>}
+          <div className="flex items-center gap-2">
+            {saving && <span className="animate-pulse text-xs text-[#d4a843]">Saving...</span>}
+            <button
+              type="button"
+              onClick={openCreateSheet}
+              className="rounded-xl bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white shadow-sm"
+            >
+              Add manual requirement
+            </button>
+          </div>
         </div>
       )}
-      {embedded && saving && <span className="animate-pulse text-xs text-[#d4a843]">Saving...</span>}
+      {embedded && (
+        <div className="flex items-center justify-between gap-2">
+          {saving ? <span className="animate-pulse text-xs text-[#d4a843]">Saving...</span> : <span />}
+          <button type="button" onClick={openCreateSheet} className="rounded-lg bg-[var(--accent)] px-3 py-1.5 text-xs font-semibold text-white">Add manual requirement</button>
+        </div>
+      )}
 
       <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[#1e1e34] bg-[#111120] p-3">
         {([
@@ -321,11 +394,20 @@ export default function RequirementsWorkspace({ embedded = false }: { embedded?:
               <h3 className="text-sm font-semibold text-[#d0d0e8]">{category}</h3>
               <div className="ml-auto text-xs text-[#4a4a6a]">{categoryViews.filter((view) => view.progress.pct >= 1).length}/{categoryViews.length} done</div>
             </div>
-            <div>{categoryViews.map((view) => <GroupRow key={view.group.id} view={view} onUpdate={handleUpdateSelected} />)}</div>
+            <div>{categoryViews.map((view) => <GroupRow key={view.group.id} view={view} onUpdate={handleUpdateSelected} onEdit={openEditSheet} />)}</div>
           </section>
         );
       })}
       {visibleViews.length === 0 && <div className="rounded-xl border border-[#1e1e34] bg-[#111120] p-8 text-center text-sm text-[#6a6a8a]">No requirements match this filter.</div>}
+      {sheetMode && (
+        <RequirementEditSheet
+          mode={sheetMode}
+          requirement={editingRequirement}
+          onClose={closeSheet}
+          onSaved={upsertRequirement}
+          onDeleted={removeRequirement}
+        />
+      )}
     </div>
   );
 }
