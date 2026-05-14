@@ -6,10 +6,37 @@
 import fs from "fs";
 import os from "os";
 import path from "path";
-import type { AppData, Course, PrereqRule, ProgramInfo, RequirementGroup, Semester } from "./types";
+import type { AppData, Course, EntityLocalState, FieldOverride, ManualEntity, PrereqRule, ProgramInfo, RequirementGroup, Semester } from "./types";
+import { buildEffectiveData, defaultCourseProvenance, resetEntityOverrides, resetFieldOverride } from "./edit-overrides";
 export { calcProgress } from "./prereqs";
 
 const DATA_DIR = path.join(process.cwd(), "data");
+
+export interface EditState {
+  overrides: FieldOverride[];
+  manualEntities: ManualEntity[];
+  localStates: EntityLocalState[];
+}
+
+const EMPTY_EDIT_STATE: EditState = { overrides: [], manualEntities: [], localStates: [] };
+
+const EDITABLE_COURSE_FIELDS = new Set([
+  "name",
+  "number",
+  "description",
+  "credits",
+  "status",
+  "grade",
+  "semester",
+  "notes",
+  "countedTowardDegree",
+  "countsTowardDegree",
+  "countsTowardGPA",
+  "countsTowardEarnedHours",
+  "excludeReason",
+]);
+
+const COURSE_STATUSES = new Set(["not_started", "planned", "in_progress", "registered", "completed"]);
 
 function ensureDataDir() {
   if (!fs.existsSync(DATA_DIR)) {
@@ -46,8 +73,179 @@ export function writeCourses(courses: Course[]): void {
   writeJson("courses.json", courses);
 }
 
+export function readEditState(): EditState {
+  const state = readJson<Partial<EditState>>("edit-state.json", EMPTY_EDIT_STATE);
+  return {
+    overrides: state.overrides ?? [],
+    manualEntities: state.manualEntities ?? [],
+    localStates: state.localStates ?? [],
+  };
+}
+
+export function writeEditState(state: EditState): void {
+  writeJson("edit-state.json", state);
+}
+
+export function readEffectiveCourses(): Course[] {
+  return buildEffectiveData({
+    courses: readCourses(),
+    requirements: readRequirements(),
+    ...readEditState(),
+  }).courses;
+}
+
 export function getCourseById(id: string): Course | undefined {
+  return readEffectiveCourses().find((c) => c.id === id);
+}
+
+function getBaseCourseById(id: string): Course | undefined {
   return readCourses().find((c) => c.id === id);
+}
+
+function getManualCourseEntity(state: EditState, id: string): (ManualEntity & { entityType: "course"; value: Course }) | undefined {
+  return state.manualEntities.find(
+    (entity): entity is ManualEntity & { entityType: "course"; value: Course } => entity.entityType === "course" && entity.value.id === id
+  );
+}
+
+function nowIso(): string {
+  return new Date().toISOString();
+}
+
+function normalizeCoursePatch(updates: Record<string, unknown>): Partial<Course> {
+  const keys = Object.keys(updates);
+  if (keys.length === 0) throw new Error("Empty course update");
+  const normalized: Record<string, unknown> = {};
+  for (const key of keys) {
+    if (!EDITABLE_COURSE_FIELDS.has(key)) throw new Error(`Field ${key} is not editable`);
+    const field = key === "countsTowardDegree" ? "countedTowardDegree" : key;
+    const value = updates[key];
+    if (["name", "number", "description", "grade", "semester", "notes", "excludeReason"].includes(field)) {
+      if (value !== undefined && typeof value !== "string") throw new Error(`Field ${key} must be a string`);
+    } else if (field === "credits") {
+      if (typeof value !== "number" || !Number.isFinite(value) || value < 0) throw new Error("credits must be a finite non-negative number");
+    } else if (field === "status") {
+      if (typeof value !== "string" || !COURSE_STATUSES.has(value)) throw new Error("status is invalid");
+    } else if (["countedTowardDegree", "countsTowardGPA", "countsTowardEarnedHours"].includes(field)) {
+      if (typeof value !== "boolean") throw new Error(`Field ${key} must be a boolean`);
+    }
+    normalized[field] = value;
+  }
+  return normalized as Partial<Course>;
+}
+
+export function createManualCourse(input: Partial<Course> & { id?: string; number?: string }): Course {
+  if (!input.id || !input.number) throw new Error("id and number are required");
+  if (getBaseCourseById(input.id) || readEffectiveCourses().some((course) => course.id === input.id)) {
+    throw new Error(`Course ${input.id} already exists`);
+  }
+  const course: Course = {
+    id: input.id,
+    number: input.number,
+    name: typeof input.name === "string" ? input.name : "",
+    credits: typeof input.credits === "number" ? input.credits : 3,
+    prereqs: null,
+    coreqs: null,
+    status: input.status ?? "not_started",
+    grade: input.grade,
+    semester: input.semester,
+    notes: input.notes,
+    countedTowardDegree: input.countedTowardDegree ?? true,
+    countsTowardGPA: input.countsTowardGPA ?? true,
+    countsTowardEarnedHours: input.countsTowardEarnedHours ?? true,
+    excludeReason: input.excludeReason,
+    manuallyAdded: true,
+    source: "manual",
+  };
+  normalizeCoursePatch({
+    name: course.name,
+    number: course.number,
+    credits: course.credits,
+    status: course.status,
+    ...(course.grade !== undefined ? { grade: course.grade } : {}),
+    ...(course.semester !== undefined ? { semester: course.semester } : {}),
+    ...(course.notes !== undefined ? { notes: course.notes } : {}),
+    countedTowardDegree: course.countedTowardDegree,
+    countsTowardGPA: course.countsTowardGPA,
+    countsTowardEarnedHours: course.countsTowardEarnedHours,
+    ...(course.excludeReason !== undefined ? { excludeReason: course.excludeReason } : {}),
+  });
+  const now = nowIso();
+  const state = readEditState();
+  state.manualEntities.push({ id: `manual-course-${course.id}`, entityType: "course", value: course, provenance: { source: "manual", createdAt: now, updatedAt: now } });
+  writeEditState(state);
+  return course;
+}
+
+export function updateEditableCourse(id: string, rawUpdates: Record<string, unknown>): Course | null {
+  const updates = normalizeCoursePatch(rawUpdates);
+  const state = readEditState();
+  const manual = getManualCourseEntity(state, id);
+  const now = nowIso();
+  if (manual) {
+    manual.value = { ...manual.value, ...updates, manuallyAdded: true, source: "manual" };
+    manual.provenance = { ...manual.provenance, updatedAt: now };
+    writeEditState(state);
+    return readEffectiveCourses().find((course) => course.id === id) ?? null;
+  }
+  const base = getBaseCourseById(id);
+  if (!base) return null;
+  for (const [field, value] of Object.entries(updates)) {
+    const existing = state.overrides.find((override) => override.entityType === "course" && override.entityId === id && override.field === field);
+    if (existing) {
+      existing.value = value;
+      existing.updatedAt = now;
+    } else {
+      const provenance = defaultCourseProvenance(base);
+      state.overrides.push({
+        id: `course-${id}-${field}`,
+        entityType: "course",
+        entityId: id,
+        field,
+        value,
+        baseValue: (base as unknown as Record<string, unknown>)[field],
+        baseSource: provenance.source,
+        auditImportId: provenance.source === "audit" ? provenance.auditImportId : undefined,
+        createdAt: now,
+        updatedAt: now,
+      });
+    }
+  }
+  writeEditState(state);
+  return readEffectiveCourses().find((course) => course.id === id) ?? null;
+}
+
+export function deleteEditableCourse(id: string): { deleted: true } | { deleted: false; status: number; error: string } {
+  const state = readEditState();
+  const manual = getManualCourseEntity(state, id);
+  if (manual) {
+    state.manualEntities = state.manualEntities.filter((entity) => entity !== manual);
+    state.overrides = resetEntityOverrides(state.overrides, "course", id);
+    writeEditState(state);
+    return { deleted: true };
+  }
+  if (getBaseCourseById(id)) {
+    return { deleted: false, status: 400, error: "Audit-sourced courses cannot be destructively deleted" };
+  }
+  return { deleted: false, status: 404, error: "Course not found" };
+}
+
+export function resetEditableCourse(id: string, options: { field?: string; fields?: string[]; all?: boolean }): Course | null {
+  const base = getBaseCourseById(id);
+  if (!base) return null;
+  const state = readEditState();
+  if (options.all) {
+    state.overrides = resetEntityOverrides(state.overrides, "course", id);
+  } else {
+    const fields = options.fields ?? (options.field ? [options.field] : []);
+    if (fields.length === 0) throw new Error("field, fields, or all is required");
+    for (const field of fields) {
+      if (!EDITABLE_COURSE_FIELDS.has(field)) throw new Error(`Field ${field} is not editable`);
+      state.overrides = resetFieldOverride(state.overrides, "course", id, field === "countsTowardDegree" ? "countedTowardDegree" : field);
+    }
+  }
+  writeEditState(state);
+  return readEffectiveCourses().find((course) => course.id === id) ?? null;
 }
 
 export function updateCourse(id: string, updates: Partial<Course>): Course | null {
