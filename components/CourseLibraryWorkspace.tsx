@@ -4,6 +4,8 @@ import React, { useState, useEffect, useMemo } from "react";
 import type { Course, RequirementGroup, PrereqRule } from "@/lib/types";
 import { isRuleSatisfied, collectCourseIds, NON_DEGREE_CREDIT_GRADES } from "@/lib/prereqs";
 import { getCourseLibraryMeta, isCourseLibraryVisible } from "@/lib/course-library";
+import { CourseEditSheet } from "./CourseEditSheet";
+import { CourseSourceBadge } from "./CourseSourceBadge";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -263,6 +265,8 @@ export default function CourseLibraryWorkspace() {
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<Filters>({ search: "", status: "", category: "", source: "", counting: "", sort: "status" });
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [editingCourse, setEditingCourse] = useState<Course | null>(null);
+  const [sheetMode, setSheetMode] = useState<"create" | "edit" | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -305,6 +309,34 @@ export default function CourseLibraryWorkspace() {
 
   function getCourseGroups(courseId: string): RequirementGroup[] {
     return requirements.filter((r) => r.coursePool.includes(courseId));
+  }
+
+  function openCreateSheet() {
+    setEditingCourse(null);
+    setSheetMode("create");
+  }
+
+  function openEditSheet(course: Course) {
+    setEditingCourse(course);
+    setSheetMode("edit");
+  }
+
+  function closeSheet() {
+    setSheetMode(null);
+    setEditingCourse(null);
+  }
+
+  function upsertCourse(course: Course) {
+    setCourses((current) => {
+      const exists = current.some((item) => item.id === course.id);
+      return exists ? current.map((item) => (item.id === course.id ? course : item)) : [...current, course];
+    });
+    closeSheet();
+  }
+
+  function removeCourse(id: string) {
+    setCourses((current) => current.filter((course) => course.id !== id));
+    closeSheet();
   }
 
   const filtered = useMemo(
@@ -370,6 +402,15 @@ export default function CourseLibraryWorkspace() {
           Search audit rows, catalog rows, manual additions, uncounted attempts, planned courses, prereqs/coreqs, semester, grade,
           and counting flags from the same workspace.
         </p>
+        <div className="mt-5 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={openCreateSheet}
+            className="rounded-xl bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white shadow-sm"
+          >
+            Add manual course
+          </button>
+        </div>
         <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
           {[
             ["Audit", libraryStats.Audit, "from audit"],
@@ -478,6 +519,7 @@ export default function CourseLibraryWorkspace() {
               <th className="px-4 py-3 text-left">Source</th>
               <th className="px-4 py-3 text-left">Counting</th>
               <th className="px-4 py-3 text-center">Prereq/Coreq</th>
+              <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[var(--border)]">
@@ -508,7 +550,7 @@ export default function CourseLibraryWorkspace() {
                     <td className="px-4 py-3">
                       <StatusBadge status={course.status} />
                     </td>
-                    <td className="px-4 py-3 text-[var(--text-secondary)] text-xs">{meta.source}</td>
+                    <td className="px-4 py-3"><CourseSourceBadge course={course} /></td>
                     <td className="px-4 py-3 text-xs">
                       <span className={`px-2 py-0.5 rounded border ${
                         meta.counting === "Counts"
@@ -527,10 +569,22 @@ export default function CourseLibraryWorkspace() {
                         <span className="text-[10px] text-[var(--text-muted)]">none</span>
                       )}
                     </td>
+                    <td className="px-4 py-3 text-right">
+                      <button
+                        type="button"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          openEditSheet(course);
+                        }}
+                        className="rounded-lg border border-[var(--border)] px-3 py-1.5 text-xs font-medium text-[var(--accent)] hover:bg-[var(--accent-soft)]"
+                      >
+                        Edit
+                      </button>
+                    </td>
                   </tr>
                   {expanded && (
                     <tr key={`${course.id}-exp`}>
-                      <td colSpan={9} className="bg-[var(--surface-subtle)] border-t border-[var(--border)] px-6">
+                      <td colSpan={10} className="bg-[var(--surface-subtle)] border-t border-[var(--border)] px-6">
                         <CourseDetail
                           course={course}
                           groups={getCourseGroups(course.id)}
@@ -551,6 +605,15 @@ export default function CourseLibraryWorkspace() {
           </div>
         )}
       </div>
+      {sheetMode && (
+        <CourseEditSheet
+          mode={sheetMode}
+          course={editingCourse}
+          onClose={closeSheet}
+          onSaved={upsertCourse}
+          onDeleted={removeCourse}
+        />
+      )}
     </div>
   );
 }
