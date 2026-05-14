@@ -7,12 +7,13 @@ import {
   type DashboardRequirement,
   type DashboardRequirementStatus,
 } from "@/lib/audit-dashboard-view";
-import type { Course, RequirementGroup, Semester } from "@/lib/types";
+import { filterVisibleDashboardActions, getDashboardActionLocalStates } from "@/lib/dashboard-action-state";
+import type { Course, EntityLocalState, RequirementGroup, Semester } from "@/lib/types";
 
 type LoadState =
   | { status: "loading" }
   | { status: "error"; message: string }
-  | { status: "ready"; courses: Course[]; requirements: RequirementGroup[]; semesters: Semester[] };
+  | { status: "ready"; courses: Course[]; requirements: RequirementGroup[]; semesters: Semester[]; actionStates: EntityLocalState[] };
 
 const sectionCopy: Record<DashboardRequirementStatus, { title: string; detail: string }> = {
   attention: { title: "Needs attention", detail: "Review these before relying on your plan." },
@@ -76,13 +77,15 @@ export default function AuditDashboard() {
       fetchDashboardJson<Course[]>("courses", "/api/courses"),
       fetchDashboardJson<RequirementGroup[]>("requirements", "/api/requirements"),
       fetchDashboardJson<Semester[]>("semesters", "/api/semesters"),
+      fetchDashboardJson<EntityLocalState[]>("dashboard action state", "/api/dashboard-actions"),
     ])
-      .then(([courseData, requirementData, semesterData]) => {
+      .then(([courseData, requirementData, semesterData, actionStateData]) => {
         setState({
           status: "ready",
           courses: Array.isArray(courseData) ? courseData : [],
           requirements: Array.isArray(requirementData) ? requirementData : [],
           semesters: Array.isArray(semesterData) ? semesterData : [],
+          actionStates: Array.isArray(actionStateData) ? actionStateData : [],
         });
       })
       .catch((error) => setState({ status: "error", message: error instanceof Error ? error.message : String(error) }));
@@ -108,17 +111,39 @@ export default function AuditDashboard() {
     );
   }
 
-  return <DashboardContent courses={state.courses} requirements={state.requirements} semesters={state.semesters} />;
+  return <DashboardContent courses={state.courses} requirements={state.requirements} semesters={state.semesters} actionStates={state.actionStates} />;
 }
 
-function DashboardContent({ courses, requirements, semesters }: { courses: Course[]; requirements: RequirementGroup[]; semesters: Semester[] }) {
+function DashboardContent({ courses, requirements, semesters, actionStates }: { courses: Course[]; requirements: RequirementGroup[]; semesters: Semester[]; actionStates: EntityLocalState[] }) {
+  const [localActionStates, setLocalActionStates] = useState(actionStates);
   const dashboard = useMemo(() => buildAuditDashboardViewModel({ courses, requirements, semesters }), [courses, requirements, semesters]);
+  const visibleDashboard = useMemo(() => ({ ...dashboard, nextActions: filterVisibleDashboardActions(dashboard.nextActions, localActionStates) }), [dashboard, localActionStates]);
+
+  async function updateAction(actionId: string, body: { dismissed?: boolean; snoozedUntil?: string | null; reason?: string }) {
+    const response = await fetch(`/api/dashboard-actions/${actionId}`, {
+      method: "PATCH",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    if (response.ok) {
+      const next = await fetchDashboardJson<EntityLocalState[]>("dashboard action state", "/api/dashboard-actions");
+      setLocalActionStates(Array.isArray(next) ? next : []);
+    }
+  }
+
+  async function resetAction(actionId: string) {
+    const response = await fetch(`/api/dashboard-actions/${actionId}`, { method: "DELETE" });
+    if (response.ok) {
+      const next = await fetchDashboardJson<EntityLocalState[]>("dashboard action state", "/api/dashboard-actions");
+      setLocalActionStates(Array.isArray(next) ? next : []);
+    }
+  }
 
   return (
     <PageShell>
       <div className="space-y-5">
         <Hero dashboard={dashboard} />
-        <NextActions dashboard={dashboard} />
+        <NextActions dashboard={visibleDashboard} allActions={dashboard.nextActions} actionStates={localActionStates} onDismiss={(id) => updateAction(id, { dismissed: true, reason: "dismissed" })} onSnooze={(id) => { const until = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(); updateAction(id, { dismissed: false, snoozedUntil: until, reason: "snoozed" }); }} onReset={resetAction} />
         <RequirementSections dashboard={dashboard} />
       </div>
     </PageShell>
@@ -183,7 +208,22 @@ function Metric({ label, value, detail, tone = "neutral" }: { label: string; val
   );
 }
 
-function NextActions({ dashboard }: { dashboard: AuditDashboardViewModel }) {
+function NextActions({
+  dashboard,
+  allActions,
+  actionStates,
+  onDismiss,
+  onSnooze,
+  onReset,
+}: {
+  dashboard: AuditDashboardViewModel;
+  allActions: AuditDashboardViewModel["nextActions"];
+  actionStates: EntityLocalState[];
+  onDismiss: (id: string) => void;
+  onSnooze: (id: string) => void;
+  onReset: (id: string) => void;
+}) {
+  const hiddenStates = getDashboardActionLocalStates(actionStates).filter((state) => state.dismissed || (state.snoozedUntil && Date.parse(state.snoozedUntil) > Date.now()));
   return (
     <Surface className="min-w-0">
       <div className="flex min-w-0 flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
@@ -208,10 +248,29 @@ function NextActions({ dashboard }: { dashboard: AuditDashboardViewModel }) {
               </div>
               <h3 className="mt-2 break-words text-sm font-semibold text-[var(--text-primary)]">{action.title}</h3>
               <p className="mt-2 break-words text-sm leading-6 text-[var(--text-secondary)]">{action.detail}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button onClick={() => onDismiss(action.id)} className="rounded-lg border border-[var(--border)] px-2.5 py-1.5 text-[11px] font-semibold text-[var(--text-secondary)] hover:bg-[var(--surface-subtle)]">Dismiss</button>
+                <button onClick={() => onSnooze(action.id)} className="rounded-lg border border-[var(--border)] px-2.5 py-1.5 text-[11px] font-semibold text-[var(--accent)] hover:bg-[var(--accent-soft)]">Snooze 7 days</button>
+              </div>
             </div>
           );
         })}
       </div>
+      {hiddenStates.length > 0 && (
+        <div className="mt-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-subtle)] p-3">
+          <p className="text-xs font-semibold text-[var(--text-secondary)]">Hidden next actions</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {hiddenStates.map((state) => {
+              const action = allActions.find((item) => item.id === state.entityId);
+              return (
+                <button key={state.entityId} onClick={() => onReset(state.entityId)} className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-2.5 py-1.5 text-[11px] text-[var(--text-secondary)] hover:text-[var(--accent)]">
+                  Restore {action?.title ?? state.entityId}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </Surface>
   );
 }

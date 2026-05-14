@@ -8,6 +8,7 @@ import os from "os";
 import path from "path";
 import type { AppData, Course, EntityLocalState, FieldOverride, ManualEntity, PrereqRule, ProgramInfo, RequirementGroup, Semester } from "./types";
 import { buildEffectiveData, defaultCourseProvenance, resetEntityOverrides, resetFieldOverride } from "./edit-overrides";
+import { resetDashboardActionLocalState, upsertDashboardActionLocalState } from "./dashboard-action-state";
 export { calcProgress } from "./prereqs";
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -99,6 +100,25 @@ export function readEditState(): EditState {
 
 export function writeEditState(state: EditState): void {
   writeJson("edit-state.json", state);
+}
+
+
+export function readDashboardActionLocalStates(): EntityLocalState[] {
+  return readEditState().localStates.filter((state) => state.entityType === "dashboardAction");
+}
+
+export function updateDashboardActionState(id: string, patch: { dismissed?: boolean; snoozedUntil?: string | null; reason?: string }): EntityLocalState {
+  const state = readEditState();
+  state.localStates = upsertDashboardActionLocalState(state.localStates, id, patch);
+  writeEditState(state);
+  return state.localStates.find((item) => item.entityType === "dashboardAction" && item.entityId === id)!;
+}
+
+export function resetDashboardActionState(id: string): { reset: true } {
+  const state = readEditState();
+  state.localStates = resetDashboardActionLocalState(state.localStates, id);
+  writeEditState(state);
+  return { reset: true };
 }
 
 export function readEffectiveCourses(): Course[] {

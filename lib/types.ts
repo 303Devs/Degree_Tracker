@@ -74,6 +74,7 @@ export interface AppData {
 }
 
 export type EntityType = "course" | "requirement";
+export type LocalStateEntityType = EntityType | "dashboardAction";
 export type EntitySource = CourseSource | "system";
 
 export interface AuditImport {
@@ -120,10 +121,12 @@ export type ManualEntity =
     };
 
 export interface EntityLocalState {
-  entityType: EntityType;
+  entityType: LocalStateEntityType;
   entityId: string;
   hidden?: boolean;
   excluded?: boolean;
+  dismissed?: boolean;
+  snoozedUntil?: string;
   reason?: string;
   updatedAt: string;
 }
