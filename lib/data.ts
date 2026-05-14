@@ -38,6 +38,21 @@ const EDITABLE_COURSE_FIELDS = new Set([
 
 const COURSE_STATUSES = new Set(["not_started", "planned", "in_progress", "registered", "completed"]);
 
+const EDITABLE_REQUIREMENT_FIELDS = new Set([
+  "name",
+  "category",
+  "type",
+  "required",
+  "requiredHours",
+  "coursePool",
+  "selectedCourses",
+  "notes",
+  "minGrade",
+]);
+
+const REQUIREMENT_TYPES = new Set(["complete_all", "pick_n", "pick_one", "minimum_hours"]);
+const DASH_COURSE_ID = /^[A-Z]+-[0-9]+[A-Z]?$/;
+
 function ensureDataDir() {
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -92,6 +107,14 @@ export function readEffectiveCourses(): Course[] {
     requirements: readRequirements(),
     ...readEditState(),
   }).courses;
+}
+
+export function readEffectiveRequirements(): RequirementGroup[] {
+  return buildEffectiveData({
+    courses: readCourses(),
+    requirements: readRequirements(),
+    ...readEditState(),
+  }).requirements;
 }
 
 export function getCourseById(id: string): Course | undefined {
@@ -345,6 +368,170 @@ export function writeRequirements(groups: RequirementGroup[]): void {
   writeJson("requirements.json", groups);
 }
 
+
+function getBaseRequirementById(id: string): RequirementGroup | undefined {
+  return readRequirements().find((requirement) => requirement.id === id);
+}
+
+function getManualRequirementEntity(state: EditState, id: string): (ManualEntity & { entityType: "requirement"; value: RequirementGroup }) | undefined {
+  return state.manualEntities.find(
+    (entity): entity is ManualEntity & { entityType: "requirement"; value: RequirementGroup } => entity.entityType === "requirement" && entity.value.id === id
+  );
+}
+
+function normalizeCourseIdArray(value: unknown, field: string): string[] {
+  if (!Array.isArray(value)) throw new Error(`${field} must be an array`);
+  const ids: string[] = [];
+  for (const item of value) {
+    if (typeof item !== "string" || item.trim() === "") throw new Error(`${field} must contain non-empty strings`);
+    const id = item.trim();
+    if (!DASH_COURSE_ID.test(id)) throw new Error(`${field} must use dash-format course IDs`);
+    if (!ids.includes(id)) ids.push(id);
+  }
+  return ids;
+}
+
+function validateRequirementShape(requirement: RequirementGroup): void {
+  if (!requirement.name.trim()) throw new Error("name is required");
+  if (!requirement.category.trim()) throw new Error("category is required");
+  if (!REQUIREMENT_TYPES.has(requirement.type)) throw new Error("type is invalid");
+  if (requirement.type === "pick_n") {
+    if (!Number.isInteger(requirement.required) || (requirement.required ?? 0) <= 0) throw new Error("required must be a positive integer for pick_n requirements");
+    if ((requirement.selectedCourses?.length ?? 0) > requirement.required!) throw new Error("selectedCourses cannot exceed required for pick_n requirements");
+  }
+  if (requirement.type === "minimum_hours") {
+    if (typeof requirement.requiredHours !== "number" || !Number.isFinite(requirement.requiredHours) || requirement.requiredHours <= 0) {
+      throw new Error("requiredHours must be a positive finite number for minimum_hours requirements");
+    }
+  }
+  if (requirement.type === "pick_one" && (requirement.selectedCourses?.length ?? 0) > 1) throw new Error("pick_one requirements can have at most one selected course");
+  const pool = new Set(requirement.coursePool);
+  for (const selected of requirement.selectedCourses ?? []) {
+    if (!pool.has(selected)) throw new Error("selectedCourses must be a subset of coursePool");
+  }
+}
+
+function normalizeRequirementPatch(updates: Record<string, unknown>, base?: RequirementGroup): Partial<RequirementGroup> {
+  const keys = Object.keys(updates);
+  if (keys.length === 0) throw new Error("Empty requirement update");
+  const normalized: Record<string, unknown> = {};
+  for (const key of keys) {
+    if (!EDITABLE_REQUIREMENT_FIELDS.has(key)) throw new Error(`Field ${key} is not editable`);
+    const value = updates[key];
+    if (["name", "category", "notes", "minGrade"].includes(key)) {
+      if (value !== undefined && typeof value !== "string") throw new Error(`Field ${key} must be a string`);
+      if (["name", "category"].includes(key) && typeof value === "string" && value.trim() === "") throw new Error(`${key} is required`);
+      normalized[key] = value;
+    } else if (key === "type") {
+      if (typeof value !== "string" || !REQUIREMENT_TYPES.has(value)) throw new Error("type is invalid");
+      normalized[key] = value;
+    } else if (key === "required") {
+      if (value !== undefined && (!Number.isInteger(value) || (value as number) <= 0)) throw new Error("required must be a positive integer");
+      normalized[key] = value;
+    } else if (key === "requiredHours") {
+      if (value !== undefined && (typeof value !== "number" || !Number.isFinite(value) || value <= 0)) throw new Error("requiredHours must be a positive finite number");
+      normalized[key] = value;
+    } else if (key === "coursePool" || key === "selectedCourses") {
+      normalized[key] = normalizeCourseIdArray(value, key);
+    }
+  }
+  if (base) validateRequirementShape({ ...base, ...normalized });
+  return normalized as Partial<RequirementGroup>;
+}
+
+export function createManualRequirement(input: Partial<RequirementGroup> & { id?: string }): RequirementGroup {
+  if (!input.id) throw new Error("id is required");
+  if (getBaseRequirementById(input.id) || readEffectiveRequirements().some((requirement) => requirement.id === input.id)) {
+    throw new Error(`Requirement ${input.id} already exists`);
+  }
+  const requirement: RequirementGroup = {
+    id: input.id,
+    name: input.name ?? "",
+    category: input.category ?? "Manual",
+    type: input.type ?? "complete_all",
+    required: input.required,
+    requiredHours: input.requiredHours,
+    coursePool: input.coursePool ?? [],
+    selectedCourses: input.selectedCourses,
+    notes: input.notes,
+    minGrade: input.minGrade,
+  };
+  validateRequirementShape(requirement);
+  const now = nowIso();
+  const state = readEditState();
+  state.manualEntities.push({ id: `manual-requirement-${requirement.id}`, entityType: "requirement", value: requirement, provenance: { source: "manual", createdAt: now, updatedAt: now } });
+  writeEditState(state);
+  return requirement;
+}
+
+export function updateEditableRequirement(id: string, rawUpdates: Record<string, unknown>): RequirementGroup | null {
+  const state = readEditState();
+  const manual = getManualRequirementEntity(state, id);
+  const current = manual?.value ?? getBaseRequirementById(id);
+  if (!current) return null;
+  const updates = normalizeRequirementPatch(rawUpdates, current);
+  const now = nowIso();
+  if (manual) {
+    manual.value = { ...manual.value, ...updates };
+    manual.provenance = { ...manual.provenance, updatedAt: now };
+    writeEditState(state);
+    return readEffectiveRequirements().find((requirement) => requirement.id === id) ?? null;
+  }
+  const base = getBaseRequirementById(id)!;
+  for (const [field, value] of Object.entries(updates)) {
+    const existing = state.overrides.find((override) => override.entityType === "requirement" && override.entityId === id && override.field === field);
+    if (existing) {
+      existing.value = value;
+      existing.updatedAt = now;
+    } else {
+      state.overrides.push({
+        id: `requirement-${id}-${field}`,
+        entityType: "requirement",
+        entityId: id,
+        field,
+        value,
+        baseValue: (base as unknown as Record<string, unknown>)[field],
+        baseSource: "audit",
+        createdAt: now,
+        updatedAt: now,
+      });
+    }
+  }
+  writeEditState(state);
+  return readEffectiveRequirements().find((requirement) => requirement.id === id) ?? null;
+}
+
+export function deleteEditableRequirement(id: string): { deleted: true } | { deleted: false; status: number; error: string } {
+  const state = readEditState();
+  const manual = getManualRequirementEntity(state, id);
+  if (manual) {
+    state.manualEntities = state.manualEntities.filter((entity) => entity !== manual);
+    state.overrides = resetEntityOverrides(state.overrides, "requirement", id);
+    writeEditState(state);
+    return { deleted: true };
+  }
+  if (getBaseRequirementById(id)) return { deleted: false, status: 400, error: "Audit-sourced requirements cannot be destructively deleted" };
+  return { deleted: false, status: 404, error: "Requirement group not found" };
+}
+
+export function resetEditableRequirement(id: string, options: { field?: string; fields?: string[]; all?: boolean }): RequirementGroup | null {
+  const base = getBaseRequirementById(id);
+  if (!base) return null;
+  const state = readEditState();
+  if (options.all) {
+    state.overrides = resetEntityOverrides(state.overrides, "requirement", id);
+  } else {
+    const fields = options.fields ?? (options.field ? [options.field] : []);
+    if (fields.length === 0) throw new Error("field, fields, or all is required");
+    for (const field of fields) {
+      if (!EDITABLE_REQUIREMENT_FIELDS.has(field)) throw new Error(`Field ${field} is not editable`);
+      state.overrides = resetFieldOverride(state.overrides, "requirement", id, field);
+    }
+  }
+  writeEditState(state);
+  return readEffectiveRequirements().find((requirement) => requirement.id === id) ?? null;
+}
+
 // ---------------------------------------------------------------------------
 // Semesters
 // ---------------------------------------------------------------------------
@@ -413,7 +600,7 @@ export function readAppData(): AppData {
   const rawSemesters = readSemesters();
   return {
     courses,
-    requirements: readRequirements(),
+    requirements: readEffectiveRequirements(),
     semesters: deriveSemesterCourses(rawSemesters, courses),
     programs: readPrograms(),
   };
@@ -564,12 +751,7 @@ export function updateRequirement(
   id: string,
   updates: Partial<RequirementGroup>
 ): RequirementGroup | null {
-  const groups = readRequirements();
-  const idx = groups.findIndex((g) => g.id === id);
-  if (idx === -1) return null;
-  groups[idx] = { ...groups[idx], ...updates };
-  writeRequirements(groups);
-  return groups[idx];
+  return updateEditableRequirement(id, updates as Record<string, unknown>);
 }
 
 // ---------------------------------------------------------------------------
