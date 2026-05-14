@@ -33,6 +33,7 @@ import {
   type PlannerBoardViewModel,
   type PlannerCoursePlacement,
 } from "@/lib/planner-board-view";
+import { CourseEditSheet } from "./CourseEditSheet";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -90,6 +91,7 @@ function PlannerCard({
   assignments,
   placement,
   overlay = false,
+  onEdit,
 }: {
   course: Course;
   semId: SemId;
@@ -98,6 +100,7 @@ function PlannerCard({
   assignments: Map<string, string>;
   placement?: PlannerCoursePlacement;
   overlay?: boolean;
+  onEdit?: (course: Course) => void;
 }) {
   const draggable = !overlay && course.status !== "completed" && course.status !== "in_progress" && course.status !== "registered";
 
@@ -160,6 +163,20 @@ function PlannerCard({
           <span className={`w-2 h-2 rounded-full ${statusDot[course.status] ?? "bg-[var(--text-muted)]"}`} />
         </div>
       </div>
+      {!overlay && onEdit ? (
+        <button
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation();
+            onEdit(course);
+          }}
+          onPointerDown={(event) => event.stopPropagation()}
+          className="mt-2 rounded-lg border border-[var(--border)] px-2 py-1 text-[10px] font-semibold text-[var(--accent)] transition-colors hover:bg-[var(--accent-soft)]"
+          aria-label={`Edit ${course.number}`}
+        >
+          Edit course
+        </button>
+      ) : null}
       {/* Prereq indicator */}
       {course.prereqs && semId !== "unplanned" && (
         <div className="mt-2 flex items-center gap-1">
@@ -198,6 +215,7 @@ function SemesterColumn({
   assignments,
   summary,
   onStatusChange,
+  onEditCourse,
 }: {
   semester: Semester;
   courses: Course[];
@@ -206,6 +224,7 @@ function SemesterColumn({
   assignments: Map<string, string>;
   summary?: PlannerBoardViewModel["semesterSummaries"][number];
   onStatusChange: (semesterId: string, status: Semester["status"]) => void;
+  onEditCourse: (course: Course) => void;
 }) {
   const { isOver, setNodeRef } = useDroppable({ id: semester.id });
 
@@ -256,6 +275,7 @@ function SemesterColumn({
             allCourses={allCourses}
             sortedSems={sortedSems}
             assignments={assignments}
+            onEdit={onEditCourse}
           />
         ))}
         {courses.length === 0 && (
@@ -283,6 +303,7 @@ function UnplannedPool({
   assignments,
   collapsed,
   onToggle,
+  onEditCourse,
 }: {
   groups: PlannerBoardViewModel["courseGroups"];
   allCourses: Course[];
@@ -290,6 +311,7 @@ function UnplannedPool({
   assignments: Map<string, string>;
   collapsed: boolean;
   onToggle: () => void;
+  onEditCourse: (course: Course) => void;
 }) {
   const { isOver, setNodeRef } = useDroppable({ id: "unplanned" });
 
@@ -344,6 +366,7 @@ function UnplannedPool({
                       sortedSems={sortedSems}
                       assignments={assignments}
                       placement={placement}
+                      onEdit={onEditCourse}
                     />
                   ))}
                 </div>
@@ -573,6 +596,7 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
   const [newSemLoading, setNewSemLoading] = useState(false);
   const [requirements, setRequirements] = useState<RequirementGroup[]>([]);
   const [validationOpen, setValidationOpen] = useState(false);
+  const [editingCourse, setEditingCourse] = useState<Course | null>(null);
 
   // Sensors for DnD
   const sensors = useSensors(
@@ -601,6 +625,17 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
       setAssignments(map);
       setLoading(false);
     }).catch((err) => { setError(String(err)); setLoading(false); });
+  }, []);
+
+  const refreshCourses = useCallback(async () => {
+    const updated = await fetch("/api/courses").then((r) => r.json());
+    if (!Array.isArray(updated)) return;
+    setCourses(updated);
+    const map = new Map<string, string>();
+    for (const course of updated) {
+      map.set(course.id, course.semester ?? "unplanned");
+    }
+    setAssignments(map);
   }, []);
 
   const sortedSems = useMemo(() => sortSemesters(semesters), [semesters]);
@@ -685,14 +720,13 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
           }),
         });
         // Refresh course list to get updated status
-        const updated = await fetch("/api/courses").then((r) => r.json());
-        if (Array.isArray(updated)) setCourses(updated);
+        await refreshCourses();
       } catch {
         // Revert on error using saved pre-move state
         setAssignments(prevAssignments);
       }
     },
-    [assignments, courseMap]
+    [assignments, courseMap, refreshCourses]
   );
 
   function handleDragStart(event: DragStartEvent) {
@@ -876,6 +910,7 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
           assignments={assignments}
           collapsed={unplannedCollapsed}
           onToggle={() => setUnplannedCollapsed((v) => !v)}
+          onEditCourse={setEditingCourse}
         />
 
         {/* Semester timeline */}
@@ -891,6 +926,7 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
                 assignments={assignments}
                 summary={boardView.semesterSummaries.find((item) => item.semester.id === sem.id)}
                 onStatusChange={handleSemesterStatusChange}
+                onEditCourse={setEditingCourse}
               />
             ))}
 
@@ -929,6 +965,22 @@ export default function PlannerWorkspace({ embedded = false }: { embedded?: bool
           open={validationOpen}
           onToggle={() => setValidationOpen((v) => !v)}
         />      </div>
+
+      {editingCourse ? (
+        <CourseEditSheet
+          course={editingCourse}
+          mode="edit"
+          onClose={() => setEditingCourse(null)}
+          onSaved={async () => {
+            await refreshCourses();
+            setEditingCourse(null);
+          }}
+          onDeleted={async () => {
+            await refreshCourses();
+            setEditingCourse(null);
+          }}
+        />
+      ) : null}
 
       {/* Drag overlay (ghost card) */}
       <DragOverlay dropAnimation={null}>
