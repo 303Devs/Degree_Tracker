@@ -12,3 +12,6 @@ out/
 # OS / editor
 .DS_Store
 *.swp
+
+# Runtime edit override state
+data/edit-state.json
