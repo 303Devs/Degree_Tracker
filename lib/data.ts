@@ -596,7 +596,7 @@ export function deriveSemesterCourses(semesters: Semester[], courses: Course[]):
 // ---------------------------------------------------------------------------
 
 export function readAppData(): AppData {
-  const courses = readCourses();
+  const courses = readEffectiveCourses();
   const rawSemesters = readSemesters();
   return {
     courses,
