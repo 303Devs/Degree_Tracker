@@ -319,7 +319,7 @@ function courseIdToNumber(id: string): string {
  */
 export function ensureReferencedCourseStubs(): { added: number } {
   const courses = readCourses();
-  const requirements = readRequirements();
+  const requirements = readEffectiveRequirements();
   const existing = new Set(courses.map((c) => c.id));
   const referenced = new Set<string>();
 
