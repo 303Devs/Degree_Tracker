@@ -63,7 +63,22 @@ export interface ReimportTrustPreviewInput {
   };
 }
 
+export type ReimportConflictResolution = "keep_edit" | "use_new_audit";
+export type ReimportApplyMode = "preserve" | "reset_all";
+
+export interface ReimportConflictDecision {
+  conflictId: string;
+  resolution: ReimportConflictResolution;
+}
+
 export interface ReimportTrustPreview {
+  hasLocalEditState: boolean;
+  summary: {
+    overrides: number;
+    manualEntities: number;
+    localStates: number;
+    dashboardActionLocalStates: number;
+  };
   conflicts: ReimportConflict[];
   manualEntityImpacts: ReimportManualEntityImpact[];
   localStateImpacts: ReimportLocalStateImpact[];
@@ -112,7 +127,15 @@ export function buildReimportTrustPreview(input: ReimportTrustPreviewInput): Rei
     localStates,
   });
 
+  const dashboardActionLocalStates = localStates.filter((state) => state.entityType === "dashboardAction").length;
   return {
+    hasLocalEditState: hasReimportLocalEditState(input.editState),
+    summary: {
+      overrides: overrides.length,
+      manualEntities: manualEntities.length,
+      localStates: localStates.length,
+      dashboardActionLocalStates,
+    },
     conflicts: [
       ...detectCourseOverrideConflicts(input.currentCourses, effective.courses, input.incomingCourses, overrides),
       ...detectRequirementOverrideConflicts(input.currentRequirements, effective.requirements, input.incomingRequirements, overrides),
@@ -120,6 +143,31 @@ export function buildReimportTrustPreview(input: ReimportTrustPreviewInput): Rei
     manualEntityImpacts: manualEntities.map(toManualEntityImpact),
     localStateImpacts: localStates.map(toLocalStateImpact),
     decisions: buildReimportDecisionModel(),
+  };
+}
+
+export function hasReimportLocalEditState(editState: ReimportTrustPreviewInput["editState"]): boolean {
+  return (editState.overrides?.length ?? 0) > 0 || (editState.manualEntities?.length ?? 0) > 0 || (editState.localStates?.length ?? 0) > 0;
+}
+
+export function applyReimportEditStateDecision(
+  editState: Required<ReimportTrustPreviewInput["editState"]>,
+  mode: ReimportApplyMode,
+  decisions: ReimportConflictDecision[] = []
+): Required<ReimportTrustPreviewInput["editState"]> {
+  if (mode === "reset_all") {
+    return {
+      overrides: [],
+      manualEntities: [],
+      localStates: editState.localStates.filter((state) => state.entityType === "dashboardAction"),
+    };
+  }
+
+  const useNewAudit = new Set(decisions.filter((decision) => decision.resolution === "use_new_audit").map((decision) => decision.conflictId));
+  return {
+    overrides: editState.overrides.filter((override) => !useNewAudit.has(conflictId(override.entityType, override.entityId, override.field))),
+    manualEntities: [...editState.manualEntities],
+    localStates: [...editState.localStates],
   };
 }
 

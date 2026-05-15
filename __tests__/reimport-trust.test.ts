@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildReimportTrustPreview } from "../lib/reimport-trust";
+import { applyReimportEditStateDecision, buildReimportTrustPreview } from "../lib/reimport-trust";
 import type { Course, FieldOverride, ManualEntity, RequirementGroup } from "../lib/types";
 
 function course(overrides: Partial<Course> & { id: string }): Course {
@@ -146,5 +146,46 @@ describe("upload re-import trust foundation", () => {
     expect(editState.manualEntities).toHaveLength(2);
     expect(editState.localStates).toHaveLength(2);
     expect(editState.overrides).toHaveLength(1);
+  });
+
+  it("applies preserve conflict decisions by removing only overrides resolved to new audit", () => {
+    const editState = {
+      overrides: [
+        override({ entityType: "course", entityId: "CSCI-1300", field: "name", value: "Edited name" }),
+        override({ entityType: "requirement", entityId: "REQ-1", field: "coursePool", value: ["CSCI-1300"] }),
+      ],
+      manualEntities: [],
+      localStates: [{ entityType: "dashboardAction" as const, entityId: "remaining-REQ-1", dismissed: true, updatedAt: "2026-01-01T00:00:00.000Z" }],
+    };
+
+    const next = applyReimportEditStateDecision(editState, "preserve", [
+      { conflictId: "course:CSCI-1300:name", resolution: "use_new_audit" },
+      { conflictId: "requirement:REQ-1:coursePool", resolution: "keep_edit" },
+    ]);
+
+    expect(next.overrides).toEqual([expect.objectContaining({ entityType: "requirement", entityId: "REQ-1", field: "coursePool" })]);
+    expect(next.localStates).toEqual(editState.localStates);
+  });
+
+  it("models explicit reset-all by clearing edits and manual entities while preserving dashboard action state", () => {
+    const editState = {
+      overrides: [override({ entityType: "course", entityId: "CSCI-1300", field: "name", value: "Edited name" })],
+      manualEntities: [{
+        id: "manual-course-MATH-2400",
+        entityType: "course" as const,
+        value: course({ id: "MATH-2400", source: "manual", manuallyAdded: true }),
+        provenance: { source: "manual" as const },
+      }],
+      localStates: [
+        { entityType: "dashboardAction" as const, entityId: "remaining-REQ-1", dismissed: true, updatedAt: "2026-01-01T00:00:00.000Z" },
+        { entityType: "course" as const, entityId: "CSCI-1300", hidden: true, updatedAt: "2026-01-01T00:00:00.000Z" },
+      ],
+    };
+
+    const next = applyReimportEditStateDecision(editState, "reset_all");
+
+    expect(next.overrides).toEqual([]);
+    expect(next.manualEntities).toEqual([]);
+    expect(next.localStates).toEqual([expect.objectContaining({ entityType: "dashboardAction", entityId: "remaining-REQ-1" })]);
   });
 });
