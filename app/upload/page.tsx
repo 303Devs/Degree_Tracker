@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import type { ParsedAuditResult } from "@/lib/types";
+import type { ReimportConflictResolution, ReimportTrustPreview } from "@/lib/reimport-trust";
 
 type UploadState = "idle" | "uploading" | "review" | "saving" | "done" | "error";
 
@@ -10,6 +11,10 @@ export default function UploadPage() {
   const [parsed, setParsed] = useState<ParsedAuditResult | null>(null);
   const [fileName, setFileName] = useState("");
   const [error, setError] = useState("");
+  const [trustPreview, setTrustPreview] = useState<ReimportTrustPreview | null>(null);
+  const [reimportMode, setReimportMode] = useState<"preserve" | "reset_all" | null>(null);
+  const [conflictDecisions, setConflictDecisions] = useState<Record<string, ReimportConflictResolution>>({});
+  const [resetConfirmed, setResetConfirmed] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -35,7 +40,21 @@ export default function UploadPage() {
         throw new Error(json.error ?? "Upload failed");
       }
 
-      setParsed(json.data as ParsedAuditResult);
+      const audit = json.data as ParsedAuditResult;
+      setParsed(audit);
+      setReimportMode(null);
+      setConflictDecisions({});
+      setResetConfirmed(false);
+      const previewRes = await fetch("/api/audit/reimport-preview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(audit),
+      });
+      const previewJson = await previewRes.json();
+      if (!previewRes.ok) throw new Error(previewJson.error ?? "Re-import preview failed");
+      const preview = previewJson as ReimportTrustPreview;
+      setTrustPreview(preview);
+      setConflictDecisions(Object.fromEntries(preview.conflicts.map((conflict) => [conflict.id, "keep_edit" as const])));
       setState("review");
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -43,15 +62,30 @@ export default function UploadPage() {
     }
   }
 
-  async function handleConfirm() {
+  async function handleConfirm(mode?: "preserve" | "reset_all") {
     if (!parsed) return;
+    const selectedMode = mode ?? reimportMode;
+    if (trustPreview?.hasLocalEditState && !selectedMode) return;
+    if (selectedMode === "reset_all" && !resetConfirmed) return;
     setState("saving");
 
     try {
+      const body = selectedMode
+        ? {
+            audit: parsed,
+            reimport: {
+              mode: selectedMode,
+              confirmReset: selectedMode === "reset_all" ? resetConfirmed : undefined,
+              decisions: selectedMode === "preserve"
+                ? Object.entries(conflictDecisions).map(([conflictId, resolution]) => ({ conflictId, resolution }))
+                : [],
+            },
+          }
+        : parsed;
       const res = await fetch("/api/audit/confirm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(parsed),
+        body: JSON.stringify(body),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "Save failed");
@@ -221,15 +255,75 @@ export default function UploadPage() {
             </div>
           </details>
 
-          <div className="flex gap-3">
+          {trustPreview?.hasLocalEditState && (
+            <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 space-y-4">
+              <div>
+                <h3 className="font-semibold text-amber-800">Local edits detected</h3>
+                <p className="mt-1 text-sm text-amber-800">
+                  Found {trustPreview.summary.overrides} field edits, {trustPreview.summary.manualEntities} manual items, and {trustPreview.summary.localStates} local states. Choose how to handle them before saving this audit.
+                </p>
+              </div>
+              <div className="grid gap-3 md:grid-cols-2">
+                <button onClick={() => setReimportMode("preserve")} className={`rounded-xl border p-4 text-left ${reimportMode === "preserve" ? "border-[var(--accent)] bg-white" : "border-amber-200 bg-amber-50"}`}>
+                  <p className="font-semibold text-[var(--text-primary)]">Preserve local edits and review conflicts</p>
+                  <p className="mt-1 text-xs text-[var(--text-secondary)]">Manual courses/requirements and dismissed/snoozed next actions stay. Conflicts are reviewed below.</p>
+                </button>
+                <button onClick={() => setReimportMode("reset_all")} className={`rounded-xl border p-4 text-left ${reimportMode === "reset_all" ? "border-rose-400 bg-white" : "border-amber-200 bg-amber-50"}`}>
+                  <p className="font-semibold text-rose-700">Start fresh / reset local edits</p>
+                  <p className="mt-1 text-xs text-rose-700">Requires explicit confirmation. Field edits and manual courses/requirements will be permanently removed.</p>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {trustPreview?.hasLocalEditState && reimportMode === "preserve" && (
+            <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-3">
+              <h3 className="font-semibold text-[var(--text-primary)]">Conflict review</h3>
+              {trustPreview.conflicts.length === 0 ? (
+                <p className="text-sm text-[var(--text-secondary)]">No conflicts found. Your local edits can be preserved as-is.</p>
+              ) : (
+                <div className="space-y-3">
+                  {trustPreview.conflicts.map((conflict) => (
+                    <div key={conflict.id} className="rounded-xl border border-[var(--border)] p-3 text-sm">
+                      <p className="font-medium text-[var(--text-primary)]">{conflict.entityType} {conflict.entityId} · {conflict.field}</p>
+                      <div className="mt-2 grid gap-2 md:grid-cols-2">
+                        <label className="rounded-lg border border-[var(--border)] p-2">
+                          <input type="radio" className="mr-2" name={conflict.id} checked={conflictDecisions[conflict.id] !== "use_new_audit"} onChange={() => setConflictDecisions((prev) => ({ ...prev, [conflict.id]: "keep_edit" }))} />
+                          Keep my edit: <span className="font-mono text-xs">{formatValue(conflict.currentEffectiveValue)}</span>
+                        </label>
+                        <label className="rounded-lg border border-[var(--border)] p-2">
+                          <input type="radio" className="mr-2" name={conflict.id} checked={conflictDecisions[conflict.id] === "use_new_audit"} onChange={() => setConflictDecisions((prev) => ({ ...prev, [conflict.id]: "use_new_audit" }))} />
+                          Use new audit: <span className="font-mono text-xs">{formatValue(conflict.incomingAuditValue)}</span>
+                        </label>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {trustPreview?.hasLocalEditState && reimportMode === "reset_all" && (
+            <div className="rounded-2xl border border-rose-300 bg-rose-50 p-4 space-y-3">
+              <h3 className="font-semibold text-rose-800">Permanent reset confirmation</h3>
+              <p className="text-sm text-rose-800">This will permanently remove local course edits, requirement edits, manual courses, and manual requirements before saving the new audit. Dismissed and snoozed dashboard next actions will be preserved. This cannot be undone.</p>
+              <label className="flex items-start gap-2 text-sm text-rose-800">
+                <input type="checkbox" className="mt-1" checked={resetConfirmed} onChange={(event) => setResetConfirmed(event.target.checked)} />
+                I understand that local edits and manual courses/requirements will be permanently removed.
+              </label>
+            </div>
+          )}
+
+          <div className="flex flex-wrap gap-3">
             <button
-              onClick={handleConfirm}
-              className="px-6 py-2.5 bg-[var(--accent)] hover:opacity-90 text-white rounded-lg font-medium text-sm transition-colors"
+              onClick={() => handleConfirm()}
+              disabled={!!trustPreview?.hasLocalEditState && (!reimportMode || (reimportMode === "reset_all" && !resetConfirmed))}
+              className="px-6 py-2.5 bg-[var(--accent)] hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 text-white rounded-lg font-medium text-sm transition-colors"
             >
               Confirm &amp; Save
             </button>
             <button
-              onClick={() => { setState("idle"); setParsed(null); }}
+              onClick={() => { setState("idle"); setParsed(null); setTrustPreview(null); setReimportMode(null); }}
               className="px-6 py-2.5 bg-[var(--surface)] hover:bg-[var(--surface-subtle)] border border-[var(--border)] rounded-lg text-sm transition-colors"
             >
               Cancel
@@ -272,6 +366,13 @@ export default function UploadPage() {
       )}
     </div>
   );
+}
+
+function formatValue(value: unknown): string {
+  if (Array.isArray(value)) return value.join(", ") || "—";
+  if (value === undefined || value === null || value === "") return "—";
+  if (typeof value === "object") return JSON.stringify(value);
+  return String(value);
 }
 
 function InfoRow({ label, value }: { label: string; value: string }) {
